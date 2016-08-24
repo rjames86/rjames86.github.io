@@ -25,6 +25,12 @@ pre {
   font-size: 90%;
   box-shadow: 2px 2px 2px #888;
 }
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
 .sidebar {
   position: fixed;
   top: 0;
@@ -300,6 +306,9 @@ div.gallery a:nth-of-type(2n) {
   }
   #layout {
     padding: 0;
+  }
+  #map {
+    top: 450px;
   }
 }
 @media (max-width: 480px) {

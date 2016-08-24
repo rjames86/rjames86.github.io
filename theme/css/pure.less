@@ -1,3 +1,5 @@
+@sidebar-mobile-height: 450px;
+
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -29,6 +31,13 @@ pre {
     padding: 15px 15px 15px 15px;
     font-size: 90%;
     box-shadow: 2px 2px 2px #888;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
 }
 
 .sidebar {
@@ -314,7 +323,7 @@ div.gallery {
         width: 100%;
         position: relative;
         margin: 0;
-        height: 450px;
+        height: @sidebar-mobile-height;
     }
     .content {
         padding: 1em 1.5em 0;
@@ -343,6 +352,9 @@ div.gallery {
 
     #layout {
         padding: 0;
+    }
+    #map {
+        top: @sidebar-mobile-height;
     }
 }
 

@@ -14,16 +14,17 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://rjames86.github.io/theme/css/pure.css">
+<link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
 <style type="text/css">
-    #widget {
-        margin-left: auto;
-        margin-right: auto;
+    #widget{
+        letter-spacing: initial;
     }
-
 </style>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
+<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+<script type="text/javascript" src="https://rjames86.github.io/theme/js//react-with-addons.js"></script>
+<script type="text/javascript" src="https://rjames86.github.io/theme/js//react-dom.min.js"></script>
 </head>
 
 <body>
@@ -47,10 +48,14 @@
                 </div>
             </div>
         </div>
-<div id="widget"></div>
+<div class="pure-u">
+    <div id="widget"></div>
+</div>
+
+<script type="text/javascript" src="https://rjames86.github.io/theme/js/map.js"></script>
 
 <!--Google Maps v3 API -->
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6Q1LnV_nZ4tu3nhcm-AFyW6ZDDtFWLUQ"></script>
+<!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6Q1LnV_nZ4tu3nhcm-AFyW6ZDDtFWLUQ"></script>
 <script type="text/javascript" src="//d3ra5e5xmvzawh.cloudfront.net/live-widget/2.0/spot-main-min.js"></script>
 <script type="text/javascript">
     $(function() {
@@ -63,7 +68,7 @@
         });
 
     });
-</script>
+</script> -->
     </div>
     <script>
         var $top = $('.go-top');
