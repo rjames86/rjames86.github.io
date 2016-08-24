@@ -39,7 +39,6 @@
       this.polyline = L.polyline(this.parseCoords(), {
         color: "red"
       }).addTo(mymap);
-      mymap.fitBounds(this.polyline.getBounds());
       return this.createPopUps();
     },
     componentDidMount: function() {
@@ -53,7 +52,7 @@
             setview = [last.latitude, last.longitude];
             window.mymap = L.map('map', {
               center: setview,
-              zoom: 13
+              zoom: 15
             });
             L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=" + _this.defaultPublicToken, {
               maxZoom: 18,

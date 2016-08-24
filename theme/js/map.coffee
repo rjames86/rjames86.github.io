@@ -23,7 +23,7 @@ SpotMap = React.createFactory React.createClass
 
   addLayer: ->
     @polyline = L.polyline(@parseCoords(), {color: "red"}).addTo(mymap)
-    mymap.fitBounds(@polyline.getBounds())
+    # mymap.fitBounds(@polyline.getBounds())
     @createPopUps()
 
   componentDidMount: ->
@@ -33,7 +33,7 @@ SpotMap = React.createFactory React.createClass
         @coords = JSON.parse res
         [first, ..., last] = @coords
         setview = [last.latitude, last.longitude]
-        window.mymap = L.map('map', {center: setview, zoom: 13})
+        window.mymap = L.map('map', {center: setview, zoom: 15})
         L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=#{@defaultPublicToken}", {
           maxZoom: 18,
           accessToken: @defaultPublicToken
