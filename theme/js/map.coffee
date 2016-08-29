@@ -22,6 +22,12 @@ SpotMap = React.createFactory React.createClass
         .bindPopup("#{item.datetime}", {minWith: 100})
         .addTo(mymap)
 
+  addPhotos: ->
+    for item in @photos
+      marker = new L.marker [item.latitude, item.longitude]
+        .bindPopup("<img src='#{item.image_url}'>")
+        .addTo(mymap)
+
   addLayer: ->
     @polyline = L.polyline(@parseCoords(), {color: "red"}).addTo(mymap)
     # mymap.fitBounds(@polyline.getBounds())
@@ -41,7 +47,7 @@ SpotMap = React.createFactory React.createClass
         }).addTo(mymap)
         @addLayer()
     $.ajax
-      url: "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json",
+      url: "https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json",
       success: (res) =>
         @photos = JSON.parse res
         @addPhotos()

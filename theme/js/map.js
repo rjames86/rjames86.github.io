@@ -36,6 +36,16 @@
       }
       return results;
     },
+    addPhotos: function() {
+      var i, item, len, marker, ref, results;
+      ref = this.photos;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        item = ref[i];
+        results.push(marker = new L.marker([item.latitude, item.longitude]).bindPopup("<img src='" + item.image_url + "'>").addTo(mymap));
+      }
+      return results;
+    },
     addLayer: function() {
       this.polyline = L.polyline(this.parseCoords(), {
         color: "red"
@@ -64,7 +74,7 @@
         })(this)
       });
       return $.ajax({
-        url: "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json",
+        url: "https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json",
         success: (function(_this) {
           return function(res) {
             _this.photos = JSON.parse(res);
