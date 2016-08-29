@@ -13,6 +13,7 @@
       activity: React.PropTypes.object
     },
     coords: null,
+    photos: null,
     parseCoords: function() {
       var i, item, len, ref, ret;
       ret = [];
@@ -42,7 +43,7 @@
       return this.createPopUps();
     },
     componentDidMount: function() {
-      return $.ajax({
+      $.ajax({
         url: "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json",
         success: (function(_this) {
           return function(res) {
@@ -59,6 +60,15 @@
               accessToken: _this.defaultPublicToken
             }).addTo(mymap);
             return _this.addLayer();
+          };
+        })(this)
+      });
+      return $.ajax({
+        url: "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json",
+        success: (function(_this) {
+          return function(res) {
+            _this.photos = JSON.parse(res);
+            return _this.addPhotos();
           };
         })(this)
       });

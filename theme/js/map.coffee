@@ -8,6 +8,7 @@ SpotMap = React.createFactory React.createClass
     activity: React.PropTypes.object
 
   coords: null
+  photos: null
 
   parseCoords: ->
     ret = []
@@ -39,6 +40,11 @@ SpotMap = React.createFactory React.createClass
           accessToken: @defaultPublicToken
         }).addTo(mymap)
         @addLayer()
+    $.ajax
+      url: "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json",
+      success: (res) =>
+        @photos = JSON.parse res
+        @addPhotos()
 
   render: ->
     d.div
