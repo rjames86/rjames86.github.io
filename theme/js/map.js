@@ -42,7 +42,12 @@
       results = [];
       for (i = 0, len = ref.length; i < len; i++) {
         item = ref[i];
-        results.push(marker = new L.marker([item.latitude, item.longitude]).bindPopup("<img src='" + item.image_url + "'>").addTo(mymap));
+        if (item.latitude == null) {
+          continue;
+        }
+        results.push(marker = new L.marker([item.latitude, item.longitude]).bindPopup("<img src='" + item.image_url + "'>", {
+          minWidth: 320
+        }).addTo(mymap));
       }
       return results;
     },

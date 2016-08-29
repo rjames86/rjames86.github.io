@@ -24,8 +24,10 @@ SpotMap = React.createFactory React.createClass
 
   addPhotos: ->
     for item in @photos
+      if not item.latitude?
+        continue
       marker = new L.marker [item.latitude, item.longitude]
-        .bindPopup("<img src='#{item.image_url}'>")
+        .bindPopup("<img src='#{item.image_url}'>", {minWidth: 320})
         .addTo(mymap)
 
   addLayer: ->
