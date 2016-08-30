@@ -24,10 +24,9 @@ SpotMap = React.createFactory React.createClass
         .addTo(mymap)
 
   createIcon: (url) ->
-    console.log "got url" , url
     L.icon
       iconUrl: url,
-      iconSize: [64, 64],
+      iconSize: [32, 32],
 
   addPhotos: ->
     for item in @photos

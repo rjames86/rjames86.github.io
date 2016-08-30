@@ -38,10 +38,9 @@
       return results;
     },
     createIcon: function(url) {
-      console.log("got url", url);
       return L.icon({
         iconUrl: url,
-        iconSize: [64, 64]
+        iconSize: [32, 32]
       });
     },
     addPhotos: function() {
