@@ -41,11 +41,7 @@
       console.log("got url", url);
       return L.icon({
         iconUrl: url,
-        iconSize: [64, 64],
-        iconAnchor: [22, 94],
-        popupAnchor: [-3, -76],
-        shadowSize: [68, 95],
-        shadowAnchor: [22, 94]
+        iconSize: [64, 64]
       });
     },
     addPhotos: function() {
@@ -57,10 +53,9 @@
         if (item.latitude == null) {
           continue;
         }
-        console.log(item);
-        console.log(this.createIcon(item.thumbnail));
-        results.push(marker = new L.marker([item.latitude, item.longitude]).bindPopup("<img src='" + item.image_url + "'>", {
-          icon: this.createIcon(item.thumbnail),
+        results.push(marker = new L.marker([item.latitude, item.longitude], {
+          icon: this.createIcon(item.thumbnail)
+        }).bindPopup("<img src='" + item.image_url + "'>", {
           minWidth: 320
         }).addTo(this.mymap));
       }

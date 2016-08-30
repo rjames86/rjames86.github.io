@@ -28,18 +28,13 @@ SpotMap = React.createFactory React.createClass
     L.icon
       iconUrl: url,
       iconSize: [64, 64],
-      iconAnchor: [22, 94],
-      popupAnchor: [-3, -76],
-      shadowSize: [68, 95],
-      shadowAnchor: [22, 94]
+
   addPhotos: ->
     for item in @photos
       if not item.latitude?
         continue
-      console.log item
-      console.log @createIcon(item.thumbnail)
-      marker = new L.marker [item.latitude, item.longitude]
-        .bindPopup("<img src='#{item.image_url}'>", {icon: @createIcon(item.thumbnail), minWidth: 320})
+      marker = new L.marker [item.latitude, item.longitude], {icon: @createIcon(item.thumbnail)}
+        .bindPopup("<img src='#{item.image_url}'>", {minWidth: 320})
         .addTo(@mymap)
 
   addLayer: ->
