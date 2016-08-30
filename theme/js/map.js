@@ -45,7 +45,9 @@
         if (item.latitude == null) {
           continue;
         }
+        console.log(item);
         results.push(marker = new L.marker([item.latitude, item.longitude]).bindPopup("<img src='" + item.image_url + "'>", {
+          icon: item.thumbail,
           minWidth: 320
         }).addTo(mymap));
       }
