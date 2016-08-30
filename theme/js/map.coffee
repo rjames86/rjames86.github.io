@@ -9,6 +9,7 @@ SpotMap = React.createFactory React.createClass
 
   coords: null
   photos: null
+  mymap: null
 
   parseCoords: ->
     ret = []
@@ -22,17 +23,27 @@ SpotMap = React.createFactory React.createClass
         .bindPopup("#{item.datetime}", {minWith: 100})
         .addTo(mymap)
 
+  createIcon: (url) ->
+    console.log "got url" , url
+    L.icon
+      iconUrl: url,
+      iconSize: [64, 64],
+      iconAnchor: [22, 94],
+      popupAnchor: [-3, -76],
+      shadowSize: [68, 95],
+      shadowAnchor: [22, 94]
   addPhotos: ->
     for item in @photos
       if not item.latitude?
         continue
       console.log item
+      console.log @createIcon(item.thumbnail)
       marker = new L.marker [item.latitude, item.longitude]
-        .bindPopup("<img src='#{item.image_url}'>", {icon: item.thumbail, minWidth: 320})
-        .addTo(mymap)
+        .bindPopup("<img src='#{item.image_url}'>", {icon: @createIcon(item.thumbnail), minWidth: 320})
+        .addTo(@mymap)
 
   addLayer: ->
-    @polyline = L.polyline(@parseCoords(), {color: "red"}).addTo(mymap)
+    @polyline = L.polyline(@parseCoords(), {color: "red"}).addTo(@mymap)
     # mymap.fitBounds(@polyline.getBounds())
     @createPopUps()
 
@@ -44,10 +55,11 @@ SpotMap = React.createFactory React.createClass
         [first, ..., last] = @coords
         setview = [last.latitude, last.longitude]
         window.mymap = L.map('map', {center: setview, zoom: 15})
+        @mymap = window.mymap
         L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=#{@defaultPublicToken}", {
           maxZoom: 18,
           accessToken: @defaultPublicToken
-        }).addTo(mymap)
+        }).addTo(@mymap)
         @addLayer()
     $.ajax
       url: "https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json",

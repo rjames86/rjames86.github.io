@@ -14,6 +14,7 @@
     },
     coords: null,
     photos: null,
+    mymap: null,
     parseCoords: function() {
       var i, item, len, ref, ret;
       ret = [];
@@ -36,6 +37,17 @@
       }
       return results;
     },
+    createIcon: function(url) {
+      console.log("got url", url);
+      return L.icon({
+        iconUrl: url,
+        iconSize: [64, 64],
+        iconAnchor: [22, 94],
+        popupAnchor: [-3, -76],
+        shadowSize: [68, 95],
+        shadowAnchor: [22, 94]
+      });
+    },
     addPhotos: function() {
       var i, item, len, marker, ref, results;
       ref = this.photos;
@@ -46,17 +58,18 @@
           continue;
         }
         console.log(item);
+        console.log(this.createIcon(item.thumbnail));
         results.push(marker = new L.marker([item.latitude, item.longitude]).bindPopup("<img src='" + item.image_url + "'>", {
-          icon: item.thumbail,
+          icon: this.createIcon(item.thumbnail),
           minWidth: 320
-        }).addTo(mymap));
+        }).addTo(this.mymap));
       }
       return results;
     },
     addLayer: function() {
       this.polyline = L.polyline(this.parseCoords(), {
         color: "red"
-      }).addTo(mymap);
+      }).addTo(this.mymap);
       return this.createPopUps();
     },
     componentDidMount: function() {
@@ -72,10 +85,11 @@
               center: setview,
               zoom: 15
             });
+            _this.mymap = window.mymap;
             L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=" + _this.defaultPublicToken, {
               maxZoom: 18,
               accessToken: _this.defaultPublicToken
-            }).addTo(mymap);
+            }).addTo(_this.mymap);
             return _this.addLayer();
           };
         })(this)
