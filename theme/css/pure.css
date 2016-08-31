@@ -28,7 +28,7 @@ pre {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 75%;
+  width: 100%;
 }
 .sidebar {
   position: fixed;
@@ -308,6 +308,7 @@ div.gallery a:nth-of-type(2n) {
   }
   #map {
     top: 450px;
+    width: 100%;
   }
 }
 @media (max-width: 480px) {
