@@ -46,11 +46,12 @@ SpotMap = React.createFactory React.createClass
       url: "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json",
       success: (res) =>
         @coords = JSON.parse res
-        if not @coords.length
-          return
-        [first, ..., last] = @coords
-        setview = [last.latitude, last.longitude]
-        window.mymap = L.map('map', {center: setview, zoom: 15})
+        myMapObj = {zoom: 15}
+        if @coords.length
+          [first, ..., last] = @coords
+          setview = [last.latitude, last.longitude]
+          myMapObj['center'] = setview
+        window.mymap = L.map('map', myMapObj)
         @mymap = window.mymap
         L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=#{@defaultPublicToken}", {
           maxZoom: 18,

@@ -71,17 +71,17 @@
         url: "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json",
         success: (function(_this) {
           return function(res) {
-            var first, last, ref, setview;
+            var first, last, myMapObj, ref, setview;
             _this.coords = JSON.parse(res);
-            if (!_this.coords.length) {
-              return;
-            }
-            ref = _this.coords, first = ref[0], last = ref[ref.length - 1];
-            setview = [last.latitude, last.longitude];
-            window.mymap = L.map('map', {
-              center: setview,
+            myMapObj = {
               zoom: 15
-            });
+            };
+            if (_this.coords.length) {
+              ref = _this.coords, first = ref[0], last = ref[ref.length - 1];
+              setview = [last.latitude, last.longitude];
+              myMapObj['center'] = setview;
+            }
+            window.mymap = L.map('map', myMapObj);
             _this.mymap = window.mymap;
             L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=" + _this.defaultPublicToken, {
               maxZoom: 18,
