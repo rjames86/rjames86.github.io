@@ -73,6 +73,9 @@
           return function(res) {
             var first, last, ref, setview;
             _this.coords = JSON.parse(res);
+            if (!_this.coords.length) {
+              return;
+            }
             ref = _this.coords, first = ref[0], last = ref[ref.length - 1];
             setview = [last.latitude, last.longitude];
             window.mymap = L.map('map', {

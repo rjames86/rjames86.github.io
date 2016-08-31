@@ -46,6 +46,8 @@ SpotMap = React.createFactory React.createClass
       url: "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json",
       success: (res) =>
         @coords = JSON.parse res
+        if not @coords.length
+          return
         [first, ..., last] = @coords
         setview = [last.latitude, last.longitude]
         window.mymap = L.map('map', {center: setview, zoom: 15})
