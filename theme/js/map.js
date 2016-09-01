@@ -12,13 +12,41 @@
     propTypes: {
       activity: React.PropTypes.object
     },
-    coords: null,
-    photos: null,
-    mymap: null,
+    getInitialState: function() {
+      return {
+        coords: null,
+        photos: null
+      };
+    },
+    componentDidMount: function() {
+      var myMapObj;
+      myMapObj = {
+        center: [46.8787176, -113.996586],
+        zoom: 5.83
+      };
+      window.mymap = L.map('map', myMapObj);
+      $.getJSON("https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json", (function(_this) {
+        return function(res) {
+          return _this.setState({
+            coords: res
+          }, function() {
+            _this.generateMapTile();
+            return _this.addPolyline();
+          });
+        };
+      })(this));
+      return $.getJSON("https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json", (function(_this) {
+        return function(res) {
+          return _this.setState({
+            photos: res
+          }, _this.addPhotos);
+        };
+      })(this));
+    },
     parseCoords: function() {
       var i, item, len, ref, ret;
       ret = [];
-      ref = this.coords;
+      ref = this.state.coords;
       for (i = 0, len = ref.length; i < len; i++) {
         item = ref[i];
         ret.push([item.latitude, item.longitude]);
@@ -27,7 +55,7 @@
     },
     createPopUps: function() {
       var i, item, len, marker, ref, results;
-      ref = this.coords;
+      ref = this.state.coords;
       results = [];
       for (i = 0, len = ref.length; i < len; i++) {
         item = ref[i];
@@ -45,7 +73,7 @@
     },
     addPhotos: function() {
       var i, item, len, marker, ref, results;
-      ref = this.photos;
+      ref = this.state.photos;
       results = [];
       for (i = 0, len = ref.length; i < len; i++) {
         item = ref[i];
@@ -60,48 +88,22 @@
       }
       return results;
     },
-    addLayer: function() {
+    addPolyline: function() {
       this.polyline = L.polyline(this.parseCoords(), {
         color: "red"
       }).addTo(window.mymap);
       return this.createPopUps();
     },
-    componentDidMount: function() {
-      var myMapObj;
-      myMapObj = {
-        center: [46.8787176, -113.996586],
-        zoom: 5.83
-      };
-      window.mymap = L.map('map', myMapObj);
-      $.ajax({
-        url: "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json",
-        success: (function(_this) {
-          return function(res) {
-            var first, last, ref;
-            _this.coords = JSON.parse(res);
-            if (_this.coords.length) {
-              ref = _this.coords, first = ref[0], last = ref[ref.length - 1];
-              console.log(last.latitude, last.longitude);
-              window.mymap.setView(new L.LatLng(last.latitude, last.longitude), 15);
-            }
-            L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=" + _this.defaultPublicToken, {
-              maxZoom: 18,
-              accessToken: _this.defaultPublicToken
-            }).addTo(window.mymap);
-            console.log("mymap", window.mymap);
-            return _this.addLayer();
-          };
-        })(this)
-      });
-      return $.ajax({
-        url: "https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json",
-        success: (function(_this) {
-          return function(res) {
-            _this.photos = JSON.parse(res);
-            return _this.addPhotos();
-          };
-        })(this)
-      });
+    generateMapTile: function() {
+      var first, last, ref;
+      if (this.state.coords.length) {
+        ref = this.state.coords, first = ref[0], last = ref[ref.length - 1];
+        window.mymap.setView(new L.LatLng(last.latitude, last.longitude), 15);
+      }
+      return L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=" + this.defaultPublicToken, {
+        maxZoom: 18,
+        accessToken: this.defaultPublicToken
+      }).addTo(window.mymap);
     },
     render: function() {
       return d.div({
