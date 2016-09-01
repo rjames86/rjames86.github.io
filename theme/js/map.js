@@ -33,7 +33,7 @@
         item = ref[i];
         results.push(marker = new L.marker([item.latitude, item.longitude]).bindPopup("" + item.datetime, {
           minWith: 100
-        }).addTo(mymap));
+        }).addTo(window.mymap));
       }
       return results;
     },
@@ -56,37 +56,39 @@
           icon: this.createIcon(item.thumbnail)
         }).bindPopup("<img src='" + item.image_url + "'>", {
           minWidth: 320
-        }).addTo(this.mymap));
+        }).addTo(window.mymap));
       }
       return results;
     },
     addLayer: function() {
       this.polyline = L.polyline(this.parseCoords(), {
         color: "red"
-      }).addTo(this.mymap);
+      }).addTo(window.mymap);
       return this.createPopUps();
     },
     componentDidMount: function() {
+      var myMapObj;
+      myMapObj = {
+        center: [46.8787176, -113.996586],
+        zoom: 5.83
+      };
+      window.mymap = L.map('map', myMapObj);
       $.ajax({
         url: "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json",
         success: (function(_this) {
           return function(res) {
-            var first, last, myMapObj, ref, setview;
+            var first, last, ref;
             _this.coords = JSON.parse(res);
-            myMapObj = {
-              zoom: 15
-            };
             if (_this.coords.length) {
               ref = _this.coords, first = ref[0], last = ref[ref.length - 1];
-              setview = [last.latitude, last.longitude];
-              myMapObj['center'] = setview;
+              console.log(last.latitude, last.longitude);
+              window.mymap.setView(new L.LatLng(last.latitude, last.longitude), 15);
             }
-            window.mymap = L.map('map', myMapObj);
-            _this.mymap = window.mymap;
             L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=" + _this.defaultPublicToken, {
               maxZoom: 18,
               accessToken: _this.defaultPublicToken
-            }).addTo(_this.mymap);
+            }).addTo(window.mymap);
+            console.log("mymap", window.mymap);
             return _this.addLayer();
           };
         })(this)
