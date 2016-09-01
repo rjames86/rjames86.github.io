@@ -14,8 +14,8 @@
     },
     getInitialState: function() {
       return {
-        coords: null,
-        photos: null
+        coords: [],
+        photos: []
       };
     },
     componentDidMount: function() {
@@ -43,16 +43,6 @@
         };
       })(this));
     },
-    parseCoords: function() {
-      var i, item, len, ref, ret;
-      ret = [];
-      ref = this.state.coords;
-      for (i = 0, len = ref.length; i < len; i++) {
-        item = ref[i];
-        ret.push([item.latitude, item.longitude]);
-      }
-      return ret;
-    },
     createPopUps: function() {
       var i, item, len, marker, ref, results;
       ref = this.state.coords;
@@ -77,19 +67,30 @@
       results = [];
       for (i = 0, len = ref.length; i < len; i++) {
         item = ref[i];
-        if (item.latitude == null) {
+        if ((item.latitude == null) || (item.image_url == null)) {
           continue;
         }
         results.push(marker = new L.marker([item.latitude, item.longitude], {
           icon: this.createIcon(item.thumbnail)
-        }).bindPopup("<img src='" + item.image_url + "'>", {
+        }).bindPopup("<img src='" + item.image_url + "'><p>Taken " + item.time_taken + " Pacific</p>", {
           minWidth: 320
         }).addTo(window.mymap));
       }
       return results;
     },
     addPolyline: function() {
-      this.polyline = L.polyline(this.parseCoords(), {
+      var item, latLngs;
+      latLngs = (function() {
+        var i, len, ref, results;
+        ref = this.state.coords;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          item = ref[i];
+          results.push([item.latitude, item.longitude]);
+        }
+        return results;
+      }).call(this);
+      this.polyline = L.polyline(latLngs, {
         color: "red"
       }).addTo(window.mymap);
       return this.createPopUps();

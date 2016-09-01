@@ -8,8 +8,8 @@ SpotMap = React.createFactory React.createClass
     activity: React.PropTypes.object
 
   getInitialState: ->
-    coords: null
-    photos: null
+    coords: []
+    photos: []
 
   componentDidMount: ->
     myMapObj =
@@ -25,12 +25,6 @@ SpotMap = React.createFactory React.createClass
     $.getJSON "https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json", (res) =>
       @setState photos: res, @addPhotos
 
-  parseCoords: ->
-    ret = []
-    for item in @state.coords
-      ret.push [item.latitude, item.longitude]
-    ret
-
   createPopUps: ->
     for item in @state.coords
       marker = new L.marker [item.latitude, item.longitude]
@@ -44,14 +38,15 @@ SpotMap = React.createFactory React.createClass
 
   addPhotos: ->
     for item in @state.photos
-      if not item.latitude?
+      if not item.latitude? or not item.image_url?
         continue
       marker = new L.marker [item.latitude, item.longitude], {icon: @createIcon(item.thumbnail)}
-        .bindPopup("<img src='#{item.image_url}'>", {minWidth: 320})
+        .bindPopup("<img src='#{item.image_url}'><p>Taken #{item.time_taken} Pacific</p>", {minWidth: 320})
         .addTo(window.mymap)
 
   addPolyline: ->
-    @polyline = L.polyline(@parseCoords(), {color: "red"}).addTo(window.mymap)
+    latLngs = ([item.latitude, item.longitude] for item in @state.coords)
+    @polyline = L.polyline(latLngs, {color: "red"}).addTo(window.mymap)
     @createPopUps()
 
   generateMapTile: ->
