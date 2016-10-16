@@ -1,6 +1,32 @@
 d = React.DOM
 ce = React.createElement
 
+getQueryString = ->
+  vars = []
+
+  # Get the start index of the query string
+  qsi = window.location.href.indexOf("?")
+  return vars if qsi is -1
+
+  # Get the query string
+  qs = window.location.href.slice(qsi + 1)
+
+  # Check if there is a subsection reference
+  sri = qs.indexOf("#")
+  qs = qs.slice(0, sri) if sri >= 0
+
+  # Build the associative array
+  hashes = qs.split("&")
+  for hash in hashes
+    sep = hash.indexOf("=")
+    continue if sep <= 0
+    key = decodeURIComponent(hash.slice(0, sep))
+    val = decodeURIComponent(hash.slice(sep + 1))
+    vars[key] = val
+
+  vars
+
+
 SpotMap = React.createFactory React.createClass
   displayName: "SpotMap"
   defaultPublicToken: "pk.eyJ1IjoicmphbWVzODYiLCJhIjoiY2ltam53d2F5MDBzZnY4a2cyaWR4Y3pnMyJ9.SM84_1rqm7WiwAl4uO7RIw"
@@ -8,6 +34,7 @@ SpotMap = React.createFactory React.createClass
     activity: React.PropTypes.object
 
   getInitialState: ->
+    feed_id: @getFeedId()
     coords: []
     photos: []
 
@@ -16,20 +43,34 @@ SpotMap = React.createFactory React.createClass
       center: [46.8787176, -113.996586] # Missoula, MT
       zoom: 5.83
     window.mymap = L.map('map', myMapObj)
+    @generateMapTile()
 
-    $.getJSON "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json", (res) =>
-      @setState coords: res, =>
-        @generateMapTile()
-        @addPolyline()
+    if @state.feed_id?
+      $.getJSON "https://dl.dropboxusercontent.com/s/0u9acsrnxqv1w9g/tracking_info.json", (res) =>
+        coords = _.where res, feed_id: @state.feed_id
+        @setState coords: coords, @addPolyline
 
-    $.getJSON "https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json", (res) =>
-      @setState photos: res, @addPhotos
+      $.getJSON "https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json", (res) =>
+        @setState photos: res, @addPhotos
+
+  getFeedId: ->
+    queryString = getQueryString()
+    queryString.feed_id
 
   createPopUps: ->
+    markers = L.markerClusterGroup()
+
     for item in @state.coords
       marker = new L.marker [item.latitude, item.longitude]
         .bindPopup("#{item.datetime}", {minWith: 100})
-        .addTo(window.mymap)
+      markers.addLayer marker
+    window.mymap.addLayer markers
+    @setMapView()
+
+  setMapView: ->
+    if @state.coords.length
+      [first, ..., last] = @state.coords
+      window.mymap.setView new L.LatLng(last.latitude, last.longitude), 15
 
   createIcon: (url) ->
     L.icon
@@ -50,10 +91,6 @@ SpotMap = React.createFactory React.createClass
     @createPopUps()
 
   generateMapTile: ->
-    if @state.coords.length
-      [first, ..., last] = @state.coords
-      window.mymap.setView new L.LatLng(last.latitude, last.longitude), 15
-
     L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=#{@defaultPublicToken}", {
       maxZoom: 18,
       accessToken: @defaultPublicToken

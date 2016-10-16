@@ -1,9 +1,13 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+}
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 a {
+  text-decoration: none;
   color: #8e8ed6;
 }
 a:hover,
@@ -30,6 +34,11 @@ pre {
   bottom: 0;
   width: 75%;
 }
+.strava_embed {
+  position: fixed;
+  bottom: 0;
+  left: 10px;
+}
 .sidebar {
   position: fixed;
   top: 0;
@@ -55,7 +64,7 @@ pre {
   height: 100%;
   top: 0;
   left: 0;
-  background-position: center;
+  background-position: left;
   background-repeat: no-repeat;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -109,7 +118,6 @@ pre {
   color: #fff;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  font-family: "freight-sans-pro", "Myriad Pro", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
 }
 .tagline {
   margin-top: -15px;
@@ -131,7 +139,6 @@ pre {
 .links a {
   font-size: 1.5em;
   padding-left: 15px;
-  font-family: sans-serif;
   letter-spacing: 2px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   text-decoration: none;
@@ -157,6 +164,7 @@ pre {
   display: flex;
   margin-left: auto;
   margin-right: auto;
+  width: 100%;
 }
 .post {
   padding-bottom: 1em;
@@ -274,6 +282,12 @@ div.gallery a:nth-of-type(2n) {
   padding-left: 25%;
   /* "left col (nav + list)" width */
   position: relative;
+}
+@media (max-width: 1200px) {
+  .strava_embed {
+    position: relative;
+    left: 0;
+  }
 }
 @media (max-width: 767px) {
   .sidebar {
