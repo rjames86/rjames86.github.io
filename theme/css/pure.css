@@ -34,11 +34,6 @@ pre {
   bottom: 0;
   width: 75%;
 }
-.strava_embed {
-  position: fixed;
-  bottom: 0;
-  left: 10px;
-}
 .sidebar {
   position: fixed;
   top: 0;
