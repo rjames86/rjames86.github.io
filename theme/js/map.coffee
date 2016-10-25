@@ -79,12 +79,14 @@ SpotMap = React.createFactory React.createClass
       iconSize: [32, 32],
 
   addPhotos: ->
+    markers = L.markerClusterGroup()
     for item in @state.photos
       if not item.latitude? or not item.image_url?
         continue
       marker = new L.marker [item.latitude, item.longitude], {icon: @createIcon(item.thumbnail)}
         .bindPopup("<img src='#{item.image_url}'><p>Taken #{item.time_taken} Pacific</p>", {minWidth: 320})
-        .addTo(window.mymap)
+      markers.addLayer marker
+      window.mymap.addLayer markers
 
   addPolyline: ->
     latLngs = ([item.latitude, item.longitude] for item in @state.coords)

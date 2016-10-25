@@ -111,7 +111,8 @@
       });
     },
     addPhotos: function() {
-      var i, item, len, marker, ref, results;
+      var i, item, len, marker, markers, ref, results;
+      markers = L.markerClusterGroup();
       ref = this.state.photos;
       results = [];
       for (i = 0, len = ref.length; i < len; i++) {
@@ -119,11 +120,13 @@
         if ((item.latitude == null) || (item.image_url == null)) {
           continue;
         }
-        results.push(marker = new L.marker([item.latitude, item.longitude], {
+        marker = new L.marker([item.latitude, item.longitude], {
           icon: this.createIcon(item.thumbnail)
         }).bindPopup("<img src='" + item.image_url + "'><p>Taken " + item.time_taken + " Pacific</p>", {
           minWidth: 320
-        }).addTo(window.mymap));
+        });
+        markers.addLayer(marker);
+        results.push(window.mymap.addLayer(markers));
       }
       return results;
     },

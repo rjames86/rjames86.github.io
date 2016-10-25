@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ryan M's Biking Adventures, ">
+
+        <link rel="alternate"  href="https://rjames86.github.io/feeds/all.atom.xml" type="application/atom+xml" title="Ryan M's Biking Adventures Full Atom Feed"/>
+        <link rel="alternate" href="https://rjames86.github.io/feeds/all.rss.xml" type="application/rss+xml" title="Ryan M's Biking Adventures Full RSS Feed"/>
+
+        <title>Ryan M's Biking Adventures // </title>
+
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+    <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css"> -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://rjames86.github.io/theme/css/pure.css">
+<link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
+<link rel="stylesheet" href="https://rjames86.github.io/theme/css/marker_cluster.css" />
+<style type="text/css">
+    #widget{
+        letter-spacing: initial;
+    }
+</style>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript">jQuery.migrateMute = true</script>
+<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+<!-- https://github.com/Leaflet/Leaflet.markercluster -->
+<script type="text/javascript" src="https://rjames86.github.io/theme/js/leaflet.markercluster.js"></script>
+<script type="text/javascript" src="https://rjames86.github.io/theme/js/react-with-addons.js"></script>
+<script type="text/javascript" src="https://rjames86.github.io/theme/js/react-dom.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('/photos/cover_images/sidebar.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <a href="https://rjames86.github.io"><img class="avatar" src="https://ryanmo.co/images/avatar.png"></a>
+                            <h1 class="brand-main"><a href="https://rjames86.github.io">Ryan M's Biking Adventures</a></h1>
+                            <p class="tagline"></p>
+                                <p class="social">
+                                    <a href="https://rjames86.github.io/feeds/all.rss.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+<div class="pure-u">
+    <div id="widget"></div>
+</div>
+
+<script type="text/javascript" src="https://rjames86.github.io/theme/js/map.js"></script>
+
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(["trackPageView"]);
+  _paq.push(["enableLinkTracking"]);
+
+  (function() {
+    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://ryanmo.co/pa/";
+    _paq.push(["setTrackerUrl", u+"piwik.php"]);
+    _paq.push(["setSiteId", "5"]);
+    var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+    g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript>
+ <img src="http://ryanmo.co/pa/piwik.php?idsite=5&amp;rec=1" style="border:0" alt="" />
+</noscript>
+<!-- End Piwik Code -->
+</body>
+</html>
