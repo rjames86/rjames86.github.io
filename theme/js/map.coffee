@@ -51,7 +51,8 @@ SpotMap = React.createFactory React.createClass
         @setState coords: coords, @addPolyline
 
       $.getJSON "https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json", (res) =>
-        @setState photos: res, @addPhotos
+        photos = _.where res feed_id: @state.feed_id
+        @setState photos: photos, @addPhotos
 
   getFeedId: ->
     queryString = getQueryString()

@@ -67,8 +67,12 @@
         })(this));
         return $.getJSON("https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json", (function(_this) {
           return function(res) {
+            var photos;
+            photos = _.where(res({
+              feed_id: _this.state.feed_id
+            }));
             return _this.setState({
-              photos: res
+              photos: photos
             }, _this.addPhotos);
           };
         })(this));
