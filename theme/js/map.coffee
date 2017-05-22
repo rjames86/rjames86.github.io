@@ -51,8 +51,7 @@ SpotMap = React.createFactory React.createClass
         @setState coords: coords, @addPolyline
 
       $.getJSON "https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json", (res) =>
-        photos = _.where res feed_id: @state.feed_id
-        @setState photos: photos, @addPhotos
+        @setState photos: res, @addPhotos
 
   getFeedId: ->
     queryString = getQueryString()
@@ -84,7 +83,7 @@ SpotMap = React.createFactory React.createClass
       if not item.latitude? or not item.image_url?
         continue
       marker = new L.marker [item.latitude, item.longitude], {icon: @createIcon(item.thumbnail)}
-        .bindPopup("<img src='#{item.image_url}'><p>Taken #{item.time_taken} Pacific</p>", {minWidth: 320})
+        .bindPopup("<img src='#{item.image_url}'><p>Taken #{item.time_taken} Pacific</p>", {minWidth: 640})
       markers.addLayer marker
       window.mymap.addLayer markers
 

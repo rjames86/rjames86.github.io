@@ -67,12 +67,8 @@
         })(this));
         return $.getJSON("https://dl.dropboxusercontent.com/s/aekt6faujrfewhm/photo_info.json", (function(_this) {
           return function(res) {
-            var photos;
-            photos = _.where(res({
-              feed_id: _this.state.feed_id
-            }));
             return _this.setState({
-              photos: photos
+              photos: res
             }, _this.addPhotos);
           };
         })(this));
@@ -123,7 +119,7 @@
         marker = new L.marker([item.latitude, item.longitude], {
           icon: this.createIcon(item.thumbnail)
         }).bindPopup("<img src='" + item.image_url + "'><p>Taken " + item.time_taken + " Pacific</p>", {
-          minWidth: 320
+          minWidth: 640
         });
         markers.addLayer(marker);
         results.push(window.mymap.addLayer(markers));

@@ -86,6 +86,79 @@
 <li><strong>Average Daily Mileage:</strong> 97.85  </li>
 <li><strong>Elevation Climbed:</strong> 55, 941 ft  </li>
 </ul>
+    <link rel="stylesheet" href="https://rjames86.github.io/theme/css/pygments.css">
+    <link rel="stylesheet" href="https://rjames86.github.io/theme/css/stravalayout.css">
+    <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
+
+    <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+    <script type="text/javascript" src="https://rawgit.com/jieter/Leaflet.encoded/master/Polyline.encoded.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+
+
+<div class="normalBlock-4d78bfd9">
+    <div class="MapViewer-418d6ebe">
+        <div class="Map-bd367c97 mapContainer-f800697a" style="position: relative; overflow: hidden; height: 100%">
+            <div class="map-container" style="height: 500px">
+                <div id="strava-map" style="width:100%; height: 100%"></div>
+            </div>
+        </div>
+        <div class="Metrics-b57362ce">
+            <div class="Metric-866d9ee2">
+                <h4>Distance</h4>
+                <p><span class="metricValue-71505b77">132</span><span class="metricUnits-69ae8f7c">mi</span></p>
+            </div>
+            <div class="Metric-866d9ee2">
+                <h4>Elevation Gain</h4>
+                <p><span class="metricValue-71505b77">3930</span><span class="metricUnits-69ae8f7c">ft</span></p>
+            </div>
+            <div class="Metric-866d9ee2">
+                <h4>Moving Time</h4>
+                <p><span class="metricValue-71505b77">8:45</span><span class="metricUnits-69ae8f7c">hrs</span></p>
+            </div>
+            <div class="Metric-866d9ee2">
+                <h4>Avg Speed</h4>
+                <p><span class="metricValue-71505b77">15</span><span class="metricUnits-69ae8f7c">mph</span></p>
+            </div>
+            <div class="Metric-866d9ee2">
+                <h4>Max Speed</h4>
+                <p><span class="metricValue-71505b77">38</span><span class="metricUnits-69ae8f7c">mph</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var map = L.map('strava-map')
+    var defaultPublicToken =  "pk.eyJ1IjoicmphbWVzODYiLCJhIjoiY2ltam53d2F5MDBzZnY4a2cyaWR4Y3pnMyJ9.SM84_1rqm7WiwAl4uO7RIw";
+    L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=" + defaultPublicToken, {
+      maxZoom: 18,
+      accessToken: defaultPublicToken
+    }).addTo(map)
+
+
+      var polylineString = "om`nFf{`oV}BgLhe@qEbAivAhp@cFUye@x_BaDpPsv@b_ByKqDco@`}A`FqDqpAbkA|Qvy@ea@po@rEpJef@jg@{m@lyAso@f`@a[rBe[hbAap@th@~x@jhA}u@fp@k`A~pBw{@~lA{Wbg@`]pl@mTd}@lGjj@oiBxl@yb@vRweAt{@i|@v|@nJ`f@a`@th@`Zl~AeZ`o@fEv]au@|}Bon@~iAa{BhkAsg@dk@eiAnPtUzz@i[dy@tbCqEuQjIiEjg@bQfo@_KpiC_eCgEmJvj@auBpdA}|@ju@wkBlpAmo@d{DitHvKbFdc@o{@`qBsLlrCccAdjAbc@l~@kJxBmRrfANXep@h~@cC|Ck[fwDu}AvJ{`@v}@siAPw\\vWmBru@sy@cD_J|ToDtg@{sAfcEcpEn\\wHhRan@jpAazAngAy]v`@qp@jrAgv@tpAbB~d@w\\xaAfR[}Odr@kc@bu@gBzrDqrBj|@cqBrqNkDhgBjPndDamGxhAxbAbJf`@pSu^xrAdn@`c@sOvUj^py@ee@`[jhBjtA`gAxqAxYriB|lDvqD~zAju@}GllAh`Bh\\lRna@qMzx@ceAx^_gAttE}{Bzr@{aAzIqb@naAaq@}@qUzr@vSiHobDd_@iaAaBuu@`s@wZfTunAniAeaArhAykD~vAqWrD{QjkAuf@h_AqxAbj@vC|h@uh@d^`FdQm\\vuChZ|tDajEla@k~AnSoSro@pJjDiOt`@kBlGr]xYdGjXkXtrCs\\`iAhOfKiNmNa~@zXme@vsBMEkPjNs@wLsqBxx@wL"
+      var polyline = L.Polyline.fromEncoded(polylineString)
+      var group = new L.featureGroup([polyline]);
+      var coordinates = polyline.getLatLngs();
+
+      map.fitBounds(group.getBounds());
+
+      L.polyline(
+          coordinates,
+          {
+              color: 'blue',
+              weight: 2,
+              opacity: .7,
+              lineJoin: 'round'
+          }
+      ).addTo(map);
+    </script>
+
             <a href="#" class="go-top">Go Top</a>
     <div class="comments">
         <div id="disqus_thread"></div>

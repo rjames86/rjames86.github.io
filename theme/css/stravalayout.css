@@ -1,0 +1,166 @@
+.Metrics-b57362ce {
+  font-family: aktiv-grotesk, Aktiv Grotesk, Open Sans, Gill Sans MT, Gill Sans, Corbel, Arial, sans-serif;
+  display: flex;
+  width: 100%;
+  height: 83px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  // border-bottom: 1px solid #bbb
+}
+.Metric-866d9ee2 {
+  flex: 1;
+  flex-grow: 1;
+  min-width: 0;
+  text-align: center;
+  border-right: 1px solid #bbb;
+  padding: 10px;
+  color: #666
+}
+.Metric-866d9ee2:last-child {
+  border-right: none
+}
+.Metric-866d9ee2 h4 {
+  font-size: 12px;
+  text-transform: lowercase;
+  margin: 0;
+  font-weight: 400
+}
+.Metric-866d9ee2 p {
+  line-height: 1;
+  margin: 8px 0 0
+}
+.Metric-866d9ee2 .metricValue-71505b77 {
+  font-size: 42px;
+  font-weight: 700
+}
+.Metric-866d9ee2 .metricUnits-69ae8f7c {
+  font-size: 18px;
+  position: absolute;
+  margin-top: 19px
+}
+@media screen and (max-width:940px) {
+  .Metric-866d9ee2 {
+    padding-top: 20px
+  }
+  .Metric-866d9ee2 .metricValue-71505b77 {
+    font-size: 30px
+  }
+  .Metric-866d9ee2 .metricUnits-69ae8f7c {
+    font-size: 12px;
+    margin-top: 12px
+  }
+}
+@media screen and (max-width:500px) {
+  .Metric-866d9ee2 {
+    padding-top: 10px
+  }
+  .Metric-866d9ee2 .metricValue-71505b77 {
+    font-size: 18px
+  }
+  .Metric-866d9ee2 .metricUnits-69ae8f7c {
+    margin-top: 9px;
+    font-size: 8px
+  }
+  .Metric-866d9ee2 .metricLabel-1e5a149d {
+    font-size: 10px
+  }
+}
+
+.Metrics-b57362ce {
+  font-family: aktiv-grotesk, Aktiv Grotesk, Open Sans, Gill Sans MT, Gill Sans, Corbel, Arial, sans-serif;
+  display: flex;
+  width: 100%;
+  height: 83px;
+  border-top: 1px solid #bbb
+}
+.Metric-866d9ee2 {
+  flex: 1;
+  flex-grow: 1;
+  min-width: 0;
+  text-align: center;
+  border-right: 1px solid #bbb;
+  padding: 10px;
+  color: #666
+}
+.Metric-866d9ee2:last-child {
+  border-right: none
+}
+.Metric-866d9ee2 h4 {
+  font-size: 12px;
+  text-transform: lowercase;
+  margin: 0;
+  font-weight: 400
+}
+.Metric-866d9ee2 p {
+  line-height: 1;
+  margin: 8px 0 0
+}
+.Metric-866d9ee2 .metricValue-71505b77 {
+  font-size: 42px;
+  font-weight: 700
+}
+.Metric-866d9ee2 .metricUnits-69ae8f7c {
+  font-size: 18px;
+  position: absolute;
+  margin-top: 19px
+}
+@media screen and (max-width:940px) {
+  .Metric-866d9ee2 {
+    padding-top: 20px
+  }
+  .Metric-866d9ee2 .metricValue-71505b77 {
+    font-size: 30px
+  }
+  .Metric-866d9ee2 .metricUnits-69ae8f7c {
+    font-size: 12px;
+    margin-top: 12px
+  }
+}
+@media screen and (max-width:500px) {
+  .Metric-866d9ee2 {
+    padding-top: 10px
+  }
+  .Metric-866d9ee2 .metricValue-71505b77 {
+    font-size: 18px
+  }
+  .Metric-866d9ee2 .metricUnits-69ae8f7c {
+    margin-top: 9px;
+    font-size: 8px
+  }
+  .Metric-866d9ee2 .metricLabel-1e5a149d {
+    font-size: 10px
+  }
+}
+</style><style type="text/css">.normalBlock-4d78bfd9 {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto
+}
+@media screen and (max-width:500px) {
+  .normalBlock-4d78bfd9 {
+    margin-left: 20px;
+    margin-right: 20px;
+    min-width: 300px;
+    width: auto
+  }
+}
+.textBlock-3f087fdd {
+  width: 80vw;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 750px
+}
+@media screen and (max-width:500px) {
+  .textBlock-3f087fdd {
+    margin-left: 20px;
+    margin-right: 20px;
+    min-width: 300px;
+    width: auto
+  }
+}
+.bigBlock-70c83c29 {
+  width: 100%;
+  min-width: 300px;
+  margin: 0
+}
