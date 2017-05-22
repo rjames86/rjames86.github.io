@@ -96,6 +96,65 @@
     </script>
 
 
+<div class="normalBlock-4d78bfd9">
+    <div class="MapViewer-418d6ebe">
+        <div class="Map-bd367c97 mapContainer-f800697a" style="position: relative; overflow: hidden; height: 100%">
+            <div class="map-container" style="height: 500px">
+                <div id="strava-map" style="width:100%; height: 100%"></div>
+            </div>
+        </div>
+        <div class="Metrics-b57362ce">
+            <div class="Metric-866d9ee2">
+                <h4>Distance</h4>
+                <p><span class="metricValue-71505b77">148</span><span class="metricUnits-69ae8f7c">mi</span></p>
+            </div>
+            <div class="Metric-866d9ee2">
+                <h4>Elevation Gain</h4>
+                <p><span class="metricValue-71505b77">6784</span><span class="metricUnits-69ae8f7c">ft</span></p>
+            </div>
+            <div class="Metric-866d9ee2">
+                <h4>Moving Time</h4>
+                <p><span class="metricValue-71505b77">11:8</span><span class="metricUnits-69ae8f7c">hrs</span></p>
+            </div>
+            <div class="Metric-866d9ee2">
+                <h4>Avg Speed</h4>
+                <p><span class="metricValue-71505b77">13</span><span class="metricUnits-69ae8f7c">mph</span></p>
+            </div>
+            <div class="Metric-866d9ee2">
+                <h4>Max Speed</h4>
+                <p><span class="metricValue-71505b77">33</span><span class="metricUnits-69ae8f7c">mph</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var map = L.map('strava-map')
+    var defaultPublicToken =  "pk.eyJ1IjoicmphbWVzODYiLCJhIjoiY2ltam53d2F5MDBzZnY4a2cyaWR4Y3pnMyJ9.SM84_1rqm7WiwAl4uO7RIw";
+    L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=" + defaultPublicToken, {
+      maxZoom: 18,
+      accessToken: defaultPublicToken
+    }).addTo(map)
+
+
+      var polylineString = "grfpG|tenUxs@fGd]qh@du@re@rm@wElxHv}BvkAltAhyAqHxr@jw@~KjvBsNlg@hOtPuOvc@`Evt@mk@peA}ChuAeUxhAfM|a@mn@rl@aa@x|AC|cBcaAjnAge@nlAoQxkCrTxxEmvBjnGcu@foEnj@d_Brd@|a@lr@PeFvz@dTj\\jgAiMb`@ra@lPtd@kQtOeGtw@zYt`@kB`hBtz@xiAnP~iB~b@v}@afAr}FtBbuAy\\~{Ck@jhAlw@ppArw@n@rVxXtYrzAi\\n[gFlaAvm@baDbt@xk@hWtgAdfAnl@~_AfoAb|@dZtf@po@lZfjAnlAcg@vi@pi@tb@hFza@zrBng@~A|gAthAHpl@~z@daDqVpmDzO~uAnr@rYtFje@j[ze@n{AvRbg@xl@hnAdTfp@loAdg@rOpw@f{@jKjeAiSpsBdBr~@lhBfuJbAdoCnnBnxJrnAfzBg@dbC_PpnAvW`zBwJbrDyUdk@kC~`BrA~dB|q@~`JmIzwD_YfvALrgHt_@ziD}JhaBtU`{EiZ~_Aw~@roGqq@dUuVh}BrJbyEaYhtBwWdYsMzr@qElsBwQx~@`Nl_B{Ur^T`z@ak@ro@}DdwByk@df@}C~wArSdbA}FndA|Mts@mQdoEkh@zg@a`@``A}_B`|Ga}@flAsVp|AmwA`[_j@~i@xrApfCep@djE_Ah^hMhXeNpsCe[t]_\\zjBsbAxkClFleBml@t^an@xhGmf@bhAtb@fdAEvqAll@oQfI~^x`CxjBpz@roOo`AttDasAldB}a@beCi`AlaBcj@lsDy[by@jQjoAoIjw@nTd`AgBzuB_U|oB"
+      var polyline = L.Polyline.fromEncoded(polylineString)
+      var group = new L.featureGroup([polyline]);
+      var coordinates = polyline.getLatLngs();
+
+      map.fitBounds(group.getBounds());
+
+      L.polyline(
+          coordinates,
+          {
+              color: 'blue',
+              weight: 2,
+              opacity: .7,
+              lineJoin: 'round'
+          }
+      ).addTo(map);
+    </script>
+
             <a href="#" class="go-top">Go Top</a>
     <div class="comments">
         <div id="disqus_thread"></div>
