@@ -14,6 +14,8 @@ COPY . /website
 
 WORKDIR /website
 
+VOLUME output /website/output
+
 # prevent writing .pyc files
 ENV PYTHONDONTWRITEBYTECODE 1
 
