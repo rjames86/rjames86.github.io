@@ -6,10 +6,8 @@ content
 .hg
 .Python
 .hgignore
-Makefile
 dropbox_conf.py
 pelican_site/lib/constants.py
 cache
-config.codekit
 
 
