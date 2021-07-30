@@ -1,0 +1,10 @@
+::plaintext
+2017-07-04/ # folder for post is the date
+├── exploring_pelican.md # this post
+├── folder_structure.txt # this folder structure example as a code snippet
+├── another_code_snippet.py
+└── some_image.png
+    ├── glyphicons-halflings-regular.eot
+    ├── glyphicons-halflings-regular.svg
+    ├── glyphicons-halflings-regular.ttf
+    └── glyphicons-halflings-regular.woff

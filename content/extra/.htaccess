@@ -1,0 +1,8 @@
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} !^ryanmo\.co [NC]
+RewriteRule ^/?(.*)$ https://ryanmo.co/$1 [L,R=301]
+ErrorDocument 404 /404.html
+
+Redirect 301 /100days.html http://ryanmo.co/pages/100days.html
+Redirect 301 /2015/02/09/how-i-use-my-mac-mini-server-at-macminicolo /2015/02/09/how-i-use-my-mac-mini-server-on-macminicolo
