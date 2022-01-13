@@ -13,7 +13,7 @@ cssmin==0.2.0
 decorator==4.0.10
 docutils==0.15.2
 dropbox==6.7.0
-ecdsa==0.13
+ecdsa==0.13.3
 enum34==1.1.6
 fab==1.4.2
 Fabric==1.14.0
