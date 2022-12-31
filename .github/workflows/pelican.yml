@@ -22,7 +22,7 @@ jobs:
           PELICAN_CONTENT_FOLDER: content
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
-        env:
+        with:
           path: output
   # Deployment job
   deploy:
