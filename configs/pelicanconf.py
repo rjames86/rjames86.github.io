@@ -5,13 +5,6 @@ from datetime import datetime
 import os
 import sys
 
-from markdown.extensions.codehilite import CodeHiliteExtension
-
-# BASE_BLOG_PATH = os.path.abspath(
-#     os.path.join('/website', __file__, os.pardir, os.pardir, os.pardir))
-
-# BASE_BLOG_PATH = '/website'
-
 BASE_BLOG_PATH = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
 
 sys.path.append(BASE_BLOG_PATH)
@@ -31,6 +24,7 @@ LIST_METADATA = {"posts/Lists/%s" % post: {"template": "lists"} for post in LIST
 
 # Custom Variables
 NOW = datetime.now()
+CURRENT_YEAR = NOW.year
 
 # Basic Settings
 
@@ -51,7 +45,7 @@ JINJA_ENVIRONMENT = dict(comment_start_string="###", comment_end_string="/###")
 # Found at https://github.com/getpelican/pelican/wiki/Tips-n-Tricks
 MARKDOWN = {
     "extensions": [
-        # CodeHiliteExtension([('linenums', False)]),
+        "codehilite",
         "markdown.extensions.extra",
         "markdown.extensions.footnotes",
         "markdown.extensions.toc",
@@ -69,17 +63,15 @@ PLUGIN_PATHS = ["../plugins"]
 PLUGINS = [
     "assets",
     "build_critical",
-    # "code_replacement",
+    "code_replacement",
     "drafts_page",
     "json_feed",
-    # 'photos',
     "summary",
     "tag_cloud",
-    # 'taglist',
 ]
 SITENAME = "ryanmo.co"
 SITEURL = "http://localhost:8000"
-STATIC_PATHS = ["airbnb", "downloads", "extra", "images", "posts"]
+STATIC_PATHS = ["downloads", "extra", "images", "posts"]
 TIMEZONE = "America/Los_Angeles"
 WITH_FUTURE_DATES = False
 CACHE_CONTENT = False
@@ -111,7 +103,6 @@ PAGINATED_TEMPLATES = {"index": 10, "tag": 10, "category": 10, "author": 10}
 TESTING = True
 THEME = THEME_PATH
 SOCIAL = (
-    ("Twitter", "http://twitter.com/rjames86"),
     ("Github", "http://www.github.com/rjames86"),
     ("RSS", "none"),
     # ('Email', 'mailto:blog@ryanmo.co')
@@ -132,16 +123,6 @@ JSON_CAMPAIGN_PARAM = "JSONFeed"
 JSON_FEED = "feed.json"
 JSON_CATEGORY_FEED_RSS = "feeds/%s.json"
 JSON_TAG_FEED_RSS = "feeds/%s.json"
-
-# Photos plugin config
-PHOTO_LIBRARY = CONTENT_PATH + "/gallery_photos"
-PHOTO_RESIZE_JOBS = 5
-PHOTO_EXIF_AUTOROTATE = True
-PHOTO_EXIF_KEEP = True
-
-PHOTO_GALLERY = (1024, 768, 80)
-PHOTO_ARTICLE = (760, 506, 80)
-PHOTO_THUMB = (384, 288, 60)
 
 # Webassets
 ASSET_BUNDLES = (

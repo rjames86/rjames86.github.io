@@ -33,7 +33,6 @@ EXTRA_PATH_METADATA = {
 
 # Social widget
 SOCIAL = (
-    ("Twitter", "http://twitter.com/rjames86"),
     ("Github", "http://www.github.com/rjames86"),
     ("RSS", FEEDPRESS_RSS),
     # ('Email', 'mailto:blog@ryanmo.co')
