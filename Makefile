@@ -15,6 +15,8 @@ SSH_PORT=22
 SSH_USER=rjames
 SSH_TARGET_DIR=/var/www/ryanmo.co
 
+NOW=`date`
+
 DEBUG ?= 0
 ifeq ($(DEBUG), 1)
 	PELICANOPTS += -D
@@ -86,7 +88,7 @@ rsync_upload: publish
 deploy: publish rsync_upload
 
 github: publish
-	ghp-import -m "Generate Pelican site" -b $(GITHUB_PAGES_BRANCH) $(OUTPUTDIR)
+	ghp-import -m "Generate Pelican site $(shell date)" -b $(GITHUB_PAGES_BRANCH) $(OUTPUTDIR)
 	git push origin $(GITHUB_PAGES_BRANCH)
 
 

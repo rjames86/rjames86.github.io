@@ -5,7 +5,7 @@ from pelican import signals
 from pelican.utils import (get_relative_path,
                            path_to_url, set_date_tzinfo)
 
-from jinja2 import Markup
+from markupsafe import Markup
 
 
 class JSONEncoder(json.JSONEncoder):

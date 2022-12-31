@@ -8,5 +8,6 @@ output
 dropbox_conf.py
 pelican_site/lib/constants.py
 cache
+venv
 
 

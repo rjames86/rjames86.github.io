@@ -17,8 +17,8 @@ RELATIVE_URLS = False
 
 FEEDPRESS_RSS = "http://feedpress.me/ryanmoco"
 FEED_ALL_RSS = "feed.xml"
-CATEGORY_FEED_RSS = "feeds/%s.rss.xml"
-TAG_FEED_RSS = "feeds/%s.rss.xml"
+CATEGORY_FEED_RSS = "feeds/{slug}.rss.xml"
+TAG_FEED_RSS = "feeds/{slug}.rss.xml"
 RSS_FEED_SUMMARY_ONLY = False
 
 
