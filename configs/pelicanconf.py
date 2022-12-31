@@ -20,7 +20,8 @@ THEME_PATH = os.path.join(BASE_BLOG_PATH, "theme")
 # This is so that we can inject the 'list' template
 # automatically for all List posts
 LIST_POSTS = [f for f in os.listdir(LISTS_PATH) if not f.startswith(".")]
-LIST_METADATA = {"posts/Lists/%s" % post: {"template": "lists"} for post in LIST_POSTS}
+LIST_METADATA = {"posts/Lists/%s" % post: {"template": "lists"}
+                 for post in LIST_POSTS}
 
 # Custom Variables
 NOW = datetime.now()
@@ -61,7 +62,7 @@ OUTPUT_SOURCES_EXTENSION = ".txt"
 RELATIVE_URLS = True
 PLUGIN_PATHS = ["../plugins"]
 PLUGINS = [
-    "assets",
+    "pelican.plugins.webassets",
     "build_critical",
     "code_replacement",
     "drafts_page",
@@ -125,10 +126,15 @@ JSON_CATEGORY_FEED_RSS = "feeds/%s.json"
 JSON_TAG_FEED_RSS = "feeds/%s.json"
 
 # Webassets
-ASSET_BUNDLES = (
+WEBASSETS_BUNDLES = (
     (
         "critical",
         ["scss/default_mobile.scss", "scss/largescreens.scss"],
         {"filters": "pyscss", "output": "templates/critical.css"},
     ),
+    # (
+    #     "js_bundle",
+    #     ["js/jquery-1.10.1.min.js", "js/bigfoot.min.js", "js/react.min.js"],
+    #     {"filters": "rjsmin", "output": "js/main2.js"}
+    # )
 )

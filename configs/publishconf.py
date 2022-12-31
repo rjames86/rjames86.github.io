@@ -35,15 +35,12 @@ EXTRA_PATH_METADATA = {
 SOCIAL = (
     ("Github", "http://www.github.com/rjames86"),
     ("RSS", FEEDPRESS_RSS),
-    # ('Email', 'mailto:blog@ryanmo.co')
 )
 
 PLUGINS.extend(
     [
         "taglist",
         "related_posts",
-        # 'latest_url',
-        "search_content_generator",
         "bigfoot_footnotes",
         "all_articles_json",
     ]
@@ -56,7 +53,6 @@ ARTICLE_URL = "{date:%Y}/{date:%m}/{date:%d}/{slug}"
 
 TESTING = False
 DISQUS_SITENAME = "rjames86"
-PIWIK_ANALYTICS = False
 
 # Plugins
 

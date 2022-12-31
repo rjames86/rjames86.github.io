@@ -31,10 +31,6 @@
   <title>
     {% block title %}{{ SITENAME }}{% endblock %}
   </title>
-
-  {% if (article and article.photo_gallery) or (articles_page and articles_page.object_list[0].photo_gallery) %}
-  <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/magnific-popup.css">
-  {% endif %}
 </head>
 
 <body>

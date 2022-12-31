@@ -26,14 +26,6 @@
     {{ article.content }}
   </div>
 
-  {% if article.photo_gallery %}
-  <div class="gallery">
-      {% for (name, photo, thumb, exif, caption) in article.photo_gallery[0][1] %}
-      <a href="{{ SITEURL }}/{{ photo }}" title="{{ name }}" exif="{{ exif }}" caption="{{ caption }}"><img src="{{ SITEURL }}/{{ thumb }}"></a>
-      {% endfor %}
-  </div>
-  {% endif %}
-
   <div id="article_meta">
     {% if article.tags %}
     <p>Tags:
