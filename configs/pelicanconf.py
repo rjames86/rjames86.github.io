@@ -83,8 +83,11 @@ LOAD_CONTENT_CACHE = False
 ARTICLE_URL = "{date:%Y}/{date:%m}/{date:%d}/{slug}"
 ARTICLE_SAVE_AS = "{date:%Y}/{date:%m}/{date:%d}/{slug}/index.html"
 
-PAGE_URL = 'pages/{slug}/'
-PAGE_SAVE_AS = 'pages/{slug}/index.html'
+PAGE_URL = '{slug}'
+PAGE_SAVE_AS = '{slug}/index.html'
+
+CATEGORY_URL = 'category/{slug}'
+CATEGORY_SAVE_AS = 'category/{slug}/index.html'
 
 # Feed Settings
 
@@ -130,7 +133,7 @@ WEBASSETS_BUNDLES = (
     (
         "critical",
         ["scss/default_mobile.scss", "scss/largescreens.scss"],
-        {"filters": "pyscss", "output": "templates/critical.css"},
+        {"filters": "pyscss,cssmin", "output": "templates/critical.css"},
     ),
     # (
     #     "js_bundle",
