@@ -46,7 +46,7 @@ ARTICLE_URL = "{date:%Y}/{date:%m}/{date:%d}/{slug}"
 # Theme
 
 TESTING = False
-DISQUS_SITENAME = "rjames86"
+# DISQUS_SITENAME = "rjames86"
 
 # Plugins
 
