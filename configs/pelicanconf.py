@@ -40,6 +40,9 @@ EXTRA_PATH_METADATA = {
 }
 EXTRA_PATH_METADATA.update(LIST_METADATA)
 JINJA_ENVIRONMENT = dict(comment_start_string="###", comment_end_string="/###")
+DEFAULT_METADATA = {
+    'author': 'Ryan M',
+}
 
 # Found at https://github.com/getpelican/pelican/wiki/Tips-n-Tricks
 MARKDOWN = {
