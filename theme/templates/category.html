@@ -12,7 +12,6 @@
 
 {% block header %}
 <p>Category: {{ category }}
-&#124; <a href="{{ SITEURL }}">Home</a>
 {% if CATEGORY_FEED_ATOM %}
 &#124; <a href="{{ FEED_DOMAIN }}/{{ CATEGORY_FEED_ATOM.format(slug=category.name.lower()) }}">Atom Feed</a>
 {% endif %}
