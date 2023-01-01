@@ -1,7 +1,9 @@
-@import './modules/friendly';
+// @import './modules/friendly';
+@import './pygments.scss';
 
 @import 'variables.scss';
 
 @import 'default_mobile.scss';
 @import 'largescreens.scss';
+@import 'dark_mode.scss';
 

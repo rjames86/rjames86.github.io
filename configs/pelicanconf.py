@@ -64,7 +64,7 @@ RELATIVE_URLS = True
 PLUGIN_PATHS = ["../plugins"]
 PLUGINS = [
     "pelican.plugins.webassets",
-    "build_critical",
+    # "build_critical",
     "code_replacement",
     "drafts_page",
     "json_feed",
