@@ -1,7 +1,7 @@
 Title: Searching Todo’s in Code
 Date: 2016-01-11 08:55
 Category: Tech
-Tags: scripting, efficiency, bash, sublimetext
+Tags: automation, bash, sublimetext
 Author: Ryan M
 
 Happy 2016! It's been a while since I've gotten something up here.

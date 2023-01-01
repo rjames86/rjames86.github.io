@@ -1,7 +1,7 @@
 Title: Log Foursquare Locations in Markdown
 Date: 2014-07-06
 Category: Tech
-Tags: markdown, scripting, bash, ifttt
+Tags: markdown, automation, bash, ifttt
 Author: Ryan M
 
 I've always used Foursquare as a way to remember the places I had visited while traveling. Foursquare isn't really meant to be used in this way, and as a result, they don't make it easy to answer the question, "what was that restaurant I went to last time I was here?" I'm now using IFTTT to log all my checkins to a text file in my Dropbox account.

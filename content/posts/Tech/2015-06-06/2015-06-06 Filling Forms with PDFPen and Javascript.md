@@ -1,7 +1,7 @@
 Title: Filling Forms with PDFPen and Javascript
 Date: 2015-06-06 04:15
 Category: Tech
-Tags:  scripting, efficiency, javascript, applescript
+Tags:  automation, javascript, applescript
 Author: Ryan M
 
 My adventure with Mac Javascript Automation continues. Things still aren't easy and the documentation is poor, but I'm finding that it's still easier to write automation scripts in Javascript than it ever was with Applescript.

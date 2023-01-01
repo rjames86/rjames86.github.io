@@ -1,7 +1,7 @@
 Title: Top Posts with React and Pelican
 Date: 2015-08-04 09:55
 Category: Tech
-Tags: scripting, python, pelican, javascript
+Tags: automation, python, pelican, javascript
 Author: Ryan M
 Status: draft
 

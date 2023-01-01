@@ -1,7 +1,7 @@
 Title: Save First Page of PDF for Expenses with Hazel
 Date: 2015-01-25 12:46
 Category: Tech
-Tags: scripting, hazel, applescript, efficiency
+Tags: hazel, applescript, automation
 Author: Ryan M
 
 Once a month I have to submit my Verizon bill as an expense. The process of getting the PDF of the bill and then modifying it turned out to be a big pain by first reminding my mom to send the bill[^1], saving the first page and then submitting it for reimbursement. Turns out that Hazel can take care of everything beyond the actual submission.

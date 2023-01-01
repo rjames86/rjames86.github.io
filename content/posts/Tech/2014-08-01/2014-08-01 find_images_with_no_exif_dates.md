@@ -1,7 +1,7 @@
 Title: Find images with No Exif Dates
 Date: 2014-08-01
 Category: Tech
-Tags: bash, scripting, exiftool, photos
+Tags: bash, automation, exiftool, photos
 Author: Ryan M
 
 My Dropbox folder is full of images claiming to be "missing dates." [^1] Some of these photos were thumbnails or images from DayOne that didn't necessarily need dates, but others were real photos that for whatever reason didn't have dates that Dropbox recognized.

@@ -2,7 +2,7 @@ Title: Adding Critical CSS in Pelican
 Date: 2015-09-14 07:41
 Modified: 2017-01-05 20:45
 Category: Tech
-Tags: pelican, scripting, python
+Tags: pelican, automation, python
 Author: Ryan M
 
 As it turns out, adding [critical css][critical css] wasn't trivial, but didn't take as much effort as I had originally thought. My site's layout doesn't contain *that* much styling, and so I simply added all of my CSS as an inline `style` tag. The tricky part, was getting Jinja to play nicely.

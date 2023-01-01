@@ -2,7 +2,7 @@ Title: Instascriptogram. Post Instagram pics to Scriptogr.am
 Date: 2013-09-05
 Category: Tech
 Slug: instascriptogram
-Tags: dropbox, scripting, ifttt, photos
+Tags: dropbox, automation, ifttt, photos
 Modified: 2014-11-19
 Author: Ryan M
 

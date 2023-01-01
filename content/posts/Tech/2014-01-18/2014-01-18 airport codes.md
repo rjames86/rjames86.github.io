@@ -1,7 +1,7 @@
 Title: Airport Codes with Alfred
 Date: 2014-01-18
 Category: Tech
-Tags: alfred, scripting
+Tags: alfred, automation
 Author: Ryan M
 
 Here's a quick Alfred workflow to get the airport code for a given city or the city based on an airport code.

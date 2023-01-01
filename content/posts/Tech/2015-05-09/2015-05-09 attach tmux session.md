@@ -1,7 +1,7 @@
 Title: Automatically Attach tmux in SSH Session
 Date: 2015-05-09 09:47
 Category: Tech
-Tags: scripting, efficiency, bash
+Tags: automation, bash
 Author: Ryan M
 
 I frequently work in ssh sessions and have found terminal multiplexers like `tmux` to be invaluable. The problem I was constantly facing was having to re-attach or create a new  session each time I would ssh into a machine. Sometimes I would accidentally create a new session when one already existed and would then have to find where I had been working previously.

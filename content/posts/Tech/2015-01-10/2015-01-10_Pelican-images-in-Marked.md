@@ -1,7 +1,7 @@
 Title: View Image Links from Pelican in Marked 2
 Date: 2015-01-10
 Category: Tech
-Tags: scripting, python, pelican
+Tags: automation, python, pelican
 Author: Ryan M
 
 I really enjoy writing in MultiMarkdown Composer and having Marked display a rendered version. When writing blog posts like this, images would never appear since Pelican's syntax for displaying images is `{static}/path/to/image`. I looked into Marked's preprocessor abilities and figured out a nice, clean way to display images when writing blog posts.

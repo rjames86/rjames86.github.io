@@ -1,7 +1,7 @@
 Title: Using Contacts.app with TextExpander v2: Objective-C and JavaScript
 Date: 2015-10-24 02:12
 Category: Tech
-Tags: scripting, textexpander, efficiency, javascript, objectivec
+Tags: textexpander, automation, javascript, objectivec
 Author: Ryan M
 
 

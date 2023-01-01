@@ -2,7 +2,7 @@ Title: Using Contacts.app with TextExpander
 Date: 2015-08-23 11:41
 Modified: 2015-09-20 14:08
 Category: Tech
-Tags: scripting, textexpander, efficiency, javascript
+Tags: textexpander, automation, javascript
 Author: Ryan M
 
 Changing your email or phone number isn't fun. You have to tell everyone, update all of your online accounts, and make sure your TextExpanders are up-to-date with the right information. One of the places I will always update is my contact information in Contacts.app, so why not just use that as the source of truth for TextExpander snippets?

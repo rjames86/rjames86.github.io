@@ -1,7 +1,7 @@
 Title: Backup Your Email with Getmail
 Date: 2015-09-06 06:45
 Category: Tech
-Tags: scripting, email, backup
+Tags: automation, email, backup
 Author: Ryan M
 
 It's always a good idea to keep backups of data you can't replace, including email. For the last few years, I've had a script that automatically backs up my Gmail account. Since switching to Fastmail, I figured I should continue doing the same thing. It turned out, it was pretty easy to set up another account.

@@ -1,7 +1,7 @@
 Title: My Photo Workflow
 Date: 2014-01-11
 Category: Tech
-Tags: hazel, efficiency, dropbox, ios, photos
+Tags: hazel, automation, dropbox, ios, photos
 Author: Ryan M
 
 After listening to the Mac Power Users [episode][mpu] on photo management and reading the slew of follow up blog posts on other photo management workflows, I thought I would share mine as well.  While my workflow will be fairly similar to [Federico Viticci's][viticci] with a few exceptions, I thought I would share the way that I take, organize, view and share my photos.

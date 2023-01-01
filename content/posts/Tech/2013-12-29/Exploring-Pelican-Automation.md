@@ -1,7 +1,7 @@
 Title: Exploring Pelican: Automation Part 1
 Date: 2013-12-29
 Category: Tech
-Tags: scripting, efficiency, pelican
+Tags: automation, pelican
 Slug: exploring-pelican-automation
 Author: Ryan M
 Series: Exploring Pelican

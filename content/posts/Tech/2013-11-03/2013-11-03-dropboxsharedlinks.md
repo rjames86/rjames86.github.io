@@ -1,7 +1,7 @@
 Title: Using Dropbox to Host Images on your Website
 Date: 2013-11-03
 Category: Tech
-Tags: dropbox, scripting
+Tags: dropbox, automation
 Slug: dropboxsharedlinks
 Author: Ryan M
 

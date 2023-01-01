@@ -1,7 +1,7 @@
 Title: Travel Notifications with Launch Center Pro and Pythonista
 Date: 2014-01-14
 Category: Tech
-Tags: efficiency, ios, scripting, pythonista
+Tags: automation, pythonista
 Author: Ryan M
 Slug: travel-notifications
 

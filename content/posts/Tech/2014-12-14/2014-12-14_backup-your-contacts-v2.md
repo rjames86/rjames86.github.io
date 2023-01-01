@@ -1,7 +1,7 @@
 Title: Backup Your Contacts v2 : Yosemite’s Javascript Automation
 Date: 2014-12-14
 Category: Tech
-Tags: scripting, applescript, javascript
+Tags: automation, applescript, javascript
 Author: Ryan M
 
 I recently read MacStories' [article][macstories] and was curious how easy this was to learn. Applescript never made sense to me and I spent more time trying to piece together examples than actually writing anything meaningful. I don't trust iCloud to keep my contacts safe, and I'm still using [my previous workflow][previous_workflow] with [Launch Center Pro][lcp] and [Pythonista][pythonista] to back up my contacts.

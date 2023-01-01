@@ -1,7 +1,7 @@
 Title: Organizing Special Photos with Hazel
 Date: 2014-01-05
 Category: Tech
-Tags: hazel, efficiency, photos
+Tags: hazel, automation, photos
 Author: Ryan M
 
 Nearly all of my photos are sorted based on year, month and day. Hazel easily takes care of of this for me, but occasionally I will have projects where photos need to be excluded or organized in a different way. With Hazel, I can still account for these special cases with extra bits of metadata.

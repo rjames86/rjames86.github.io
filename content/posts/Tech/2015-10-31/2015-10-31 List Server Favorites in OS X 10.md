@@ -1,7 +1,7 @@
 Title: List Server Favorites in OS X 10.11 El Capitan
 Date: 2015-10-31 02:11
 Category: Tech
-Tags: scripting, efficiency, javascript, objectivec
+Tags: automation, javascript, objectivec
 Author: Ryan M
 
 I'm using Alfred a lot less these days. Many of my workflows have been easier to build in Keyboard Maestro. The remaining few that are left in Alfred are ones that I heavily depend on, one of which is accessing my Server Favorites in OS X. 

@@ -2,7 +2,7 @@ Title: Writing Notes with Alfred 2
 Date: 2013-05-14
 Category: Tech
 Slug: notes_and_alfred
-Tags: alfred, efficiency
+Tags: alfred, automation
 Author: Ryan M
 
 I started coding about two years ago and only recently discovered the wonders of Markdown.  Every time I'd learn something new, I would keep it in a text file with TextEdit. This was good and fine until a coworker introduced me to Notational Velocity. This completely changed the way I managed my notes but I always felt like I was missing something. That's when I discovered NVAlt. It let me keep the simplicity of plain text but format the note with the wonders of Markdown. 

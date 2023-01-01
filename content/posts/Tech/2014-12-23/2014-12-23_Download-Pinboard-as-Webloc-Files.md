@@ -1,7 +1,7 @@
 Title: Download Pinboard Bookmarks with OS X Tags
 Date: 2014-12-23
 Category: Tech
-Tags: scripting, python, projects
+Tags: automation, python, projects
 Slug: pinboard-downloader
 Author: Ryan M
 

@@ -1,7 +1,7 @@
 Title: Global Shell Variables for Dropbox Paths
 Date: 2014-08-31
 Category: Tech
-Tags: bash, scripting, Dropbox
+Tags: bash, automation, Dropbox
 Author: Ryan M
 
 I have multiple computers running Dropbox, all of which have different folder paths to where the Dropbox folder is located. I wanted to have a universal way to find and navigate to the folders regardless of what computer I was on.

@@ -2,7 +2,7 @@ Title: Your .bash_profile everywhere
 Date: 2013-03-31
 Category: Tech
 Slug: bashprofile
-Tags: dropbox, efficiency, bash
+Tags: dropbox, automation, bash
 Author: Ryan M
 
 I have two computers, one for work and one for personal. I keep mostly everything separate, but one thing I want to always have with me is my terminal environment and aliases. With Dropbox, I can not only access, but edit my .bash_profile from anywhere *without* using symlinks.

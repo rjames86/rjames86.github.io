@@ -1,7 +1,7 @@
 Title: Moving TextExpander Snippets to Keyboard Maestro
 Date: 2016-04-10 17:26
 Category: Tech
-Tags: scripting, textexpander, python, keyboardmaestro
+Tags: automation, textexpander, python, keyboardmaestro
 Author: Ryan M
 
 I've been a long time TextExpander user. I use it every day for simple things like pasting my contact info or shortening urls using bit.ly. There are plenty of articles out there arguing for and against TextExpander's new subscription model. I support their decision but I can't justify $50 a year's worth of value and so I'm moving all of my snippets to Keyboard Maestro.

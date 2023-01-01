@@ -1,7 +1,7 @@
 Title: Quick Conversions with Launch Center Pro and Soulver
 Date: 2013-12-03
 Category: Tech
-Tags: ios, scripting, efficiency
+Tags: ios, automation, automation
 Author: Ryan M
 
 There are some great tools out there to convert things like currency, distances and measurements. Even Siri can do this fairly well, but the one thing I always find frustrating is that the process of doing this can be fairly slow and in a lot of cases requires a data connection. Growing up in the United States, I was unfortunately never exposed to the metric system or Celsius. Since I've moved to Dublin, I'm find myself doing a lot of conversions from one unit to another.

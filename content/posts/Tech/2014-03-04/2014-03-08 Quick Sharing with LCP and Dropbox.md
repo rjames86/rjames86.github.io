@@ -1,7 +1,7 @@
 Title: Quick Sharing with Launch Center Pro and Dropbox
 Date: 2014-03-04
 Category: Tech
-Tags: ios, efficiency, Dropbox, launchcenterpro, photos
+Tags: ios, automation, Dropbox, launchcenterpro, photos
 Author: Ryan M
 
 I've been finding more and more reasons to use Launch Center Pro recently. With the fairly recent addition of Dropbox actions, I've been finding new ways to share links quickly. 

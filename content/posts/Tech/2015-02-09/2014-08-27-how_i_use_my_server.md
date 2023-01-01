@@ -1,7 +1,7 @@
 Title:  How I use my Mac Mini Server on Macminicolo
 Date: 2015-02-09 22:04
 Category: Tech
-Tags: Dropbox, efficiency, hazel, scripting
+Tags: Dropbox, automation, hazel, scripting
 Author: Ryan M
 
 I frequently get asked why I use [Macminicolo][Macminicolo] and if it's worth it. It's a relatively expensive hobby, but it gives me so much benefit that at this point I couldn't live without it. Having an always-on Mac opens up a lot of opportunity and I'm always finding new things to use it for. 

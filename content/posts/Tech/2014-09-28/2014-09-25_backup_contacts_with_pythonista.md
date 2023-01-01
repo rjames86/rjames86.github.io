@@ -1,7 +1,7 @@
 Title: Back up Your Contacts with Pythonista
 Date: 2014-09-28
 Category: Tech
-Tags: scripting, Dropbox, ifttt, launchcenterpro, ios, pythonista
+Tags: automation, Dropbox, ifttt, launchcenterpro, ios, pythonista
 Author: Ryan M
 
 While it hasn't happened in a while, I have lost or had issues with contacts in iCloud. I haven't found a reliable way to automatically back up my contacts on my Mac, but Pythonista offers a simple way to back them up.

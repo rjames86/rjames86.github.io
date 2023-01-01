@@ -1,6 +1,6 @@
 Title: Setting Keyboard Shortcuts from Terminal in macOS
 Date: 2017-01-05 08:54
-Tags: scripting, bash
+Tags: automation, bash
 Author: Ryan M
 
 It's been a few months since my last post. I've spent a lot of time working on my blog, but all things behind the scenes that most people wouldn't even notice. 

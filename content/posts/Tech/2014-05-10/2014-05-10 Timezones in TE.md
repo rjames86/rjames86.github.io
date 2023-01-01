@@ -1,7 +1,7 @@
 Title: Show Time in Multiple Time Zones with TextExpander
 Date: 2014-05-10
 Category: Tech
-Tags: bash,efficiency,scripting, textexpander
+Tags: bash, automation, textexpander
 Author: Ryan M
 
 I'm really bad at converting a time to other timezones. Now that the company I work for has offices in multiple countries, scheduling has become much more difficult. In an effort to eliminate the need for people to convert times themselves, I wrote a TextExpander snippet to take care of it for me.

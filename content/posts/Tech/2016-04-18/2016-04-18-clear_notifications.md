@@ -2,7 +2,7 @@ Title: Clearing Multiple Notifications in Mac OS X
 Date: 2016-04-18 20:04:59
 Modified: 2016-12-04
 Category: Tech
-Tags: scripting, keyboardmaestro, alfred, efficiency, javascript
+Tags: keyboardmaestro, alfred, automation, javascript
 Author: Ryan M
 
 If I haven't used my computer for a while, I'll end up with multiple calendar notifications that I have to painfully close one by one. I went searching for something that would let me close them faster, but nothing I could find did quite what I wanted.
