@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
+from configs.pelicanconf import *
 
 import os
 import sys
 
 sys.path.append(os.curdir)
-from configs.pelicanconf import *
 
 
 DELETE_OUTPUT_DIRECTORY = True
@@ -40,8 +40,6 @@ SOCIAL = (
 PLUGINS.extend(
     [
         "taglist",
-        "related_posts",
-        "bigfoot_footnotes",
         "all_articles_json",
     ]
 )
