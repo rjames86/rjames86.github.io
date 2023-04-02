@@ -15,6 +15,29 @@
       color: $light-grey
     }
 
+    hr {
+        height: 1px;
+        border: 0;
+        background-color: $black;
+        background-image: none;
+    }
+    hr::after {
+        content: '';
+        display: block;
+        height: 1px;
+        background-color: $black;
+        background-image: none;
+    }
+
+    aside.sidebar {
+        width: 25%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        border-right: $dark-grey 1px solid;
+    }
+
     $dt-gray-dark: #282a36;  // Background
     $dt-gray: #44475a;       // Current Line & Selection
     $dt-gray-light: #f8f8f2; // Foreground
