@@ -1,7 +1,7 @@
 Title: Create a Scratchpad with Alfred
 Date: 2013-12-28
 Category: Tech
-Tags: alfred, scripting, automation
+Tags: alfred, automation
 Summary: I created a quick Alfred workflow that takes the contents of my clipboard and opens a new file in Sublime Text (or Text Edit).
 Author: Ryan M
 

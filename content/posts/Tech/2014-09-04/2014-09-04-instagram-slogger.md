@@ -1,7 +1,7 @@
 Title: Instagram for Slogger
 Date: 2014-09-04
 Category: Tech
-Tags: scripting, automation, slogger, dayone, photos
+Tags: automation, slogger, dayone, photos
 Slug: instagram-slogger
 Author: Ryan M
 

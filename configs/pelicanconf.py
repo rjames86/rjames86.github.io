@@ -126,8 +126,8 @@ SITE_FAVICON = SITEURL + "/images/favicon.png"
 JSON_SHORTEN_URL = True
 JSON_CAMPAIGN_PARAM = "JSONFeed"
 JSON_FEED = "feed.json"
-JSON_CATEGORY_FEED_RSS = "feeds/%s.json"
-JSON_TAG_FEED_RSS = "feeds/%s.json"
+JSON_CATEGORY_FEED_RSS = "feeds/category/%s.json"
+JSON_TAG_FEED_RSS = "feeds/tag/%s.json"
 
 # Webassets
 WEBASSETS_BUNDLES = (

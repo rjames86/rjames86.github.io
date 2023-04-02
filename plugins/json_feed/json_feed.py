@@ -169,11 +169,30 @@ class JsonFeedGenerator(object):
                   JsonFeed.from_generator(self))]
 
         if self.settings.get('JSON_CATEGORY_FEED_RSS'):
-            for category, articles in self.generator.categories:
+            for category, _ in self.generator.categories:
                 complete_path = os.path.join(self.generator.output_path,
                                              self.settings.get('JSON_CATEGORY_FEED_RSS') % category)
                 json_feed_generator = JsonFeed.from_generator(self, category=category)
                 to_ret.append((complete_path, json_feed_generator))
+        if self.settings.get('JSON_TAG_FEED_RSS'):
+            for tag, _ in self.context.get('tags'):
+                complete_path = os.path.join(self.generator.output_path,
+                                             self.settings.get('JSON_TAG_FEED_RSS') % tag)
+                to_ret.append((complete_path, JsonFeed.from_generator(self, tag=tag)))
+        return to_ret
+
+    def get_json_category_feeds(self):
+        to_ret = []
+        if self.settings.get('JSON_CATEGORY_FEED_RSS'):
+            for category, _ in self.generator.categories:
+                complete_path = os.path.join(self.generator.output_path,
+                                             self.settings.get('JSON_CATEGORY_FEED_RSS') % category)
+                json_feed_generator = JsonFeed.from_generator(self, category=category)
+                to_ret.append((complete_path, json_feed_generator))
+        return to_ret
+
+    def get_json_tag_feeds(self):
+        to_ret = []
         if self.settings.get('JSON_TAG_FEED_RSS'):
             for tag, _ in self.context.get('tags'):
                 complete_path = os.path.join(self.generator.output_path,
@@ -201,6 +220,13 @@ class JsonFeedGenerator(object):
 def get_generators(article_generator):
     article_generator.json_feed_generator = JsonFeedGenerator(article_generator)
     article_generator._update_context(('json_feed_generator',))
+
+    article_generator.get_json_category_feeds = JsonFeedGenerator(article_generator)
+    article_generator._update_context(('get_json_category_feeds',))
+
+    article_generator.get_json_tag_feeds = JsonFeedGenerator(article_generator)
+    article_generator._update_context(('get_json_tag_feeds',))
+
 
 
 def write_generator(article_generator, writer):

@@ -4,8 +4,16 @@
 {% block content %}
 <article>
   <div id="article_text">
+    <h2>JSON Feeds</h2>
+    <h3>Categories</h3>
     <ul>
-      {% for category, json_feed in json_feed_generator.get_json_feeds() %}
+      {% for category, json_feed in json_feed_generator.get_json_category_feeds() %}
+      <li><a href="{{ json_feed.feed_url }}">{{ json_feed.feed_url }}</a></li>
+      {% endfor %}
+    </ul>
+    <h3>Tags</h3>
+    <ul>
+      {% for category, json_feed in json_feed_generator.get_json_tag_feeds() %}
       <li><a href="{{ json_feed.feed_url }}">{{ json_feed.feed_url }}</a></li>
       {% endfor %}
     </ul>

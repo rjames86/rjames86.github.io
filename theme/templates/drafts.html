@@ -2,9 +2,6 @@
 {% block content %}
 {% for article in drafts | sort(attribute='locale_date', reverse=True)%}
 <article>
-  {% if article.photo_image %}<a href="{{ SITEURL }}/{{ article.url }}"><img src="{{ SITEURL }}/{{ article.photo_image[2] }}"
-      style="display: inline; float: right; margin: 2px 0 2ex 4ex;" /></a>
-  {% endif %}
   <div id="article_title">
     <h2><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></h2>
   </div>
