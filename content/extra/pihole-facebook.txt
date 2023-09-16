@@ -2099,3 +2099,4 @@
 0.0.0.0 zh-hk.facebook.com
 0.0.0.0 zh-tw.facebook.com
 0.0.0.0 zh-tw.facebook.com0.facebook.com
+0.0.0.0 dgw.c10r.facebook.com
