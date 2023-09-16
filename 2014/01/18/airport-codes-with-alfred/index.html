@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="alfred, automation">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Airport Codes with Alfred" />
+<meta name="twitter:description" content="Here's a quick Alfred workflow to get the airport code for a given city or the city based on an airport code. You can search either by the 3-character airport code or by the city name. You can make your search specific enough to return one result, such as "dublin …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Airport Codes with Alfred</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2014-01-18T00:00:00-08:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="alfred"/>
+       <Attribute name="category" value="automation"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Airport Codes with Alfred  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2014/01/18/airport-codes-with-alfred">Airport Codes with Alfred</a></h2>
+    <p id="date">Posted on 2014-01-18</p>
+
+  </div>
+  <div id="article_text">
+    <p>Here's a quick Alfred workflow to get the airport code for a given city or the city based on an airport code.</p>
+
+
+<p><img alt="Alfred Search" src="https://ryanmo.co/2014/01/18/airport-codes-with-alfred/dub.png" /></p>
+<p>You can search either by the 3-character airport code or by the city name. You can make your search specific enough to return one result, such as "dublin, ireland"</p>
+<p><img alt="Growl" src="https://ryanmo.co/2014/01/18/airport-codes-with-alfred/growl_dublin.png" /></p>
+<p>or simple so that you can see multiple results, like "ireland"</p>
+<p><img alt="Growl" src="https://ryanmo.co/2014/01/18/airport-codes-with-alfred/growl_ireland.png" /></p>
+<p>You can download the Airport Codes workflow here:</p>
+<p><a href="https://ryanmo.co/2014/01/18/airport-codes-with-alfred/Airport_Codes.alfredworkflow"><img alt="image" src="https://ryanmo.co/images/alfred_extension.jpg" /></a>  </p>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/alfred.html" class="button_accent_small">alfred</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">airport-codes-with-alfred</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

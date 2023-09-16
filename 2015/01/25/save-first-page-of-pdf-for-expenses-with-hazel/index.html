@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="hazel, applescript, automation">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Save First Page of PDF for Expenses with Hazel" />
+<meta name="twitter:description" content="Once a month I have to submit my Verizon bill as an expense. The process of getting the PDF of the bill and then modifying it turned out to be a big pain by first reminding my mom to send the bill1, saving the first page and then submitting …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Save First Page of PDF for Expenses with Hazel</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2015-01-25T12:46:00-08:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="hazel"/>
+       <Attribute name="category" value="applescript"/>
+       <Attribute name="category" value="automation"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Save First Page of PDF for Expenses with Hazel  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2015/01/25/save-first-page-of-pdf-for-expenses-with-hazel">Save First Page of PDF for Expenses with Hazel</a></h2>
+    <p id="date">Posted on 2015-01-25</p>
+
+  </div>
+  <div id="article_text">
+    <p>Once a month I have to submit my Verizon bill as an expense. The process of getting the PDF of the bill and then modifying it turned out to be a big pain by first reminding my mom to send the bill<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, saving the first page and then submitting it for reimbursement. Turns out that Hazel can take care of everything beyond the actual submission.</p>
+
+<p>I'm fine with reminding my mom to put the PDF in Dropbox, but I then have to check back every-so-often to see if she's actually done it. I've created a rule now that will check for any files in our shared Verizon Bill folder and if Hazel hasn't seen it before, it will send me a push notification with Pushover.</p>
+<p><img alt="pushover_hazel_verizon" src="https://ryanmo.co/posts/Tech/2015-01-25/pushover_hazel_verizon.png" /></p>
+<p>I then wrote a handy little Applescript based on PDFPenPro's default script called Split PDFs that will take the first page of a PDF and save it to a new file. I differentiate the files by just adding "SINGLE PAGE" to the filename</p>
+<div class="codehilite"><pre><span></span><code><span class="k">set</span> <span class="nv">basePath</span> <span class="k">to</span> <span class="s2">&quot;/path/to/verizon/folder&quot;</span>
+
+<span class="k">tell</span> <span class="nb">application</span> <span class="s2">&quot;PDFpenPro&quot;</span>
+    <span class="nb">open</span> <span class="nv">theFile</span> <span class="k">as</span> <span class="nv">alias</span>
+    <span class="k">set</span> <span class="nv">originalDoc</span> <span class="k">to</span> <span class="na">document</span> <span class="mi">1</span>
+    <span class="k">set</span> <span class="nv">docName</span> <span class="k">to</span> <span class="na">name</span> <span class="k">of</span> <span class="nv">originalDoc</span>
+
+    <span class="k">if</span> <span class="nv">docName</span> <span class="ow">ends with</span> <span class="s2">&quot;.pdf&quot;</span> <span class="k">then</span>
+        <span class="k">set</span> <span class="nv">docNameLength</span> <span class="k">to</span> <span class="p">(</span><span class="nv">length</span> <span class="k">of</span> <span class="nv">docName</span><span class="p">)</span>
+        <span class="k">set</span> <span class="nv">docName</span> <span class="k">to</span> <span class="p">(</span><span class="nb">characters</span> <span class="mi">1</span> <span class="nb">thru</span> <span class="p">(</span><span class="nv">docNameLength</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="k">of</span> <span class="nv">docName</span> <span class="k">as </span><span class="nc">string</span><span class="p">)</span>
+    <span class="k">end</span> <span class="k">if</span>
+
+
+    <span class="k">set</span> <span class="nv">newDoc</span> <span class="k">to</span> <span class="nb">make</span> <span class="nb">new</span> <span class="na">document</span>
+    <span class="k">set</span> <span class="nv">savePath</span> <span class="k">to</span> <span class="p">((</span><span class="nv">basePath</span> <span class="k">as</span> <span class="na">rich text</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nv">docName</span> <span class="o">&amp;</span> <span class="s2">&quot; SINGLE PAGE&quot;</span> <span class="o">&amp;</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">)</span>
+
+    <span class="nb">copy</span> <span class="nv">page</span> <span class="mi">1</span> <span class="k">of</span> <span class="nv">originalDoc</span> <span class="k">to</span> <span class="k">end</span> <span class="k">of</span> <span class="nv">pages</span> <span class="k">of</span> <span class="nv">newDoc</span>
+
+    <span class="nv">save</span> <span class="nv">newDoc</span> <span class="k">in</span> <span class="nv">POSIX</span> <span class="nv">file</span> <span class="nv">savePath</span>
+
+    <span class="nb">quit</span>
+<span class="k">end</span> <span class="k">tell</span>
+</code></pre></div>
+
+<p>Finally, so that I don't forget to submit the expense, I have one final Applescript that creates a todo item in Omnifocus based on David Spark's post <a href="http://macsparky.com/blog/2012/8/applescript-omnifocus-tasks">here</a></p>
+<div class="codehilite"><pre><span></span><code><span class="k">set</span> <span class="nv">theDate</span> <span class="k">to</span> <span class="nb">current date</span>
+<span class="k">set</span> <span class="nv">deferDate</span> <span class="k">to</span> <span class="p">(</span><span class="nb">current date</span><span class="p">)</span>
+<span class="k">set</span> <span class="nv">dueDate</span> <span class="k">to</span> <span class="p">(</span><span class="nb">current date</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nb">days</span><span class="p">)</span>
+<span class="k">set</span> <span class="nv">theTask</span> <span class="k">to</span> <span class="s2">&quot;Expense Verizon Bill&quot;</span>
+<span class="k">set</span> <span class="nv">theNote</span> <span class="k">to</span> <span class="nv">theFile</span>
+
+<span class="k">tell</span> <span class="nb">application</span> <span class="s2">&quot;OmniFocus&quot;</span>
+    <span class="k">tell</span> <span class="nb">front</span> <span class="na">document</span>
+        <span class="k">set</span> <span class="nv">theContext</span> <span class="k">to</span> <span class="nb">first</span> <span class="nv">flattened</span> <span class="na">context</span> <span class="nb">where</span> <span class="k">its</span> <span class="na">name</span> <span class="o">=</span> <span class="s2">&quot;A Context&quot;</span>
+        <span class="k">set</span> <span class="nv">theProject</span> <span class="k">to</span> <span class="nb">first</span> <span class="nv">flattened</span> <span class="nv">project</span> <span class="nb">where</span> <span class="k">its</span> <span class="na">name</span> <span class="o">=</span> <span class="s2">&quot;Expenses&quot;</span>
+        <span class="k">tell</span> <span class="nv">theProject</span> <span class="k">to</span> <span class="nb">make</span> <span class="nb">new</span> <span class="nv">task</span> <span class="nv">with</span> <span class="na">properties</span> <span class="p">{</span><span class="na">name</span><span class="p">:</span><span class="nv">theTask</span><span class="p">,</span> <span class="nv">note</span><span class="p">:</span><span class="nv">theNote</span><span class="p">,</span> <span class="na">context</span><span class="p">:</span><span class="nv">theContext</span><span class="p">,</span> <span class="nv">defer</span> <span class="nv">date</span><span class="p">:</span><span class="nv">deferDate</span><span class="p">,</span> <span class="nv">due</span> <span class="nv">date</span><span class="p">:</span><span class="nv">dueDate</span><span class="p">}</span>
+    <span class="k">end</span> <span class="k">tell</span>
+<span class="k">end</span> <span class="k">tell</span>
+</code></pre></div>
+
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>We're on a family plan&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/hazel.html" class="button_accent_small">hazel</a>
+      <a href="https://ryanmo.co/tag/applescript.html" class="button_accent_small">applescript</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">save-first-page-of-pdf-for-expenses-with-hazel</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

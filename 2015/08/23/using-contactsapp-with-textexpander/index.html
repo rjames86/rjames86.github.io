@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="textexpander, automation, javascript">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Using Contacts.app with TextExpander" />
+<meta name="twitter:description" content="Changing your email or phone number isn't fun. You have to tell everyone, update all of your online accounts, and make sure your TextExpanders are up-to-date with the right information. One of the places I will always update is my contact information in Contacts.app, so why not just use …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Using Contacts.app with TextExpander</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2015-08-23T11:41:00-07:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="textexpander"/>
+       <Attribute name="category" value="automation"/>
+       <Attribute name="category" value="javascript"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Using Contacts.app with TextExpander  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2015/08/23/using-contactsapp-with-textexpander">Using Contacts.app with TextExpander</a></h2>
+    <p id="date">Posted on 2015-08-23</p>
+    <p id="date">Last updated 2015-09-20</p>
+
+  </div>
+  <div id="article_text">
+    <p>Changing your email or phone number isn't fun. You have to tell everyone, update all of your online accounts, and make sure your TextExpanders are up-to-date with the right information. One of the places I will always update is my contact information in Contacts.app, so why not just use that as the source of truth for TextExpander snippets?</p>
+
+
+<p>In TextExpander 5, you can now use Javascript in snippets. Since I had <a href="{static}../2014-12-14/2014-12-14_backup-your-contacts-v2.md">already created some scripts</a> using Contacts, I re-used some of the bits to create TextExpander snippets to expand information directly from Contacts.app.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">Contacts</span> <span class="o">=</span> <span class="nx">Application</span><span class="p">(</span><span class="s1">&#39;/Applications/Contacts.app&#39;</span><span class="p">)</span>
+
+<span class="c1">// ::attr is the attribute you want pull (emails, phones, etc.)</span>
+<span class="c1">// ::accountType is what you see to the left of the info in Contacts.app</span>
+<span class="kd">function</span> <span class="nx">getMyInfo</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="nx">accountType</span><span class="p">){</span>
+    <span class="nx">method</span> <span class="o">=</span> <span class="nx">attr</span> <span class="o">==</span> <span class="s1">&#39;addresses&#39;</span> <span class="o">?</span> <span class="s1">&#39;formattedAddress&#39;</span> <span class="o">:</span> <span class="s1">&#39;value&#39;</span>
+    <span class="nx">search</span> <span class="o">=</span> <span class="nx">Contacts</span><span class="p">.</span><span class="nx">myCard</span><span class="p">()[</span><span class="nx">attr</span><span class="p">].</span><span class="nx">where</span><span class="p">({</span><span class="nx">label</span><span class="o">:</span> <span class="nx">accountType</span><span class="p">})</span>
+    <span class="nx">results</span> <span class="o">=</span> <span class="nx">search</span><span class="p">.</span><span class="nx">length</span> <span class="o">?</span> <span class="nx">search</span><span class="p">().</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">){</span><span class="k">return</span> <span class="nx">a</span><span class="p">[</span><span class="nx">method</span><span class="p">]()})</span> <span class="o">:</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mf">1</span><span class="p">){</span>
+        <span class="k">return</span> <span class="nx">results</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mf">1</span><span class="p">){</span>
+        <span class="k">return</span> <span class="nx">results</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+<span class="p">}</span>
+
+<span class="c1">// Grab my &#39;blog&#39; email address </span>
+<span class="nx">getMyInfo</span><span class="p">(</span><span class="s1">&#39;emails&#39;</span><span class="p">,</span> <span class="s1">&#39;blog&#39;</span><span class="p">)</span> <span class="c1">// returns email address</span>
+</code></pre></div>
+
+<p>The <code>getMyInfo</code> function is fairly generalized to allow you to get any basic information like emails or phone numbers from your contacts. The first argument is the type<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, and the second is the label you want, such as Home, Work, etc. To get a phone number, just change the function called to <code>getMyInfo('phones', 'iPhone)</code>. To get an address, change to <code>getMyInfo('addresses', 'home')</code>, which will return a formatted address.</p>
+<p><em>Update 2015-08-23</em>: Updated the <code>getMyInfo</code> function to support addresses.  </p>
+<p><em>Update 2015-09-20</em>: For a while, I couldn't figure out why occasionally expanding things from Contacts would take a little while. Then I realized, for AppleScript to work, the application you're calling needs to be open. If you do want to use this as a way to expand your information from Contacts, just know that you'll need to be running the application for the TextExpander snippets to work.</p>
+<p><em>Update 2015-09-20</em>: I've figured out a way to do this without Contacts.app running! Check out my post <a href="{static}../2015-10-24/2015-10-24-Using_Contacts_TextExpander_v2.md">here</a> for more info.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>You can find all the attributes in the Contacts.app scripts library in Address Book Script Suite → Application → myCard&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/textexpander.html" class="button_accent_small">textexpander</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+      <a href="https://ryanmo.co/tag/javascript.html" class="button_accent_small">javascript</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">using-contactsapp-with-textexpander</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="pelican, automation, python">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Adding Critical CSS in Pelican" />
+<meta name="twitter:description" content="As it turns out, adding critical css wasn't trivial, but didn't take as much effort as I had originally thought. My site's layout doesn't contain that much styling, and so I simply added all of my CSS as an inline style tag. The tricky part, was getting Jinja to play …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Adding Critical CSS in Pelican</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2015-09-14T07:41:00-07:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="pelican"/>
+       <Attribute name="category" value="automation"/>
+       <Attribute name="category" value="python"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Adding Critical CSS in Pelican  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2015/09/14/adding-critical-css-in-pelican">Adding Critical CSS in Pelican</a></h2>
+    <p id="date">Posted on 2015-09-14</p>
+    <p id="date">Last updated 2017-01-05</p>
+
+  </div>
+  <div id="article_text">
+    <p>As it turns out, adding <a href="http://www.smashingmagazine.com/2015/08/understanding-critical-css/">critical css</a> wasn't trivial, but didn't take as much effort as I had originally thought. My site's layout doesn't contain <em>that</em> much styling, and so I simply added all of my CSS as an inline <code>style</code> tag. The tricky part, was getting Jinja to play nicely.</p>
+<p>The first step was to generate a separate css file that only contained what was needed when you first load and see the page. I use Less as my pre-processor, and created a very small Less file that looked like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">@</span><span class="k">import</span> <span class="o">(</span><span class="nt">inline</span><span class="o">)</span> <span class="s1">&#39;../tipuesearch/tipuesearch.css&#39;</span><span class="p">;</span>
+
+<span class="p">@</span><span class="k">import</span> <span class="s1">&#39;default_mobile.less&#39;</span><span class="p">;</span>
+<span class="p">@</span><span class="k">import</span> <span class="s1">&#39;largescreens.less&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Once compiled and minimized<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, I needed to add it to my <code>base.html</code> template.</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&lt;style type=&quot;text/css&quot;&gt;</span>
+<span class="cp">{%</span> <span class="k">include</span> <span class="s1">&#39;critical.css&#39;</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">&lt;/style&gt;</span>
+</code></pre></div>
+
+<p>Here is where the problem when generating my site.</p>
+<div class="codehilite"><pre><span></span><code>WARNING: Caught exception <span class="s2">&quot;TemplateSyntaxError: Missing end of comment tag&quot;</span>. Reloading.
+</code></pre></div>
+
+<p>Since my minimized CSS contained <code>'{#'</code>, Jinja was interpreting this as a comment and raised an exception. While this is an easy fix by changing the Jinja environment variables within Pelican's generators.py, I didn't want to go this route since I would need to update this<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> every time there was an update to Pelican. Instead, I wrote a Jinja extension which Pelican supports natively. </p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># in pelicanconf.py</span>
+<span class="kn">from</span> <span class="nn">jinja2.ext</span> <span class="kn">import</span> <span class="n">Extension</span>
+
+<span class="k">class</span> <span class="nc">CustomCommentStrings</span><span class="p">(</span><span class="n">Extension</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomCommentStrings</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+
+        <span class="n">environment</span><span class="o">.</span><span class="n">comment_start_string</span> <span class="o">=</span> <span class="s1">&#39;###&#39;</span>
+        <span class="n">environment</span><span class="o">.</span><span class="n">comment_end_string</span> <span class="o">=</span> <span class="s1">&#39;/###&#39;</span>
+
+<span class="n">JINJA_EXTENSIONS</span> <span class="o">=</span> <span class="p">[</span><span class="n">CustomCommentStrings</span><span class="p">]</span>
+</code></pre></div>
+
+<hr />
+<p><em>Update 2017-01-05</em></p>
+<p>If you're using Pelican version 3.7+, you don't have to write the custom extension shown above, you can simply update the <code>JINJA_ENVIRONMENT</code> settings variable:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">JINJA_ENVIRONMENT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;comment_start_string&#39;</span><span class="p">:</span> <span class="s1">&#39;###&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;comment_end_string&#39;</span><span class="p">:</span> <span class="s1">&#39;/###&#39;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<p>One thing to note here is that if you are using <code>{# ... #}</code> as comment strings in Jinja, you'll need to update them to whatever new start and end strings you define.</p>
+<p>And success! The <code>critical.css</code> file was successfully imported and I now my critical CSS is included on page load. With this, Google now gives me a 100/100 speed score for mobile and 98/100 on desktop.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Google suggests that you minimize critical css to reduce your file size.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>I plan on submitting a pull-request to allow manually setting Jinja environment variables.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/pelican.html" class="button_accent_small">pelican</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+      <a href="https://ryanmo.co/tag/python.html" class="button_accent_small">python</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">adding-critical-css-in-pelican</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

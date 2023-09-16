@@ -1,0 +1,34 @@
+Title: Syncing Photos from Dropbox to the Photos App on iPhone
+Date: 2017-01-23 07:16
+Category: Tech
+Tags:  applescript, javascript, automation, hazel
+Author: Ryan M
+
+I've chosen to not use iCloud Photo Library for a few reasons. I have a decent system set up for storing my photos in Dropbox, but I've always wanted to have my photos local on my iPhone. Now that iOS 10 has some cool features like memories and image search, I've been looking for a way to have my photos on my iPhone and also in Dropbox.
+<!-- PELICAN_END_SUMMARY -->
+
+The easy solution is to simply point iTunes to your photo library in Dropbox and sync your photos over. This has a few downsides:
+
+1. If your photo library is large, you can't sync everything over
+2. iTunes doesn't let you sync multiple folders, so its all or nothing
+3. iTunes creates a thumbnail cache in the folder of photos, which means you have a large folder constantly syncing to Dropbox, which isn't ideal
+
+I already use Hazel to sort and organize my photos, so I figured adding another workflow would be fairly easy. On the computer where I sync my iPhone to iTunes, I set up a workflow that looks like this
+
+![1]({static}1.png)
+
+Since my photo folder structure looks like \[year\]/\[month\]/\[event\], I need to look at each of the photos and then continue the workflow if it matches a matches a shell command
+
+![2]({static}2.png)
+
+As long as what Hazel processes is a folder, and matches this regular expression, we can continue on to process the photos. This regular expression looks for a folder path that contains the the numbers 2015 through 2019[^1]. You can change the 5 to be whatever range you need, but I didn't need to go back to photos older than that.
+
+The next step is creating a hard link to the photo to a new folder I keep in `~/Pictures` called "Photos for iPhone."
+
+![3]({static}3.png)
+
+A hard link is nice here since it simply references the original file and doesn't take up space on your hard drive.
+
+Now I can point iTunes to my newly created folder. Each time a new photo gets added to my Dropbox photos folder, a new hard link is created and then synced to my iPhone the next time I plug it in.
+
+[^1]: This will stop working after 2019, but by that point, I'd hope that syncing and viewing photos will be in a better place.

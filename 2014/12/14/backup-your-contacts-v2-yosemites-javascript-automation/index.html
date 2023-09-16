@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="automation, applescript, javascript">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Backup Your Contacts v2 : Yosemite’s Javascript Automation" />
+<meta name="twitter:description" content="I recently read MacStories' article and was curious how easy this was to learn. Applescript never made sense to me and I spent more time trying to piece together examples than actually writing anything meaningful. I don't trust iCloud to keep my contacts safe, and I'm still using my previous …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Backup Your Contacts v2 : Yosemite’s Javascript Automation</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2014-12-14T00:00:00-08:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="automation"/>
+       <Attribute name="category" value="applescript"/>
+       <Attribute name="category" value="javascript"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Backup Your Contacts v2 : Yosemite’s Javascript Automation  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2014/12/14/backup-your-contacts-v2-yosemites-javascript-automation">Backup Your Contacts v2 : Yosemite’s Javascript Automation</a></h2>
+    <p id="date">Posted on 2014-12-14</p>
+
+  </div>
+  <div id="article_text">
+    <p>I recently read MacStories' <a href="http://www.macstories.net/tutorials/getting-started-with-javascript-for-automation-on-yosemite/">article</a> and was curious how easy this was to learn. Applescript never made sense to me and I spent more time trying to piece together examples than actually writing anything meaningful. I don't trust iCloud to keep my contacts safe, and I'm still using <a href="{static}../2014-09-28/2014-09-25_backup_contacts_with_pythonista.md">my previous workflow</a> with <a href="http://contrast.co/launch-center-pro/">Launch Center Pro</a> and <a href="http://omz-software.com/pythonista/">Pythonista</a> to back up my contacts.</p>
+
+<p>My first attempt at the new JSX Automation was a script to back up my contacts, which would allow me to run this automatically on my Mac Mini server. Here is what the script looks like</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">Application</span><span class="p">.</span><span class="nx">currentApplication</span><span class="p">()</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">includeStandardAdditions</span> <span class="o">=</span> <span class="kc">true</span>
+
+<span class="nx">now</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()</span>
+<span class="nx">nowString</span> <span class="o">=</span> <span class="nx">now</span><span class="p">.</span><span class="nx">getFullYear</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">now</span><span class="p">.</span><span class="nx">getMonth</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nx">now</span><span class="p">.</span><span class="nx">getDate</span><span class="p">()</span>
+
+<span class="c1">// Replace outputFile with this if you want to automatically set the path</span>
+<span class="c1">// var outputFile = Path(&#39;pick your path&#39;)  </span>
+<span class="kd">var</span> <span class="nx">outputFile</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">chooseFileName</span><span class="p">({</span>
+    <span class="nx">withPrompt</span><span class="o">:</span> <span class="s2">&quot;Pick where to save your vCard backup.&quot;</span><span class="p">,</span>
+    <span class="nx">defaultName</span><span class="o">:</span> <span class="nx">nowString</span> <span class="o">+</span> <span class="s2">&quot;_backup.vcf&quot;</span>
+<span class="p">})</span>
+
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">openForAccess</span><span class="p">(</span><span class="nx">outputFile</span><span class="p">,</span> <span class="p">{</span><span class="nx">writePermission</span><span class="o">:</span> <span class="kc">true</span><span class="p">})</span>
+<span class="nx">Contacts</span> <span class="o">=</span> <span class="nx">Application</span><span class="p">(</span><span class="s1">&#39;/Applications/Contacts.app&#39;</span><span class="p">)</span>
+<span class="nx">contacts</span> <span class="o">=</span> <span class="nx">Contacts</span><span class="p">.</span><span class="nx">people</span><span class="p">()</span>
+<span class="nx">outputString</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mf">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">contacts</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+  <span class="nx">outputString</span> <span class="o">+=</span> <span class="nx">contacts</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">vcard</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">outputString</span><span class="p">,{</span>
+    <span class="nx">to</span><span class="o">:</span> <span class="nx">a</span><span class="p">,</span>
+    <span class="nx">startingAt</span><span class="o">:</span> <span class="mf">0</span><span class="p">,</span>
+    <span class="nx">as</span><span class="o">:</span><span class="s1">&#39;text&#39;</span>
+<span class="p">})</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">closeAccess</span><span class="p">(</span><span class="nx">outputFile</span><span class="p">)</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">displayNotification</span><span class="p">(</span><span class="s2">&quot;Backup finished!&quot;</span><span class="p">,{</span>
+    <span class="nx">withTitle</span><span class="o">:</span> <span class="s2">&quot;Backup Contacts&quot;</span><span class="p">,</span>
+    <span class="nx">subtitle</span><span class="o">:</span> <span class="nx">contacts</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="s2">&quot; contacts backed up.&quot;</span>
+<span class="p">})</span>
+</code></pre></div>
+
+<p>The current script lets you choose the path to save the file. You can change this to have it be the same path every time if you want (see the instructions in the comments above).</p>
+<p>You can download the script <a href="https://ryanmo.co/2014/12/14/backup-your-contacts-v2-yosemites-javascript-automation/BackupContacts.zip">here</a> to try it for yourself.</p>
+<p>Big thank you to Alex Guyot at MacStories for his introduction to Javascript Automation.</p>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+      <a href="https://ryanmo.co/tag/applescript.html" class="button_accent_small">applescript</a>
+      <a href="https://ryanmo.co/tag/javascript.html" class="button_accent_small">javascript</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">backup-your-contacts-v2-yosemites-javascript-automation</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

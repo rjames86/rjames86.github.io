@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - projects</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Tue, 23 Dec 2014 00:00:00 -0800</lastBuildDate><item><title>Download Pinboard Bookmarks with OS X Tags</title><link>https://ryanmo.co/2014/12/23/pinboard-downloader</link><description>&lt;p&gt;For the last few years, I've been using Brett Terpstra's &lt;a href="http://brettterpstra.com/2011/04/02/mirror-your-pinboard-bookmarks-with-openmeta-tags/"&gt;Pinboard to Openmeta&lt;/a&gt; to save my Pinboard bookmarks locally. In the last few months, I've been spending more and more time trying to fix issues to get it to run reliably. Since this is something that I use often, I figured it was worth just re-writing it myself.&lt;/p&gt;
+
+&lt;p&gt;The script is a slightly simpler version of the original, but the core functionality is the same. Each bookmark is saved as a webloc file and apply any OS X tags to the file. This can be paired with an &lt;a href="https://ryanmo.co/downloads/pinboard-downloader/Bookmarks.alfredworkflow"&gt;Alfred workflow&lt;/a&gt; to easily search by title or tag.&lt;/p&gt;
+&lt;p&gt;You can download the download-pinboard project &lt;a href="https://github.com/rjames86/download_pinboard/archive/master.zip"&gt;here&lt;/a&gt;. Feel free to check out the Github project &lt;a href="https://github.com/rjames86/download_pinboard"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id="setup"&gt;Setup&lt;/h3&gt;
+&lt;p&gt;Create a settings file&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;cp settings.py&lt;span class="o"&gt;{&lt;/span&gt;.example,&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;with the following information&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;_PINBOARD_TOKEN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;YOUR TOKEN HERE&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;_SAVE_PATH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HOME&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/Bookmarks/&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In settings.py set your Pinboard token and the path where you want your bookmarks to be saved. Your token can be found at &lt;a href="https://pinboard.in/settings/password"&gt;https://pinboard.in/settings/password&lt;/a&gt;. The path must exist where you save your bookmarks and must end with a trailing /.&lt;/p&gt;
+&lt;h3 id="running-the-script"&gt;Running the Script&lt;/h3&gt;
+&lt;p&gt;To start the script, you can simply do&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;python main.py&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h4 id="optional-arguments"&gt;Optional arguments&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;-v, --verbose&lt;/code&gt; Shows output as stdout&lt;br /&gt;
+&lt;code&gt;-t&lt;/code&gt; Filters the bookmarks you want to download by tag. You can pass multiple -t tags, but no more than 3. Multiple tags are AND not OR&lt;br /&gt;
+&lt;code&gt;--reset [optional num of days]&lt;/code&gt; Resets your last updated time. If you don't specifiy a number, it will reset to 999 days.&lt;br /&gt;
+&lt;code&gt;--skip-update&lt;/code&gt; Lets you bypass the last downloaded time. Nice for redownloading everything.  &lt;/p&gt;
+&lt;h3 id="notes-and-todo"&gt;Notes and Todo&lt;/h3&gt;
+&lt;p&gt;I have a very small number of bookmarks (~150) and so I don't know if there will be any issues with a really large library. If you have one, and run into problems, please let me know and I'll happily look into it.&lt;/p&gt;
+&lt;hr /&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Tue, 23 Dec 2014 00:00:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-12-23:/2014/12/23/pinboard-downloader</guid><category>Tech</category><category>automation</category><category>python</category><category>projects</category></item></channel></rss>

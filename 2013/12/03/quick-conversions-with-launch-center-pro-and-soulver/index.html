@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="ios, automation">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Quick Conversions with Launch Center Pro and Soulver" />
+<meta name="twitter:description" content="There are some great tools out there to convert things like currency, distances and measurements. Even Siri can do this fairly well, but the one thing I always find frustrating is that the process of doing this can be fairly slow and in a lot of cases requires a data …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Quick Conversions with Launch Center Pro and Soulver</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2013-12-03T00:00:00-08:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="ios"/>
+       <Attribute name="category" value="automation"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Quick Conversions with Launch Center Pro and Soulver  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2013/12/03/quick-conversions-with-launch-center-pro-and-soulver">Quick Conversions with Launch Center Pro and Soulver</a></h2>
+    <p id="date">Posted on 2013-12-03</p>
+
+  </div>
+  <div id="article_text">
+    <p>There are some great tools out there to convert things like currency, distances and measurements. Even Siri can do this fairly well, but the one thing I always find frustrating is that the process of doing this can be fairly slow and in a lot of cases requires a data connection. Growing up in the United States, I was unfortunately never exposed to the metric system or Celsius. Since I've moved to Dublin, I'm find myself doing a lot of conversions from one unit to another.</p>
+
+
+<p>I was poking around in <a href="http://contrast.co/launch-center-pro/">Launch Center Pro</a> for iOS the other day to just see what kinds of things I could do, and I noticed one of the options was <a href="http://www.acqualia.com/soulver/iphone/">Soulver</a>. My main use case for Soulver has always been one-off conversions or keeping score while playing Farkle with my girlfriend. It occurred to me that this would make a really nice way to do quick conversions. </p>
+<p>I didn't want to have to create a mess of different actions for each unit. The way around this was to create a variable within Soulver and always reference back to it with multiple conversions. I started out simple with a quick US Dollar to Euro and Pounds and vice-versa. </p>
+<p><img alt="Currency Conversion" src="https://ryanmo.co/2013/12/03/quick-conversions-with-launch-center-pro-and-soulver/lcp_currency.jpg" /></p>
+<p>To achieve this, Launch Center Pro uses x-callback-urls which allows apps to send data to another app and perform actions. The following url requests a number and then sends over this number as a variable to Soulver</p>
+<div class="codehilite"><pre><span></span><code>soulver://new?text=x%20%3D%20[prompt-num:Text]%0Ax%20euro%20to%20usd%0Ax%20gbp%20to%20usd%0A----------------%0Ax%20usd%20to%20euro%0Ax%20usd%20to%20gbp%0A----------------<span class="err">&amp;</span>title=Currency%20Conversion
+</code></pre></div>
+
+<p>This worked perfectly and solved the two biggest requirements that I had: to be quick and to not rely on a data connection. I then wanted to go a little further and so I did some very basic unit conversions.</p>
+<p><img alt="Unit Conversions" src="https://ryanmo.co/2013/12/03/quick-conversions-with-launch-center-pro-and-soulver/lcp_temp.jpg" />  </p>
+<p>The url for the action is very similar, but using different conversions</p>
+<div class="codehilite"><pre><span></span><code>soulver://new?text=x%20%3D%20[prompt-num:Text]%0AFahrenheit%3A%20x%20C%20to%20F%0ACelsius%3A%20x%20F%20to%20C%0A-%20-%20-%20-%20-%20-%20-%20-%20-%20-%20-%20-%20%0AMiles%3A%20x%20km%20to%20mi%0AKilometers%3A%20x%20mi%20to%20km%0A-%20-%20-%20-%20-%20-%20-%20-%20-%20-%20-%20-%20%0AFeet%3A%20x%20m%20to%20feet%0AMeters%3A%20x%20feet%20to%20m%0A----------------<span class="err">&amp;</span>title=Temperature
+</code></pre></div>
+
+<p>If you have both Launch Center Pro and Soulver, you can download both of these actions here:</p>
+<p><a href="http://launchcenterpro.com/2xv247">Currency Conversion</a><br />
+<a href="http://launchcenterpro.com/ylljt1">Unit Conversions</a>  </p>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/ios.html" class="button_accent_small">ios</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">quick-conversions-with-launch-center-pro-and-soulver</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

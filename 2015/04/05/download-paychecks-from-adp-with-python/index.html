@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="python, automation">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Download Paychecks from ADP with Python" />
+<meta name="twitter:description" content="If your employer uses ADP, you'll know how terrible their website is. I always dread having to go to the website, but I like to download my paychecks every two weeks. I started playing around with writing a script to download them using Python, but decided I should check Github …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Download Paychecks from ADP with Python</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2015-04-05T03:44:00-07:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="python"/>
+       <Attribute name="category" value="automation"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Download Paychecks from ADP with Python  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2015/04/05/download-paychecks-from-adp-with-python">Download Paychecks from ADP with Python</a></h2>
+    <p id="date">Posted on 2015-04-05</p>
+
+  </div>
+  <div id="article_text">
+    <p>If your employer uses ADP, you'll know how terrible their website is.  I always dread having to go to the website, but I like to download my paychecks every two weeks. </p>
+
+<p>I started playing around with writing a script to download them using Python, but decided I should check Github to see if anyone had already done this. Sure enough, the <a href="https://github.com/rayhe/adp">first result</a> was a script that someone had written that would download all your paychecks. </p>
+<p>The script worked perfectly, but there were a few small changes I wanted to make. First, I added a new method that let me easily set the destination path.  I also didn't want to have to remember to run this every two weeks, nor did I want a cron job running this script with my password in plain text. I forked the repo, and started incorporating OS X's Keychain to let me store my password securely and running the script once a day to pull down any new paychecks. I borrowed the Keychain library from the <a href="https://github.com/deanishe/alfred-workflow">alfred-workflow</a>. This lets me easily save and retrieve passwords from Keychain in python. To set my for ADP in Keychain, I used the quick script (you could also do this manually in Keychain.app):</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">keychain</span> <span class="kn">import</span> <span class="n">KeyChain</span>
+<span class="kn">import</span> <span class="nn">getpass</span>
+
+<span class="n">my_password</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s2">&quot;Enter pw: &quot;</span><span class="p">)</span>
+
+<span class="n">KeyChain</span><span class="p">()</span><span class="o">.</span><span class="n">save_password</span><span class="p">(</span><span class="s2">&quot;my_username&quot;</span><span class="p">,</span> <span class="n">my_password</span><span class="p">,</span> <span class="s1">&#39;adp&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>The script is smart enough to not re-download paychecks that you've already saved, so now it was as simple as adding a new line to my daily cron jobs</p>
+<div class="codehilite"><pre><span></span><code><span class="n">python</span> <span class="n">adp</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;my_username&quot;</span>
+</code></pre></div>
+
+<p>Lastly, just so that I know when a new paycheck has been added, I set up a small Hazel rule to send me a notification through Pushover whenever a new file is added</p>
+<p><img alt="adp_hazel" src="https://ryanmo.co/posts/Tech/2015-04-05/adp_hazel.png" /></p>
+<p>You can see my fork of ADP-paychecks <a href="https://github.com/rjames86/adp/tree/keychain">here</a>. You can download a zip of the project <a href="https://github.com/rjames86/adp/archive/keychain.zip">here</a>.</p>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/python.html" class="button_accent_small">python</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">download-paychecks-from-adp-with-python</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

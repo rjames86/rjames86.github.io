@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="automation, Dropbox, ifttt, launchcenterpro, ios, pythonista">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Back up Your Contacts with Pythonista" />
+<meta name="twitter:description" content="While it hasn't happened in a while, I have lost or had issues with contacts in iCloud. I haven't found a reliable way to automatically back up my contacts on my Mac, but Pythonista offers a simple way to back them up. Pythonista offers a great library which gives you …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Back up Your Contacts with Pythonista</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2014-09-28T00:00:00-07:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="automation"/>
+       <Attribute name="category" value="Dropbox"/>
+       <Attribute name="category" value="ifttt"/>
+       <Attribute name="category" value="launchcenterpro"/>
+       <Attribute name="category" value="ios"/>
+       <Attribute name="category" value="pythonista"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Back up Your Contacts with Pythonista  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2014/09/28/back-up-your-contacts-with-pythonista">Back up Your Contacts with Pythonista</a></h2>
+    <p id="date">Posted on 2014-09-28</p>
+
+  </div>
+  <div id="article_text">
+    <p>While it hasn't happened in a while, I have lost or had issues with contacts in iCloud. I haven't found a reliable way to automatically back up my contacts on my Mac, but Pythonista offers a simple way to back them up.</p>
+
+
+<p>Pythonista offers a great library which gives you access to your contacts on iOS. With a short script, I can back up my contacts to a folder in my Dropbox account. This will add a vCard file to my Dropbox account with the date the script was run.</p>
+<p><em>Note: You'll need the Dropbox login script for this to work. Visit <a href="https://gist.github.com/omz/4034526">this</a> link to get it set up. I keep mine in a folder called "lib" in Pythonista.</em></p>
+<p>You can download my Contacts Back up script <a href="https://gist.github.com/rjames86/79f857f427599f6e145c">here</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">contacts</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">console</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span> <span class="o">+=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;lib&#39;</span><span class="p">)]</span>
+<span class="kn">from</span> <span class="nn">dropboxlogin</span> <span class="kn">import</span> <span class="n">get_client</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="c1"># Update this path here for the backup</span>
+<span class="c1"># location in your Dropbox account.</span>
+<span class="n">BACKUP_PATH</span> <span class="o">=</span> <span class="s1">&#39;/Backups/Contacts&#39;</span>
+
+<span class="n">TODAY</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">dropbox_client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+
+<span class="n">VCARD</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">vcard</span> <span class="k">for</span> <span class="n">person</span> <span class="ow">in</span> <span class="n">contacts</span><span class="o">.</span><span class="n">get_all_people</span><span class="p">())</span>
+
+<span class="n">console</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">dropbox_client</span><span class="o">.</span><span class="n">put_file</span><span class="p">(</span><span class="n">BACKUP_PATH</span> <span class="o">+</span> <span class="s1">&#39;/contacts </span><span class="si">{}</span><span class="s1">.vcf&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">TODAY</span><span class="p">),</span> <span class="n">VCARD</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s1">&#39;Backup complete!&#39;</span>
+</code></pre></div>
+
+<p>If you're like me, you're going to forget to do this on a regular basis. I hadn't yet found a reason to use the IFTTT Launch Center Pro triggers, but this turned about to be a great reason to use it. I have a trigger that goes off on the first of every month that will launch the back up script.</p>
+<p>If you want to get reminders to back up your contacts using IFTTT, you can use the recipe below.</p>
+<p><a href="https://ifttt.com/view_embed_recipe/206885-backup-contacts-with-lcp" target = "_blank" class="embed_recipe embed_recipe-l_24" id= "embed_recipe-206885"><img src= 'https://ifttt.com/recipe_embed_img/206885' alt="IFTTT Recipe: Backup Contacts with LCP connects date-time to launch-center" width="370px" style="max-width:100%"/></a><script async type="text/javascript" src= "//ifttt.com/assets/embed_recipe.js"></script></p>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+      <a href="https://ryanmo.co/tag/dropbox.html" class="button_accent_small">Dropbox</a>
+      <a href="https://ryanmo.co/tag/ifttt.html" class="button_accent_small">ifttt</a>
+      <a href="https://ryanmo.co/tag/launchcenterpro.html" class="button_accent_small">launchcenterpro</a>
+      <a href="https://ryanmo.co/tag/ios.html" class="button_accent_small">ios</a>
+      <a href="https://ryanmo.co/tag/pythonista.html" class="button_accent_small">pythonista</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">back-up-your-contacts-with-pythonista</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

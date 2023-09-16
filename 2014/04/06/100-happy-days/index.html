@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="hazel, pelican, photos">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ 100 Happy Days" />
+<meta name="twitter:description" content="A few people from work convinced me to participate in 100 Happy Days. Since I'm already doing a "selfie a day" so I figured adding one more photo a day wouldn't hurt. What I didn't want to do is post to the various social media sites every single day and …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">100 Happy Days</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2014-04-06T00:00:00-07:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="hazel"/>
+       <Attribute name="category" value="pelican"/>
+       <Attribute name="category" value="photos"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+100 Happy Days  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2014/04/06/100-happy-days">100 Happy Days</a></h2>
+    <p id="date">Posted on 2014-04-06</p>
+
+  </div>
+  <div id="article_text">
+    <p>A few people from work convinced me to participate in <a href="http://100happydays.com">100 Happy Days</a>. Since I'm already doing a "selfie a day" so I figured adding one more photo a day wouldn't hurt. What I didn't want to do is post to the various social media sites every single day and spam all my followers. Hazel and my blog helped me solve this problem.</p>
+
+
+<h3 id="hazel">Hazel</h3>
+<p>Similar to my <a href="{static}../2014-01-05/2014-01-05_Organizing-Special-Photo-with-Hazel.md">previous post</a>, I'm using Hazel to detect special types of photos. I decided for 100 Happy Days I would always take the photos using the default Camera in square mode.</p>
+<p><img alt="1 Happy Day of Coffee" src="https://ryanmo.co/posts/Tech/2014-04-06/3.jpg" /></p>
+<p>Hazel makes this really simple. Each time a photo that matches the criteria comes into my Dropbox Camera Uploads folder, it gets resorted and renamed to YYYY-mm-dd.jpg.</p>
+<p><img alt="Hazel Rule for Photos" src="https://ryanmo.co/posts/Tech/2014-04-06/hazel1.png" /></p>
+<p>This simply takes care of the photos themselves. But now I want them to also appear on my blog. I have a separate rule that watches this new folder of photos and moves them into my Pelican project folder.</p>
+<p><img alt="Hazel Rule for Pelican" src="https://ryanmo.co/posts/Tech/2014-04-06/hazel2.png" /></p>
+<p>The key to this one is that I name them with sequential numbers, starting with 1.jpg. This will be useful later for my blog.</p>
+<h3 id="pelican-blog">Pelican Blog</h3>
+<p>I decided to set up a hidden page on my blog to host these images. I created a custom template since it's fairly unique and different from the rest of my blog. The meat of the template is just this:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">article</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ SITEURL }}/{{ page.url }}&quot;</span><span class="p">&gt;</span>{{ page.title }}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;two-columns&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;grid-container&quot;</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;display:block;&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;rig columns-2&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">article</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<p>I'm using the CSS for the gallery from <a href="http://alijafarian.com/responsive-image-grids-using-css/">this</a> post by Ali Jafarian.</p>
+<p>This is where my Hazel photo naming comes in handy. I'm using a simply JavaScript function to embed these images on page load.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">function</span> <span class="nx">createImages</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">start_date</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mf">2014</span><span class="p">,</span> <span class="mo">03</span><span class="p">,</span> <span class="mo">03</span><span class="p">)</span> <span class="c1">// April 3, 2014</span>
+    <span class="nx">days_passed</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">((</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()</span> <span class="o">-</span> <span class="nx">start_date</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000</span> <span class="o">/</span> <span class="mf">86400</span><span class="p">);</span>
+    <span class="nx">extension</span> <span class="o">=</span> <span class="s1">&#39;.jpg&#39;</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mf">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nx">days_passed</span> <span class="o">+</span> <span class="mf">1</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">li</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">img</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">);</span>
+        <span class="nx">img</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">&#39;/images/100daysofhappiness/&#39;</span> <span class="o">+</span> <span class="nx">i</span> <span class="o">+</span> <span class="nx">extension</span><span class="p">;</span>
+        <span class="nx">img</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s2">&quot;onError&quot;</span><span class="p">,</span> <span class="s2">&quot;this.onerror=null;this.src=&#39;/images/imagenotfound.jpg&#39;&quot;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">h3</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;h3&#39;</span><span class="p">);</span>
+        <span class="nx">h3</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> <span class="s2">&quot;Day &quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">;</span>
+        <span class="nx">li</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">img</span><span class="p">);</span>
+        <span class="nx">li</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">h3</span><span class="p">);</span>
+        <span class="nx">jQuery</span><span class="p">(</span><span class="s1">&#39;.rig&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">li</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">jQuery</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">createImages</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p>I can easily compute the number of days that have passed and safely assume that an image exists for each of those days. I learned today that if you add the attribute <code>onError</code> to an image, you can create a fallback image in case the real image source doesn't exist.</p>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/hazel.html" class="button_accent_small">hazel</a>
+      <a href="https://ryanmo.co/tag/pelican.html" class="button_accent_small">pelican</a>
+      <a href="https://ryanmo.co/tag/photos.html" class="button_accent_small">photos</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">100-happy-days</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

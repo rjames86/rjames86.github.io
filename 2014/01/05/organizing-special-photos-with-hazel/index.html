@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="hazel, automation, photos">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Organizing Special Photos with Hazel" />
+<meta name="twitter:description" content="Nearly all of my photos are sorted based on year, month and day. Hazel easily takes care of of this for me, but occasionally I will have projects where photos need to be excluded or organized in a different way. With Hazel, I can still account for these special cases …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Organizing Special Photos with Hazel</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2014-01-05T00:00:00-08:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="hazel"/>
+       <Attribute name="category" value="automation"/>
+       <Attribute name="category" value="photos"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Organizing Special Photos with Hazel  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2014/01/05/organizing-special-photos-with-hazel">Organizing Special Photos with Hazel</a></h2>
+    <p id="date">Posted on 2014-01-05</p>
+
+  </div>
+  <div id="article_text">
+    <p>Nearly all of my photos are sorted based on year, month and day. Hazel easily takes care of of this for me, but occasionally I will have projects where photos need to be excluded or organized in a different way. With Hazel, I can still account for these special cases with extra bits of metadata.</p>
+
+
+<p>This may not come in handy to anyone, but I thought it would be worth showing some of the creative ways that Hazel can be used to organize your files based on more than just creation/modification time or file type.</p>
+<p>In late May 2013, I decided I wanted to do one of those time lapse videos where you take a picture of yourself in front of the camera every day. At first, the hardest part was just remembering to take the picture each day. Once I was in the routine, I started to find the task monotonous to pull the photo from my Dropbox folder, rename it to YYYY-MM-DD.jpg and then move it into a special folder I had creatively named "Picture a Day." Hazel was already taking care of my general photo organization, but I wanted to ensure that these photos got organized specifically so I started digging into the special traits of these photos. I quickly found a few default options in Hazel that would help me do this:</p>
+<ul>
+<li>Device make</li>
+<li>Pixel width/height</li>
+<li>Content creator</li>
+</ul>
+<p>I was always using Camera+ for these photos because of the grid and level features. It allowed me to align my face in the same place in the photos. Since I always used the front camera, the dimensions of the photos remained the same. After playing around, here is the Hazel rule I came up with</p>
+<p><img alt="Hazel Picture a Day" src="https://ryanmo.co/2014/01/05/organizing-special-photos-with-hazel/hazel_picture_a_day.png" /></p>
+<p>Another key piece here is the datestamp token. The rule watches for Dropbox's Camera Uploads filename format YYYY-MM-DD HH.MM.SS.jpg. This wouldn't be necessary except for that this token then becomes useful in the actions portion. I can take that token and rename the file based on the token to simply YYYY-MM-DD.jpg since I don't care about the hour the photo was taken. What's great about the token is that this will prevent accidental naming of the file if I happen to upload it the next day or I'm flying between Ireland and the US and date times get messed up.</p>
+<p>While this rule is fairly specific, it's saved me a lot of time having to organize the photos manually. </p>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/hazel.html" class="button_accent_small">hazel</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+      <a href="https://ryanmo.co/tag/photos.html" class="button_accent_small">photos</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">organizing-special-photos-with-hazel</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

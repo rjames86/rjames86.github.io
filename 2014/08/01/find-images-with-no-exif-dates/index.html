@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="bash, automation, exiftool, photos">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Find images with No Exif Dates" />
+<meta name="twitter:description" content="My Dropbox folder is full of images claiming to be "missing dates." 1 Some of these photos were thumbnails or images from DayOne that didn't necessarily need dates, but others were real photos that for whatever reason didn't have dates that Dropbox recognized. I did some poking around, and found …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Find images with No Exif Dates</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2014-08-01T00:00:00-07:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="bash"/>
+       <Attribute name="category" value="automation"/>
+       <Attribute name="category" value="exiftool"/>
+       <Attribute name="category" value="photos"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Find images with No Exif Dates  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates">Find images with No Exif Dates</a></h2>
+    <p id="date">Posted on 2014-08-01</p>
+
+  </div>
+  <div id="article_text">
+    <p>My Dropbox folder is full of images claiming to be "missing dates." <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> Some of these photos were thumbnails or images from DayOne that didn't necessarily need dates, but others were real photos that for whatever reason didn't have dates that Dropbox recognized.</p>
+
+
+<p><img alt="Carousel Missing Photos" src="https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates/carousel_missing.png" /></p>
+<p>I did some poking around, and found that there were a couple of different reasons why my photos in Dropbox weren't displaying dates:</p>
+<ul>
+<li>The DateTimeOriginal exif tag was missing entirely</li>
+<li>The DateTimeOriginal was set to 0000:00:00 00:00:00</li>
+</ul>
+<p>With the magic of <a href="http://www.sno.phy.queensu.ca/~phil/exiftool/">exiftool</a>, I found a way to find all the photos in my Dropbox folder that were missing dates and output the results to a CSV.</p>
+<div class="codehilite"><pre><span></span><code>exiftool -filename -r -if <span class="s1">&#39;(not $datetimeoriginal or ($datetimeoriginal eq &quot;0000:00:00 00:00:00&quot;)) and ($filetype eq &quot;JPEG&quot;)&#39;</span> -common -csv &gt; ~/Dropbox/nodates.csv
+</code></pre></div>
+
+<p>This will give you a CSV with all of the common file information for the images. </p>
+<p><img alt="CSV of Missing Photos" src="https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates/csv.png" /></p>
+<p>At this point, you'll need to decide how you'll want to fix these photos. From what I have seen so far, the best exif tag to go on is <code>-filemodifydate</code>, but you'll probably need to figure that out on your own. If you want to fix any photo that matches the above criteria, you can do something like this</p>
+<div class="codehilite"><pre><span></span><code>exiftool <span class="sb">`</span>-datetimeoriginal&lt;filemodifydate<span class="sb">`</span> -r -if <span class="s1">&#39;(not $datetimeoriginal or ($datetimeoriginal eq &quot;0000:00:00 00:00:00&quot;)) and ($filetype eq &quot;JPEG&quot;)&#39;</span> ~/Dropbox
+</code></pre></div>
+
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>2965 photos to be exact.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/bash.html" class="button_accent_small">bash</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+      <a href="https://ryanmo.co/tag/exiftool.html" class="button_accent_small">exiftool</a>
+      <a href="https://ryanmo.co/tag/photos.html" class="button_accent_small">photos</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">find-images-with-no-exif-dates</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

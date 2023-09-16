@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="automation, javascript, objectivec">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ List Server Favorites in OS X 10.11 El Capitan" />
+<meta name="twitter:description" content="I'm using Alfred a lot less these days. Many of my workflows have been easier to build in Keyboard Maestro. The remaining few that are left in Alfred are ones that I heavily depend on, one of which is accessing my Server Favorites in OS X. Up until OS X …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">List Server Favorites in OS X 10.11 El Capitan</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2015-10-31T02:11:00-07:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="automation"/>
+       <Attribute name="category" value="javascript"/>
+       <Attribute name="category" value="objectivec"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+List Server Favorites in OS X 10.11 El Capitan  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2015/10/31/list-server-favorites-in-os-x-1011-el-capitan">List Server Favorites in OS X 10.11 El Capitan</a></h2>
+    <p id="date">Posted on 2015-10-31</p>
+
+  </div>
+  <div id="article_text">
+    <p>I'm using Alfred a lot less these days. Many of my workflows have been easier to build in Keyboard Maestro. The remaining few that are left in Alfred are ones that I heavily depend on, one of which is accessing my Server Favorites in OS X. </p>
+<p>Up until OS X 10.11 El Capitan, Server Favorites were stored in a plist file called <code>com.apple.sidebarlists.plist</code>. I finally got around to upgrading my computers at home only to realize that my "server" workflow stopped working. After inspecting the plist file, I found that those favorites were gone and were hiding elsewhere. After a bunch of searching, and the help of Houdaspot, I found them in <code>~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.FavoriteServers.sfl</code>. What is this <code>sfl</code> extension? Still not really sure, but after some poking around, <a href="https://gist.github.com/pudquick/4776b4b2075bf9b7e512">this</a> was the only resource I could find that helped me get started. </p>
+<p>I don't necessarily like the CoreFoundation stuff in Python, and since I'm on a OS X JavaScript automation roll right now, I decided to give it a try. Turns out, it's really easy.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">items</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">NSKeyedUnarchiver</span><span class="p">.</span><span class="nx">unarchiveObjectWithFile</span><span class="p">(</span><span class="s1">&#39;/Users/username/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.FavoriteServers.sfl&#39;</span><span class="p">)</span>
+
+<span class="nx">items</span> <span class="o">=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">objectForKey</span><span class="p">(</span><span class="s1">&#39;items&#39;</span><span class="p">)</span>
+<span class="nx">itemsCount</span> <span class="o">=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">count</span>
+
+<span class="nx">to_ret</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">while</span> <span class="p">(</span><span class="nx">itemsCount</span><span class="o">--</span><span class="p">){</span>
+      <span class="nx">item</span> <span class="o">=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">objectAtIndex</span><span class="p">(</span><span class="nx">itemsCount</span><span class="p">)</span>
+    <span class="nx">to_ret</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> 
+            <span class="nx">url</span><span class="o">:</span> <span class="nx">item</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">absoluteString</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nx">to_ret</span>
+</code></pre></div>
+
+<p>This returns a nice object of the name and url for the servers in your favorites.</p>
+<p>You can download the workflow here.</p>
+<p><a href="https://ryanmo.co/downloads/VNC_Favorites.alfredworkflow"><img alt="image" src="https://ryanmo.co/images/alfred_extension.jpg" /></a>    </p>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+      <a href="https://ryanmo.co/tag/javascript.html" class="button_accent_small">javascript</a>
+      <a href="https://ryanmo.co/tag/objectivec.html" class="button_accent_small">objectivec</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">list-server-favorites-in-os-x-1011-el-capitan</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

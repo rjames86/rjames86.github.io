@@ -1,0 +1,5 @@
+User-agent: *
+Sitemap: http://ryanmo.co/sitemap.xml
+Disallow: /downloads/
+Disallow: /json/
+Disallow: /feeds/

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="bash, automation, textexpander">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Show Time in Multiple Time Zones with TextExpander" />
+<meta name="twitter:description" content="I'm really bad at converting a time to other timezones. Now that the company I work for has offices in multiple countries, scheduling has become much more difficult. In an effort to eliminate the need for people to convert times themselves, I wrote a TextExpander snippet to take care of …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Show Time in Multiple Time Zones with TextExpander</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2014-05-10T00:00:00-07:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="bash"/>
+       <Attribute name="category" value="automation"/>
+       <Attribute name="category" value="textexpander"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Show Time in Multiple Time Zones with TextExpander  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2014/05/10/show-time-in-multiple-time-zones-with-textexpander">Show Time in Multiple Time Zones with TextExpander</a></h2>
+    <p id="date">Posted on 2014-05-10</p>
+
+  </div>
+  <div id="article_text">
+    <p>I'm really bad at converting a time to other timezones. Now that the company I work for has offices in multiple countries, scheduling has become much more difficult. In an effort to eliminate the need for people to convert times themselves, I wrote a TextExpander snippet to take care of it for me.</p>
+
+
+<p>There are tons of tools out there that show you what time it is in other parts of the world. One thing that isn't as readily available is a quick way to tell me what time it would be in California if it's 3:00pm in Dublin. I decided to write a quick TextExpander snippet that would let me pick the time and then it would output the time in all of my chosen time zones. </p>
+<p>The first step is to choose the time zones that you want to appear. In my case, I chose the following since we have offices in these locations:</p>
+<ul>
+<li>Europe/Dublin</li>
+<li>America/Los_Angeles</li>
+<li>America/Chicago</li>
+</ul>
+<p>Now I need to convert a chosen time to all of these time zones. This can be done using the <code>date</code> command in bash. Here's a quick example to try in the Terminal:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">TZ=Europe/Dublin date -jf &quot;%H:%M %z&quot; &quot;$(date &quot;+%H:%M %z&quot;)&quot; &quot;+%H:%M %Z&quot;</span>
+</code></pre></div>
+
+<ul>
+<li>TZ lets you choose the time zone for the <code>date</code> command</li>
+<li>-f tells <code>date</code> the format to expect for the input</li>
+<li>-j tells <code>date</code> to not change the date allowing the -f flag to convert a time</li>
+<li>"$(date "+%H:%M %z")" just gives the current date that looks like HH:MM +0100</li>
+<li>"+%H:%M %Z" is the output format</li>
+</ul>
+<p>This gives you the following result:</p>
+<p>04:52 IST</p>
+<p>Now to do this for multiple time zones:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">timezones</span><span class="o">=(</span> <span class="s2">&quot;America/Los_Angeles&quot;</span> <span class="s2">&quot;America/Chicago&quot;</span> <span class="s2">&quot;Europe/Dublin&quot;</span><span class="o">)</span>
+
+<span class="k">for</span> zone <span class="k">in</span> <span class="si">${</span><span class="nv">timezones</span><span class="p">[@]</span><span class="si">}</span>
+<span class="k">do</span>
+    <span class="nv">TZ</span><span class="o">=</span><span class="nv">$zone</span> date -jf <span class="s2">&quot;%H:%M %z&quot;</span> <span class="s2">&quot;</span><span class="k">$(</span>date <span class="s2">&quot;+%H:%M %z&quot;</span><span class="k">)</span><span class="s2">&quot;</span> <span class="s2">&quot;+%H:%M %Z&quot;</span><span class="p">;</span>
+<span class="k">done</span>
+</code></pre></div>
+
+<p>Which gives:</p>
+<p>08:55 PDT<br />
+10:55 CDT<br />
+16:55 IST  </p>
+<p>Lastly, let's add in some TextExpander input methods, and we have a way to use this with whatever time we want:</p>
+<div class="codehilite"><pre><span></span><code><span class="ch">#! /bin/bash</span>
+
+/* 
+Enter a <span class="nb">time</span> using 24H. <span class="m">1</span>:30pm is <span class="m">13</span>:30
+*/
+<span class="nv">ENTERTIME</span><span class="o">=</span><span class="s2">&quot;%filltext:name=Hour:width=2%:%filltext:name=Minute:width=2%&quot;</span>
+
+<span class="nv">timezones</span><span class="o">=(</span> <span class="s2">&quot;America/Los_Angeles&quot;</span> <span class="s2">&quot;America/Chicago&quot;</span> <span class="s2">&quot;Europe/Dublin&quot;</span> <span class="o">)</span>
+
+<span class="k">for</span> zone <span class="k">in</span> <span class="si">${</span><span class="nv">timezones</span><span class="p">[@]</span><span class="si">}</span>
+<span class="k">do</span>
+        <span class="nv">TZ</span><span class="o">=</span><span class="nv">$zone</span> date -jf <span class="s2">&quot;%H:%M %z&quot;</span> <span class="s2">&quot;</span><span class="nv">$ENTERTIME</span><span class="s2"> </span><span class="k">$(</span>date <span class="s2">&quot;+%z&quot;</span><span class="k">)</span><span class="s2">&quot;</span> <span class="s2">&quot;+%H:%M %Z&quot;</span><span class="p">;</span>
+<span class="k">done</span>
+</code></pre></div>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/bash.html" class="button_accent_small">bash</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+      <a href="https://ryanmo.co/tag/textexpander.html" class="button_accent_small">textexpander</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">show-time-in-multiple-time-zones-with-textexpander</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

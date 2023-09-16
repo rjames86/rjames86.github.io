@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="bash, automation, Dropbox">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Global Shell Variables for Dropbox Paths" />
+<meta name="twitter:description" content="I have multiple computers running Dropbox, all of which have different folder paths to where the Dropbox folder is located. I wanted to have a universal way to find and navigate to the folders regardless of what computer I was on. In most cases, setting a variable to your Dropbox …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Global Shell Variables for Dropbox Paths</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2014-08-31T00:00:00-07:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="bash"/>
+       <Attribute name="category" value="automation"/>
+       <Attribute name="category" value="Dropbox"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Global Shell Variables for Dropbox Paths  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2014/08/31/global-shell-variables-for-dropbox-paths">Global Shell Variables for Dropbox Paths</a></h2>
+    <p id="date">Posted on 2014-08-31</p>
+
+  </div>
+  <div id="article_text">
+    <p>I have multiple computers running Dropbox, all of which have different folder paths to where the Dropbox folder is located. I wanted to have a universal way to find and navigate to the folders regardless of what computer I was on.</p>
+
+
+<p>In most cases, setting a variable to your Dropbox path is relatively easy. You could set your .bashrc to look something like this</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">DROPBOX_PERSONAL</span><span class="o">=</span><span class="nv">$HOME</span>/Dropbox
+</code></pre></div>
+
+<p>But this fails in a few situations, all of which apply to me on one or more of my computers</p>
+<ul>
+<li>Multiple Dropbox accounts on one computer (Personal and Business accounts)</li>
+<li>Dropbox isn't located in my home folder</li>
+</ul>
+<p>If you're running Dropbox version 2.8 or higher (you should be anyways), there's a json file that tells you where your Dropbox folders are located. The json looks like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">{</span>
+    <span class="s2">&quot;personal&quot;</span>: <span class="o">{</span>
+        <span class="s2">&quot;path&quot;</span>: <span class="s2">&quot;/Users/username/Dropbox (Personal)&quot;</span>,
+        <span class="s2">&quot;host&quot;</span>: <span class="m">1234</span>
+    <span class="o">}</span>,
+    <span class="s2">&quot;business&quot;</span>: <span class="o">{</span>
+        <span class="s2">&quot;path&quot;</span>: <span class="s2">&quot;/Users/username/Dropbox (Business)&quot;</span>, 
+        <span class="s2">&quot;host&quot;</span>: <span class="m">5678</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+
+<p>What this means is that you can set global variables using this information in your .bashrc or .bash_profile so that you always know where your Dropbox folder is</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">DROPBOX_WORK</span><span class="o">=</span><span class="k">$(</span>python -c <span class="s2">&quot;import json;f=open(&#39;</span><span class="nv">$HOME</span><span class="s2">/.dropbox/info.json&#39;, &#39;r&#39;).read();data=json.loads(f);print data.get(&#39;business&#39;, {}).get(&#39;path&#39;, &#39;&#39;)&quot;</span><span class="k">)</span>
+<span class="nv">DROPBOX_PERSONAL</span><span class="o">=</span><span class="k">$(</span>python -c <span class="s2">&quot;import json;f=open(&#39;</span><span class="nv">$HOME</span><span class="s2">/.dropbox/info.json&#39;, &#39;r&#39;).read();data=json.loads(f);print data.get(&#39;personal&#39;, {}).get(&#39;path&#39;, &#39;&#39;)&quot;</span><span class="k">)</span>
+</code></pre></div>
+
+<p>Now all you have to do is reference your Dropbox folders with <code>$DROPBOX_PERSONAL</code> or <code>$DROPBOX_WORK</code>.</p>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/bash.html" class="button_accent_small">bash</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+      <a href="https://ryanmo.co/tag/dropbox.html" class="button_accent_small">Dropbox</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">global-shell-variables-for-dropbox-paths</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>

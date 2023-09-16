@@ -1,0 +1,26 @@
+Title: My Podcast List
+Date: 2014-09-14
+Modified: 2016-07-25
+Tags: podcasts
+Author: Ryan M
+
+I commute about 30 minutes each way to and from work. Since I can listen to music while I work and spoken word is distracting, I listen to podcasts. Here's a list of the podcasts I'm currently listening to.
+<!-- PELICAN_END_SUMMARY -->
+
+**Current Podcasting App**: [Overcast](http://overcast.fm)
+
+- [99% Invisible](http://99percentinvisible.org)
+- [Accidental Tech Podcast](http://atp.fm)
+- [The Black Tapes]()
+- [Connected](http://relay.fm/connected)
+- [Criminal]()
+- [Hello Internet]()
+- [Lifeoff]()
+- [NPR TED Radio Hour](http://www.npr.org/programs/ted-radio-hour/)
+- [Radiolab](http://www.radiolab.org/series/podcasts/)
+- [Small Town Horror]()
+- [Invisibilia]()
+- [Under the Radar]()
+- [Ungeniused]()
+- [Upgrade]()
+

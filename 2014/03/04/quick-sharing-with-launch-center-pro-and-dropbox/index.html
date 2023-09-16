@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://ryanmo.co/images/favicon.png" type="image/png">
+  <link rel="me" href="https://micro.blog/rjames86" />
+  <link rel="me" href="https://mastodon.social/@rjames">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ryan M">
+  <meta name="description" content="Posts and writings by Ryan M">
+
+
+  <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+  <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+  <meta name="keywords" content="ios, automation, Dropbox, launchcenterpro, photos">
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@rjames86" />
+<meta name="twitter:title" content="ryanmo.co ~ Quick Sharing with Launch Center Pro and Dropbox" />
+<meta name="twitter:description" content="I've been finding more and more reasons to use Launch Center Pro recently. With the fairly recent addition of Dropbox actions, I've been finding new ways to share links quickly. I take a lot of quick photos that I never plan to keep around. In most cases, it's just to …" />
+<meta name="twitter:image" content="https://ryanmo.co/images/logo.jpg" />
+<!--Add SEO pagemap-->
+<!-- https://developers.google.com/custom-search/docs/structured_data?hl=es&csw=1#microformats -->
+
+<!--
+<PageMap>
+<DataObject type="document">
+    <Attribute name="title">Quick Sharing with Launch Center Pro and Dropbox</Attribute>
+    <Attribute name="author">Ryan M</Attribute>
+    <Attribute name="last_update">2014-03-04T00:00:00-08:00</Attribute>
+</DataObject>
+
+<DataObject type="metatags">
+    <Attribute name="category" value="Technology"/>
+       <Attribute name="category" value="ios"/>
+       <Attribute name="category" value="automation"/>
+       <Attribute name="category" value="Dropbox"/>
+       <Attribute name="category" value="launchcenterpro"/>
+       <Attribute name="category" value="photos"/>
+</DataObject>
+</PageMap>
+-->
+
+  <title>
+Quick Sharing with Launch Center Pro and Dropbox  </title>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div id="user_meta">
+      <a href="https://ryanmo.co">
+        <img src="https://ryanmo.co/images/avatar.png" id="avatar" alt="logo">
+      </a>
+      <h2><a href="https://ryanmo.co">Ryan M</a></h2>
+      <p id="slogan">ryanmo.co</p>
+      <ul>
+        <li><a href="https://ryanmo.co/category/tech">Tech</a></li>
+        <li><a href="https://ryanmo.co/category/lists">Lists</a></li>
+          <li><a href="https://ryanmo.co/about">About</a></li>
+      </ul>
+      <div class="social">
+        <a href="http://www.github.com/rjames86" target="_blank"><img src="https://ryanmo.co/images/social/Github.png"></a>
+        <a href="http://feedpress.me/ryanmoco" target="_blank"><img src="https://ryanmo.co/images/social/RSS.png"></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div id="headcontent">
+        <p id="headerlinks">
+        <a href="https://ryanmo.co">Home</a> &#124;
+        <a href="https://ryanmo.co/archives.html">Archives</a>  &#124;
+        <a href="https://ryanmo.co/tags.html">Tags</a>
+        &#124; <a href="http://feedpress.me/ryanmoco">RSS Feed</a>
+        </p>
+      </div>
+    </header>
+
+<article>
+  <div id="article_title">
+    <h2><a href="https://ryanmo.co/2014/03/04/quick-sharing-with-launch-center-pro-and-dropbox">Quick Sharing with Launch Center Pro and Dropbox</a></h2>
+    <p id="date">Posted on 2014-03-04</p>
+
+  </div>
+  <div id="article_text">
+    <p>I've been finding more and more reasons to use Launch Center Pro recently. With the fairly recent addition of Dropbox actions, I've been finding new ways to share links quickly. </p>
+
+
+<p><img alt="Launch Center Pro and Dropbox" src="https://ryanmo.co/2014/03/04/quick-sharing-with-launch-center-pro-and-dropbox/lcp_dropbox.png" /></p>
+<p>I take a lot of quick photos that I never plan to keep around. In most cases, it's just to send to someone quickly. iMessage is easy, but the images aren't compressed nearly enough and can take a while to upload. I've now started uploading the images to Dropbox and sharing the link. The upload speed is reduced since Launch Center Pro will take care of reducing the quality before uploading. The message sends almost instantly because there isn't an attachment. Here are a few of workflows I use with Dropbox:</p>
+<h3 id="upload-last-photo-taken-and-get-the-link">Upload last photo taken and get the link</h3>
+<p><em>This is if I simply need a quick link to share anywhere. The image uploads at 50% quality. I have a folder called Temp/_Destrctable Folder where I keep all my throwaway images. I'm using the TextExpander snippet ..ttimestamp to name the files like 14-03-08-19.42.45.jpg</em></p>
+<div class="codehilite"><pre><span></span><code><span class="c">launchpro-dropbox://addlastphoto?path=/Temp/_Destructable Folder&amp;name=&lt;..ttimestamp&gt;.jpg&amp;quality=50&amp;getlink=1</span>
+</code></pre></div>
+
+<h3 id="upload-last-photo-and-put-the-link-in-an-in-app-message-body">Upload last photo and put the link in an in-app message body</h3>
+<p><em>Quick sharing with iMessage. Settings are the same as above.</em> </p>
+<div class="codehilite"><pre><span></span><code><span class="c">launch://x-callback-url/dropbox/addphoto?attach=photo&amp;path=/Temp/_Destructable Folder&amp;name=&lt;..ttimestamp&gt;.jpg&amp;quality=50&amp;getlink=1&amp;x-success=launch%3A//messaging%3Fbody%3D%5Bclipboard%5D</span>
+</code></pre></div>
+
+<h3 id="upload-from-any-source-to-dropbox">Upload from any source to Dropbox</h3>
+<p><em>Nice if you haven't taken the photo yet</em></p>
+<div class="codehilite"><pre><span></span><code><span class="c">launch://dropbox/addphoto?attach=photo&amp;path=&amp;name=&amp;quality=&amp;getlink=1</span>
+</code></pre></div>
+  </div>
+
+  <div id="article_meta">
+    <p>Tags:
+      <a href="https://ryanmo.co/tag/ios.html" class="button_accent_small">ios</a>
+      <a href="https://ryanmo.co/tag/automation.html" class="button_accent_small">automation</a>
+      <a href="https://ryanmo.co/tag/dropbox.html" class="button_accent_small">Dropbox</a>
+      <a href="https://ryanmo.co/tag/launchcenterpro.html" class="button_accent_small">launchcenterpro</a>
+      <a href="https://ryanmo.co/tag/photos.html" class="button_accent_small">photos</a>
+    </p>
+    <!-- <aside id="related-posts"></aside> -->
+  </div>
+
+
+</article>
+<div id="slug">quick-sharing-with-launch-center-pro-and-dropbox</div>
+
+    <footer>
+<p><a href="https://ryanmo.co/" class="button_accent">&larr; Back to Index</a></p>
+<script language="javascript">
+    function toggleComments() {
+        var commentDiv = document.getElementById("article_comments");
+        (commentDiv.style.display == "none") ? commentDiv.style.display = "block" : commentDiv.style.display = "none";
+        return false;
+    }
+</script>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Ryan M 2023. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>.</p>
+    </div>
+  </main>
+<script>
+  var cb = function() {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = "https://ryanmo.co/theme/css/style.min.css?f894722d";
+    var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+  };
+  var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+      webkitRequestAnimationFrame || msRequestAnimationFrame;
+  if (raf) raf(cb);
+  else window.addEventListener('load', cb);
+</script>
+</body>
+</html>
