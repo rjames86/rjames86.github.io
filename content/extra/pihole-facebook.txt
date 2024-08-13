@@ -22479,3 +22479,6 @@
 0.0.0.0 scontent-ord5-1.cdninstagram.com
 0.0.0.0 mqtt.fallback.c10r.facebook.com
 0.0.0.0 z-p42-chat-e2ee-ig.facebook.com
+0.0.0.0 star.fallback.c10r.instagram.com
+0.0.0.0 scontent.fallback.cdninstagram.com
+0.0.0.0 gateway.instagram.com
