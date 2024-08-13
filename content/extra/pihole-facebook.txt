@@ -22482,3 +22482,4 @@
 0.0.0.0 star.fallback.c10r.instagram.com
 0.0.0.0 scontent.fallback.cdninstagram.com
 0.0.0.0 gateway.instagram.com
+0.0.0.0 dgw.c10r.facebook.com
