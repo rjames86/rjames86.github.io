@@ -22474,3 +22474,8 @@
 0.0.0.0 zz-tr.cinyour.facebook.com
 0.0.0.0 zzangfa.autodiscover.oculusvr.com
 0.0.0.0 privatestats.whatsapp.net
+
+# ----- CUSTOM ADDED BY RYAN ----------
+0.0.0.0 scontent-ord5-1.cdninstagram.com
+0.0.0.0 mqtt.fallback.c10r.facebook.com
+0.0.0.0 z-p42-chat-e2ee-ig.facebook.com
