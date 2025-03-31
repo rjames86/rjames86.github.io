@@ -63,8 +63,6 @@ OUTPUT_SOURCES_EXTENSION = ".txt"
 RELATIVE_URLS = True
 PLUGIN_PATHS = ["../plugins"]
 PLUGINS = [
-    "pelican.plugins.webassets",
-    # "build_critical",
     "code_replacement",
     "drafts_page",
     "json_feed",
@@ -106,7 +104,9 @@ PAGINATED_TEMPLATES = {"index": 10, "tag": 10, "category": 10, "author": 10}
 # Theme
 
 TESTING = True
-THEME = THEME_PATH
+THEME = os.path.join(THEME_PATH, 'new')
+THEME_STATIC_DIR = "theme"
+
 SOCIAL = (
     ("Github", "http://www.github.com/rjames86"),
     ("RSS", "none"),
@@ -128,17 +128,3 @@ JSON_CAMPAIGN_PARAM = "JSONFeed"
 JSON_FEED = "feed.json"
 JSON_CATEGORY_FEED_RSS = "feeds/category/%s.json"
 JSON_TAG_FEED_RSS = "feeds/tag/%s.json"
-
-# Webassets
-WEBASSETS_BUNDLES = (
-    (
-        "critical",
-        ["scss/default_mobile.scss", "scss/largescreens.scss"],
-        {"filters": "pyscss,cssmin", "output": "templates/critical.css"},
-    ),
-    # (
-    #     "js_bundle",
-    #     ["js/jquery-1.10.1.min.js", "js/bigfoot.min.js", "js/react.min.js"],
-    #     {"filters": "rjsmin", "output": "js/main2.js"}
-    # )
-)
