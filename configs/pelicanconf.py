@@ -104,7 +104,7 @@ PAGINATED_TEMPLATES = {"index": 10, "tag": 10, "category": 10, "author": 10}
 # Theme
 
 TESTING = True
-THEME = os.path.join(THEME_PATH, 'new')
+THEME = os.path.join(THEME_PATH, 'orange')
 THEME_STATIC_DIR = "theme"
 
 SOCIAL = (
