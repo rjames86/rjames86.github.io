@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Create Multiple Tasks in Omnifocus on iOS - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Create Multiple Tasks in Omnifocus on iOS</h1>
+    <div class="article-meta">
+        <time datetime="2017-08-30T11:22:00-07:00">2017-08-30</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>Throughout the day I think of things that I need to do after work or this coming weekend. The best way for me to not forget these is to quickly get them into Omnifocus. I've been using Drafts on my iPhone and Alfred on my Mac to quickly create tasks with the appropriate deferral and due dates. This has worked really well except for when I want to add more than one task at a time. </p>
+<p>Not too long ago, Omnifocus added the ability to import tasks in Taskpaper format. The import initially seemed very basic and only allowed you to dump them into Omnifocus' Inbox for processing. Digging into the documentation shows that you can be more specific about what project you want those tasks to go into as well as context, defer and due dates.</p>
+<p>Up until now, if I wanted to create multiple tasks for tonight, I would have to add each one individually in Drafts and use my "Due Tonight" action, return to Drafts and repeat. Using the Taskpaper syntax import, I can now add multiple lines as tasks in Drafts and import. Each line would look something like this:</p>
+<div class="codehilite"><pre><span></span><code>- Take out the garbage @flagged(true) @context(Admin &amp; Routines) @defer(6pm) @due(8pm)
+- Finish blog post @flagged(true) @context(Admin &amp; Routines) @defer(6pm) @due(8pm)
+</code></pre></div>
+
+<p>Since Drafts supports JavaScript, I can create a single script to support my tonight, weekend or today tasks.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">targetTask</span> <span class="o">=</span> <span class="s1">&#39;Todo&#39;</span><span class="p">;</span>
+<span class="nx">defaultTaskString</span> <span class="o">=</span> <span class="s1">&#39;@flagged(true) @context(Admin &amp; Routines)&#39;</span><span class="p">;</span>
+
+<span class="nx">dueDateStrings</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">today</span><span class="o">:</span> <span class="s1">&#39;@defer(now) @due(5pm)&#39;</span><span class="p">,</span>
+    <span class="nx">tonight</span><span class="o">:</span> <span class="s1">&#39;@defer(6pm) @due(8pm)&#39;</span><span class="p">,</span>
+    <span class="nx">weekend</span><span class="o">:</span> <span class="s1">&#39;@defer(next saturday @ 10am) @due(next sunday @ 5pm)&#39;</span>
+<span class="p">};</span>
+
+<span class="kd">function</span> <span class="nx">generateOmnifocusUrl</span><span class="p">(</span><span class="nx">params</span> <span class="o">=</span> <span class="p">{}){</span>
+    <span class="kd">let</span> <span class="p">{</span><span class="nx">contentLines</span> <span class="o">=</span> <span class="p">[],</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">targetTask</span><span class="p">,</span> <span class="nx">dueTime</span> <span class="o">=</span> <span class="nx">dueDateStrings</span><span class="p">.</span><span class="nx">today</span><span class="p">}</span> <span class="o">=</span> <span class="nx">params</span><span class="p">;</span>
+
+    <span class="nx">contentLines</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">line</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">theArray</span><span class="p">)</span> <span class="p">=&gt;</span>
+        <span class="nx">theArray</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span> <span class="o">=</span> <span class="sb">`- </span><span class="si">${</span><span class="nx">line</span><span class="si">}</span><span class="sb"> </span><span class="si">${</span><span class="nx">dueTime</span><span class="si">}</span><span class="sb"> </span><span class="si">${</span><span class="nx">defaultTaskString</span><span class="si">}</span><span class="sb">`</span>
+    <span class="p">);</span>
+    <span class="nx">content</span> <span class="o">=</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">contentLines</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">));</span>
+    <span class="k">return</span> <span class="sb">`omnifocus:///paste?target=/task/</span><span class="si">${</span><span class="nx">target</span><span class="si">}</span><span class="sb">&amp;content=</span><span class="si">${</span><span class="nx">content</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">contentLines</span><span class="o">:</span> <span class="nx">draft</span><span class="p">.</span><span class="nx">content</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">),</span>
+    <span class="nx">dueTime</span><span class="o">:</span> <span class="nx">dueDateStrings</span><span class="p">[</span><span class="nx">draft</span><span class="p">.</span><span class="nx">getTag</span><span class="p">(</span><span class="s1">&#39;taskWhen&#39;</span><span class="p">)],</span>
+<span class="p">}</span>
+
+<span class="nx">draft</span><span class="p">.</span><span class="nx">defineTag</span><span class="p">(</span><span class="s2">&quot;OFTasks&quot;</span><span class="p">,</span> <span class="nx">generateOmnifocusUrl</span><span class="p">(</span><span class="nx">params</span><span class="p">));</span>
+</code></pre></div>
+
+<p>The action will first prompt me asking whether these lines are for tonight, this weekend or today and will then create the TaskPaper lines and open Omnifocus.</p>
+<p><img alt="drafts-prompt" src="https://ryanmo.co/posts/Tech/2017-08-30/drafts-prompt.png" /></p>
+<p>You can download the action for Drafts <a href="https://drafts4-actions.agiletortoise.com/a/2Ex">here</a>.</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

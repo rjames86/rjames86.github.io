@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Moving TextExpander Snippets to Keyboard Maestro - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Moving TextExpander Snippets to Keyboard Maestro</h1>
+    <div class="article-meta">
+        <time datetime="2016-04-10T17:26:00-07:00">2016-04-10</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I've been a long time TextExpander user. I use it every day for simple things like pasting my contact info or shortening urls using bit.ly. There are plenty of articles out there arguing for and against TextExpander's new subscription model. I support their decision but I can't justify $50 a year's worth of value and so I'm moving all of my snippets to Keyboard Maestro.</p>
+
+
+<p>I had been thinking this weekend whether it would be worth the time to try to migrate all my snippets to Keyboard Maestro. Browsing my Twitter feed, it looked as though <a href="http://leancrew.com/all-this/2016/04/importing-textexpander-snippets-to-keyboard-maestro/">Dr. Drang</a> had beat me to it. Unfortunately he didn't do the work I was hoping I wouldn't have to do, and so I sat down to see how hard it would be to convert snippets to macros. Turns out...not that hard.</p>
+<p>Here are the requirements for running this script:</p>
+<ul>
+<li>Python 2.7 (I didn't test Python 3.x). If you're running an older/newer version of Python, you should be able to replace <code>python</code> with <code>/usr/bin/python2.7</code> when running the script.</li>
+<li>TextExpander 5.x. If you are running version 4, your settings will be named Settings.textexpander instead of Settings.textexpandersettings.</li>
+</ul>
+<p>I've made some decisions as to how I want the snippets to work. Notably</p>
+<ul>
+<li>Pasting instead of typing. Typing is too slow.</li>
+<li>Delete the last clipboard item, since it was the text that was just pasted. </li>
+<li>Groups remain the same. If you used groups in TextExpander, they show up as "Snippets - <group name>" in Keyboard Maestro. </li>
+</ul>
+<p>There are a few things that I haven't yet solved. Some I might in the future, others maybe not:</p>
+<ul>
+<li>I didn't test Applescript since I didn't have any. Please let me know if that one breaks.</li>
+<li>Placeholders and variables from TextExpander won't work. This means if you had a "today's date" snippet, you'll need to rewrite that one<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</li>
+<li>Custom delimiters. I haven't really figured out if there's a way to do this. I've tried changing Keyboard Maestro to only fire on delimiters, but it doesn't seem to work. If anyone figured this out, please let me know.</li>
+</ul>
+<p>Before running, be sure to update the variable <code>TEXTEXPANDER_PATH</code> to wherever your TextExpander settings file lives. To run, it's as simple as navigating to the location where the script lives in Terminal.app and entering</p>
+<div class="codehilite"><pre><span></span><code><span class="err">python TE.py</span>
+</code></pre></div>
+
+<p>You'll now have a folder on your Desktop named 'TextExpander_to_KeyboardMaestro' with all of your groups.</p>
+<hr />
+<p><em>Update 2016-04-12</em></p>
+<p>Big thanks to NW in the comments for helping me debug a few things.</p>
+<p>I've removed the import of <code>enum</code>. I had forgotten that wasn't a standard library in Python 2.7. I also added a list of requirements above for running the script.</p>
+<p><em>Update 2016-04-14</em></p>
+<p>Also thanks to Dr Drang for posting about the script! I've made some updates and also put up a repo for those who would like to make edits and pull requests.</p>
+<p>Updates are</p>
+<ul>
+<li>Optional prefix if you want to change that up when moving to Keyboard Maestro</li>
+<li>Insert text by typing OR pasting</li>
+<li>Added some instruction on how to edit the variables to have the script do what you want</li>
+</ul>
+<p>The repo is now hosted at <a href="https://github.com/rjames86/textexpander_to_keyboardmaestro">https://github.com/rjames86/textexpander_to_keyboardmaestro</a></p>
+<hr />
+<p>You can download the script on Github <a href="https://raw.githubusercontent.com/rjames86/textexpander_to_keyboardmaestro/master/TE.py">here</a></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">plistlib</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This script will parse through all group_*.xml files within your TextExpander folder.</span>
+<span class="sd">Anything marked as Plain Text, Shell Script or JavaScript should be converted into</span>
+<span class="sd">Keyboard Maestro groups with the same title and abbreviation.</span>
+
+<span class="sd">All new KM Macro files will be saved to the Desktop.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># Modify this area to customize how the script will run</span>
+
+<span class="c1"># Change this path to where ever your TextExander Settings live</span>
+<span class="n">HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+<span class="n">TEXTEXPANDER_PATH</span> <span class="o">=</span> <span class="n">HOME</span> <span class="o">+</span> <span class="s1">&#39;/Dropbox/TextExpander/Settings.textexpandersettings&#39;</span>
+<span class="n">SAVE_PATH</span> <span class="o">=</span> <span class="n">HOME</span> <span class="o">+</span> <span class="s1">&#39;/Desktop/TextExpander_to_KeyboardMaestro&#39;</span>
+
+<span class="c1"># Change this if you&#39;d like to change your snippets when importing to Keyboard Maestro</span>
+<span class="c1"># If your snippet is ttest, you can make it ;;ttest by changing the variable to &#39;;;&#39;</span>
+<span class="n">OPTIONAL_NEW_PREFIX</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="c1"># Change this if you want the snippet to inserted by typing or pasting</span>
+<span class="c1"># Remember it MUST be &#39;paste&#39; or &#39;type&#39; or the script will fail</span>
+<span class="n">PASTE_OR_TYPE</span> <span class="o">=</span> <span class="s1">&#39;paste&#39;</span> <span class="c1"># &#39;type&#39;</span>
+
+
+
+
+<span class="c1">############</span>
+
+<span class="c1"># Edit below at your own risk</span>
+
+<span class="c1">############</span>
+
+<span class="n">snippet_types</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;plaintext&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;applescript&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;shell&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s1">&#39;javascript&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">snippet_types_to_values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">value</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">snippet_types</span><span class="o">.</span><span class="n">iteritems</span><span class="p">())</span>
+
+
+<span class="k">class</span> <span class="nc">KeyboardMaestroMacros</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">macro_by_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">macro_name</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">abbreviation</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">macro_name</span><span class="p">)(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">abbreviation</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">javascript</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">abbreviation</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;Activate&#39;</span><span class="p">:</span> <span class="s1">&#39;Normal&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;CreationDate&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="s1">&#39;Macros&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s1">&#39;Actions&#39;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="s1">&#39;DisplayKind&#39;</span><span class="p">:</span> <span class="n">KeyboardMaestroMacros</span><span class="o">.</span><span class="n">_paste_or_type</span><span class="p">(),</span>
+                     <span class="s1">&#39;IncludeStdErr&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;IsDisclosed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;MacroActionType&#39;</span><span class="p">:</span> <span class="s1">&#39;ExecuteJavaScriptForAutomation&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;Path&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;Text&#39;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+                     <span class="s1">&#39;TimeOutAbortsMacro&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;TrimResults&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;TrimResultsNew&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;UseText&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span> <span class="p">{</span>
+                        <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                        <span class="s1">&#39;IsDisclosed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                        <span class="s1">&#39;MacroActionType&#39;</span><span class="p">:</span> <span class="s1">&#39;DeletePastClipboard&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;PastExpression&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">}</span>
+                    <span class="p">],</span>
+                 <span class="s1">&#39;CreationDate&#39;</span><span class="p">:</span> <span class="mf">482018934.65354</span><span class="p">,</span>
+                 <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                 <span class="s1">&#39;ModificationDate&#39;</span><span class="p">:</span> <span class="mf">482018953.856014</span><span class="p">,</span>
+                 <span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                 <span class="s1">&#39;Triggers&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                    <span class="s1">&#39;Case&#39;</span><span class="p">:</span> <span class="s1">&#39;Exact&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;DiacriticalsMatter&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;MacroTriggerType&#39;</span><span class="p">:</span> <span class="s1">&#39;TypedString&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;OnlyAfterWordBreak&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                    <span class="s1">&#39;SimulateDeletes&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;TypedString&#39;</span><span class="p">:</span> <span class="n">KeyboardMaestroMacros</span><span class="o">.</span><span class="n">_abbreviation</span><span class="p">(</span><span class="n">abbreviation</span><span class="p">)}]}</span>
+            <span class="p">],</span>
+            <span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="s1">&#39;Snippet - </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">group_name</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">applescript</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">abbreviation</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;Activate&#39;</span><span class="p">:</span> <span class="s1">&#39;Normal&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;CreationDate&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="s1">&#39;Macros&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s1">&#39;Actions&#39;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="s1">&#39;DisplayKind&#39;</span><span class="p">:</span> <span class="n">KeyboardMaestroMacros</span><span class="o">.</span><span class="n">_paste_or_type</span><span class="p">(),</span>
+                     <span class="s1">&#39;IncludeStdErr&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;IsDisclosed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;MacroActionType&#39;</span><span class="p">:</span> <span class="s1">&#39;ExecuteAppleScript&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;Path&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;Text&#39;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+                     <span class="s1">&#39;TimeOutAbortsMacro&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;TrimResults&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;TrimResultsNew&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                     <span class="s1">&#39;UseText&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span> <span class="p">{</span>
+                        <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                        <span class="s1">&#39;IsDisclosed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                        <span class="s1">&#39;MacroActionType&#39;</span><span class="p">:</span> <span class="s1">&#39;DeletePastClipboard&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;PastExpression&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">}</span>
+                    <span class="p">],</span>
+                 <span class="s1">&#39;CreationDate&#39;</span><span class="p">:</span> <span class="mf">482018934.65354</span><span class="p">,</span>
+                 <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                 <span class="s1">&#39;ModificationDate&#39;</span><span class="p">:</span> <span class="mf">482018953.856014</span><span class="p">,</span>
+                 <span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                 <span class="s1">&#39;Triggers&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                    <span class="s1">&#39;Case&#39;</span><span class="p">:</span> <span class="s1">&#39;Exact&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;DiacriticalsMatter&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;MacroTriggerType&#39;</span><span class="p">:</span> <span class="s1">&#39;TypedString&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;OnlyAfterWordBreak&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                    <span class="s1">&#39;SimulateDeletes&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;TypedString&#39;</span><span class="p">:</span> <span class="n">KeyboardMaestroMacros</span><span class="o">.</span><span class="n">_abbreviation</span><span class="p">(</span><span class="n">abbreviation</span><span class="p">)}]}</span>
+            <span class="p">],</span>
+            <span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="s1">&#39;Snippet - </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">group_name</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">plaintext</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">abbreviation</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;Activate&#39;</span><span class="p">:</span> <span class="s1">&#39;Normal&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;CreationDate&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="s1">&#39;Macros&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;Actions&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s1">&#39;Action&#39;</span><span class="p">:</span> <span class="n">KeyboardMaestroMacros</span><span class="o">.</span><span class="n">_paste_or_type</span><span class="p">(</span><span class="s1">&#39;plaintext&#39;</span><span class="p">),</span>
+                    <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;IsDisclosed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;MacroActionType&#39;</span><span class="p">:</span> <span class="s1">&#39;InsertText&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Paste&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;Text&#39;</span><span class="p">:</span> <span class="n">text</span><span class="p">},</span> <span class="p">{</span>
+                        <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                        <span class="s1">&#39;IsDisclosed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                        <span class="s1">&#39;MacroActionType&#39;</span><span class="p">:</span> <span class="s1">&#39;DeletePastClipboard&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;PastExpression&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span>
+                    <span class="p">}],</span>
+                <span class="s1">&#39;CreationDate&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="s1">&#39;ModificationDate&#39;</span><span class="p">:</span> <span class="mf">482031702.132113</span><span class="p">,</span>
+                <span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s1">&#39;Triggers&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                    <span class="s1">&#39;Case&#39;</span><span class="p">:</span> <span class="s1">&#39;Exact&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;DiacriticalsMatter&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;MacroTriggerType&#39;</span><span class="p">:</span> <span class="s1">&#39;TypedString&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;OnlyAfterWordBreak&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                    <span class="s1">&#39;SimulateDeletes&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;TypedString&#39;</span><span class="p">:</span> <span class="n">KeyboardMaestroMacros</span><span class="o">.</span><span class="n">_abbreviation</span><span class="p">(</span><span class="n">abbreviation</span><span class="p">)}],</span>
+            <span class="p">}],</span>
+            <span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="s1">&#39;Snippet - </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">group_name</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">shell</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">abbreviation</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;Activate&#39;</span><span class="p">:</span> <span class="s1">&#39;Normal&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;CreationDate&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="s1">&#39;Macros&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                <span class="s1">&#39;Actions&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                    <span class="s1">&#39;DisplayKind&#39;</span><span class="p">:</span> <span class="n">KeyboardMaestroMacros</span><span class="o">.</span><span class="n">_paste_or_type</span><span class="p">(),</span>
+                    <span class="s1">&#39;IncludeStdErr&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;IsDisclosed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;MacroActionType&#39;</span><span class="p">:</span> <span class="s1">&#39;ExecuteShellScript&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Path&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Text&#39;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+                    <span class="s1">&#39;TimeOutAbortsMacro&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;TrimResults&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;TrimResultsNew&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;UseText&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span>
+                 <span class="p">{</span><span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                  <span class="s1">&#39;IsDisclosed&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                  <span class="s1">&#39;MacroActionType&#39;</span><span class="p">:</span> <span class="s1">&#39;DeletePastClipboard&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;PastExpression&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">}],</span>
+                <span class="s1">&#39;CreationDate&#39;</span><span class="p">:</span> <span class="mf">482018896.698121</span><span class="p">,</span>
+                <span class="s1">&#39;IsActive&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="s1">&#39;ModificationDate&#39;</span><span class="p">:</span> <span class="mf">482020783.300151</span><span class="p">,</span>
+                <span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s1">&#39;Triggers&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                    <span class="s1">&#39;Case&#39;</span><span class="p">:</span> <span class="s1">&#39;Exact&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;DiacriticalsMatter&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;MacroTriggerType&#39;</span><span class="p">:</span> <span class="s1">&#39;TypedString&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;OnlyAfterWordBreak&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                    <span class="s1">&#39;SimulateDeletes&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="s1">&#39;TypedString&#39;</span><span class="p">:</span> <span class="n">KeyboardMaestroMacros</span><span class="o">.</span><span class="n">_abbreviation</span><span class="p">(</span><span class="n">abbreviation</span><span class="p">)}],</span>
+                <span class="p">}],</span>
+            <span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="s1">&#39;Snippet - </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">group_name</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_abbreviation</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">OPTIONAL_NEW_PREFIX</span> <span class="o">+</span> <span class="n">name</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_paste_or_type</span><span class="p">(</span><span class="n">snippet_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;paste&#39;</span><span class="p">:</span> <span class="s2">&quot;Pasting&quot;</span><span class="p">,</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s2">&quot;Typing&quot;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">snippet_type</span> <span class="o">==</span> <span class="s1">&#39;plaintext&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;By</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">value</span><span class="p">[</span><span class="n">PASTE_OR_TYPE</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="n">PASTE_OR_TYPE</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">parse_textexpander</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Each TextExpander group is its own file starting with the file name &#39;group_&#39;.</span>
+
+<span class="sd">    Example snippet dictionary</span>
+<span class="sd">    {</span>
+<span class="sd">        &#39;abbreviation&#39;: &#39;.bimg&#39;,</span>
+<span class="sd">        &#39;abbreviationMode&#39;: 0,</span>
+<span class="sd">        &#39;creationDate&#39;: datetime.datetime(2013, 5, 19, 19, 42, 16),</span>
+<span class="sd">        &#39;label&#39;: &#39;&#39;,</span>
+<span class="sd">        &#39;modificationDate&#39;: datetime.datetime(2015, 1, 10, 20, 19, 59),</span>
+<span class="sd">        &#39;plainText&#39;: &#39;some text,</span>
+<span class="sd">        &#39;snippetType&#39;: 3,</span>
+<span class="sd">        &#39;uuidString&#39;: &#39;100F8D1F-A2D1-4313-8B55-EFD504AE7894&#39;</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Return a list of dictionaries where the keys are the name of the group</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">to_ret</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Let&#39;s get all the xml group files in the directory</span>
+    <span class="n">xml_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">TEXTEXPANDER_PATH</span> <span class="o">+</span> <span class="s2">&quot;/*.xml&quot;</span><span class="p">)</span>
+                 <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">TEXTEXPANDER_PATH</span> <span class="o">+</span> <span class="s2">&quot;/group_&quot;</span><span class="p">)]</span>
+
+    <span class="k">for</span> <span class="n">xml_file</span> <span class="ow">in</span> <span class="n">xml_files</span><span class="p">:</span>
+        <span class="n">pl</span> <span class="o">=</span> <span class="n">plistlib</span><span class="o">.</span><span class="n">readPlist</span><span class="p">(</span><span class="n">xml_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pl</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">to_ret</span><span class="p">:</span>
+            <span class="n">to_ret</span><span class="p">[</span><span class="n">pl</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">snippet</span> <span class="ow">in</span> <span class="n">pl</span><span class="p">[</span><span class="s1">&#39;snippetPlists&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">snippet</span><span class="p">[</span><span class="s1">&#39;snippetType&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">snippet_types</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">to_ret</span><span class="p">[</span><span class="n">pl</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">snippet</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">to_ret</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">text_expanders</span> <span class="o">=</span> <span class="n">parse_textexpander</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">text_expander</span> <span class="ow">in</span> <span class="n">text_expanders</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="n">macros_to_create</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">snippet</span> <span class="ow">in</span> <span class="n">text_expander</span><span class="p">:</span>
+            <span class="n">macros_to_create</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">KeyboardMaestroMacros</span><span class="o">.</span><span class="n">macro_by_name</span><span class="p">(</span><span class="n">snippet_types_to_values</span><span class="p">[</span><span class="n">snippet</span><span class="p">[</span><span class="s1">&#39;snippetType&#39;</span><span class="p">]],</span>
+                                                    <span class="n">group</span><span class="p">,</span>
+                                                    <span class="n">snippet</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span>
+                                                    <span class="n">snippet</span><span class="p">[</span><span class="s1">&#39;plainText&#39;</span><span class="p">],</span>
+                                                    <span class="n">snippet</span><span class="p">[</span><span class="s1">&#39;abbreviation&#39;</span><span class="p">])</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Create a new folder on the desktop to put the macros</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">SAVE_PATH</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">SAVE_PATH</span><span class="p">)</span>
+        <span class="c1"># Save the macros</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">SAVE_PATH</span> <span class="o">+</span> <span class="s1">&#39;/</span><span class="si">%s</span><span class="s1">.kmmacros&#39;</span> <span class="o">%</span> <span class="n">group</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">plistlib</span><span class="o">.</span><span class="n">writePlistToString</span><span class="p">(</span><span class="n">macros_to_create</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Feedback and pull requests welcome. I'll continue to update the script and this post if I make any substantial iterations.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Hint. If you had your date look like 2016-04-10, the Keyboard Maestro equivalent is <code>%ICUDateTime%yyyy-MM-dd%</code>&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - dayone</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Thu, 04 Sep 2014 00:00:00 -0700</lastBuildDate><item><title>Instagram for Slogger</title><link>https://ryanmo.co/2014/09/04/instagram-slogger</link><description>&lt;p&gt;In early 2013, I discovered Slogger and loved the idea of journalling about more than just what I had to say. What I was listening to at a given time is just as important as what I was thinking. However, there wasn't an ideal way to log Instagram posts without other dependencies, and so I took a stab at writing my first plugin.&lt;/p&gt;
+
+
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Update&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;As of June 2016, Instagram has changed their API and no longer allows this script to work. Sorry :(&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;I didn't know ruby and quickly learned how bad some API documentation can be, but I wanted this plugin more than all the others. After fiddling with it for an evening, I was able to log Instagram posts with more than just a photo, including:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;number of likes&lt;/li&gt;
+&lt;li&gt;comments&lt;/li&gt;
+&lt;li&gt;date of post, not the date Slogger ran&lt;/li&gt;
+&lt;li&gt;location data (including place name if you used Foursquare checkin)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The last point is by far my favorite. I can look at a map over the last year and see all the Instagram photos I've taken and where I took them&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Instagram map" src="https://ryanmo.co/2014/09/04/instagram-slogger/dayonemap.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I also wanted to import photos that I had already taken. The plugin now will let you set &lt;code&gt;backdate: true&lt;/code&gt; and will log the last 20 photos that you had posted on Instagram. Once it's finished, it'll automatically set itself to false to prevent duplicate posts&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;Setup is fairly straight forward. I create a local server, which runs you through the Instagram OAuth flow. After you've finished, you simply paste in the access token, and it'll run from there&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt; ./slogger -o instagram
+Initializing Slogger v2 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;.1.14&lt;span class="o"&gt;)&lt;/span&gt;...
+&lt;span class="m"&gt;08&lt;/span&gt;:01:18      InstagramLogger: Instagram requires configuration, please run from the &lt;span class="nb"&gt;command&lt;/span&gt; line and follow the prompts
+
+------------- Instagram Configuration --------------
+
+Slogger will now open an authorization page &lt;span class="k"&gt;in&lt;/span&gt; your default web browser. Copy the code you receive and &lt;span class="k"&gt;return&lt;/span&gt; here.
+
+Press Enter to &lt;span class="k"&gt;continue&lt;/span&gt;...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Last night I finally did a pull request and it went live this morning. You can check out and download the latest Slogger on &lt;a href="https://github.com/ttscoff/Slogger"&gt;Github&lt;/a&gt;. If you find any issues or bugs, please send them my way. Enjoy!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Instagram map" src="https://ryanmo.co/2014/09/04/instagram-slogger/dayone.png" /&gt;&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;It looks like in the newest version of Slogger, you can find and delete duplicate posts.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Thu, 04 Sep 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-09-04:/2014/09/04/instagram-slogger</guid><category>Tech</category><category>automation</category><category>slogger</category><category>dayone</category><category>photos</category></item><item><title>[Updated] Log Your Instagram Posts with Slogger</title><link>https://ryanmo.co/2013/05/08/instagram_and_slogger</link><description>&lt;hr /&gt;
+&lt;p&gt;&lt;strong&gt;Update 2016-06-23&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As of June 2016, Instagram has changed their API and no longer allows this script to work. Sorry :(&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Update 2014-09-04&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;I recently submitted a new plugin that now comes with Slogger which uses the Instagram API. You can check out my post with more information &lt;a href="{static}../2014-09-04/2014-09-04-instagram-slogger.md"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;I've received a few questions about &lt;a href="https://ifttt.com/recipes/62754"&gt;this&lt;/a&gt; IFTTT recipe which logs my Instagram posts to Day One. There are a few others floating out there, but there are a couple of things that I wanted to have:&lt;/p&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;The Day One entry date is the date the picture was taken&lt;/li&gt;
+&lt;li&gt;The caption is saved in the journal entry&lt;/li&gt;
+&lt;li&gt;Ignore duplicate posts if I also posted to Twitter&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The last point assumes that I'm also using the default Twitter logger. If you want to ignore all of your Instagram tweets, add the following to be on line 112 in the twitterlogger plugin:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;break&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;tweet_text&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;include?&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;instagram&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You can download the Instagram IFTTT Slogger extension &lt;a href="https://ryanmo.co/2013/05/08/instagram_and_slogger/instagram_ifttt.rb"&gt;here&lt;/a&gt;. Simply add it to your plugins directory and run the following once to set up the slogger_config file:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;./slogger -o instagram_ifttt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You'll need to set the location of your IFTTT slogger directory. The plugin will check for any text files and then automatically move them into a "logged" folder once they've been added to Day One. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="https://ryanmo.co/2013/05/08/instagram_and_slogger/dayone_instagram.jpg" /&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Wed, 08 May 2013 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2013-05-08:/2013/05/08/instagram_and_slogger</guid><category>Tech</category><category>slogger</category><category>dropbox</category><category>dayone</category><category>photos</category></item></channel></rss>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Instascriptogram. Post Instagram pics to Scriptogr.am - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Instascriptogram. Post Instagram pics to Scriptogr.am</h1>
+    <div class="article-meta">
+        <time datetime="2013-09-05T00:00:00-07:00">2013-09-05</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p><strong>[Update 2014-11-19]</strong>
+I've since moved off of scriptogr.am. The service wasn't working for a long time and doesn't seem to be in active developement. I ended up moving that blog over to a static blog with Pelican similar to this one.</p>
+<hr />
+
+<p>Since moving to Dublin, my girlfriend and I have wanted to keep our friends and family up-to-date on everything we've been doing. I recently bought the new Olympus E-P5 and have been taking a lot of pictures. So that everyone knows what we're doing, we decided to share a <a href="http://www.scriptogr.am">Scriptogr.am</a> blog and post pictures of our adventures. </p>
+
+
+<p>Sometimes it's quick and easy to snap a picture on Instagram and share with all your friends, but my parents and family aren't on Instagram, but they know to follow my blog for updates. Instead of having to manually pull the pics down, write up a post and publish it, I used a combination of IFTTT, Dropbox and my server at Macminicolo.net to do all the work for me.</p>
+<p>The magic starts at IFTTT. I have a <a href="https://ifttt.com/recipes/115652">recipe</a> that watched for a particular tag when I post to Instagram. If that tag exists, a text file is saved to my Dropbox account. I have a cron running once an hour<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> to run the script and check for any new files.</p>
+<p>One of the only complaints about Scriptogr.am has been that I have to manually hit a publish button before posts will go live. But with their API, the posts are immediate<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>. Now, all of my Instagram adventures (and my girlfriend's) can be posted to our blog for friends and family to follow. Once the post is made, I get a Pushover notification letting me know that a post was made by either me or my girlfriend.</p>
+<p><img alt="pushover_instascriptogram" src="https://ryanmo.co/2013/09/05/instascriptogram/pushover_instascriptogram.jpg" /></p>
+<p>If you're interested in the script, it can be found on Github <a href="https://github.com/rjames86/instascriptogram">here</a>. An example of the posts being made can be found at our travel blog <a href="http://keephouseadventures.com/posts/2013/Sep/03_12_44/instagram-pic-for-tuesday-sep-03/">keephouseadventures.com</a></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>I tried using Hazel for this, but I kept getting errors since I wasn't actually processing the file. Any suggestions on this, please let me know!&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Like what you get from apps like Byword&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

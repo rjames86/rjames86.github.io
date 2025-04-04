@@ -1,0 +1,28 @@
+{
+    "author": {
+        "name": "Ryan M"
+    },
+    "favicon": "https://ryanmo.co/images/favicon.png",
+    "feed_url": "https://ryanmo.co/feeds/tag/podcasts.json",
+    "home_page_url": "https://ryanmo.co",
+    "items": [
+        {
+            "id": "https://ryanmo.co/2014/09/14/my-podcast-list",
+            "url": "https://ryanmo.co/2014/09/14/my-podcast-list",
+            "title": "My Podcast List",
+            "content_html": "<p>I commute about 30 minutes each way to and from work. Since I can listen to music while I work and spoken word is distracting, I listen to podcasts. Here's a list of the podcasts I'm currently listening to.</p>\n\n\n<p><strong>Current Podcasting App</strong>: <a href=\"http://overcast.fm\">Overcast</a></p>\n<ul>\n<li><a href=\"http://99percentinvisible.org\">99% Invisible</a></li>\n<li><a href=\"http://atp.fm\">Accidental Tech Podcast</a></li>\n<li><a href=\"\">The Black Tapes</a></li>\n<li><a href=\"http://relay.fm/connected\">Connected</a></li>\n<li><a href=\"\">Criminal</a></li>\n<li><a href=\"\">Hello Internet</a></li>\n<li><a href=\"\">Lifeoff</a></li>\n<li><a href=\"http://www.npr.org/programs/ted-radio-hour/\">NPR TED Radio Hour</a></li>\n<li><a href=\"http://www.radiolab.org/series/podcasts/\">Radiolab</a></li>\n<li><a href=\"\">Small Town Horror</a></li>\n<li><a href=\"\">Invisibilia</a></li>\n<li><a href=\"\">Under the Radar</a></li>\n<li><a href=\"\">Ungeniused</a></li>\n<li><a href=\"\">Upgrade</a></li>\n</ul>",
+            "summary": "<p>I commute about 30 minutes each way to and from work. Since I can listen to music while I work and spoken word is distracting, I listen to podcasts. Here's a list of the podcasts I'm currently listening to.</p>\n",
+            "date_published": "2014-09-14T00:00:00-07:00",
+            "date_modified": "2016-07-25T00:00:00-07:00",
+            "author": {
+                "name": "Ryan M",
+                "url": "https://ryanmo.co/author/ryan-m.html"
+            },
+            "tags": [
+                "podcasts"
+            ]
+        }
+    ],
+    "title": "ryanmo.co",
+    "version": "https://jsonfeed.org/version/1"
+}

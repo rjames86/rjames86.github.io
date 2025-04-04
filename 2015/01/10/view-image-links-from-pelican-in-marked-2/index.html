@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>View Image Links from Pelican in Marked 2 - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>View Image Links from Pelican in Marked 2</h1>
+    <div class="article-meta">
+        <time datetime="2015-01-10T00:00:00-08:00">2015-01-10</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I really enjoy writing in MultiMarkdown Composer and having Marked display a rendered version. When writing blog posts like this, images would never appear since Pelican's syntax for displaying images is <code>{static}/path/to/image</code>. I looked into Marked's preprocessor abilities and figured out a nice, clean way to display images when writing blog posts.</p>
+
+<p>In Marked's preferences under Advanced, there is an option to add your own preprocessor. This gives you the ability to format the text in the file before Marked renders the markdown.</p>
+<p><img alt="marked_preferences" src="https://ryanmo.co/posts/Tech/2015-01-10/marked_preferences.png" /></p>
+<p>The script simply looks for any occurrence of the <code>{static}</code> and replaces it with the path to my content folder in Pelican.</p>
+<div class="codehilite"><pre><span></span><code><span class="ch">#!/usr/bin/python</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">PelicanFormat</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blog_path</span> <span class="o">=</span> <span class="n">home</span> <span class="o">+</span> <span class="s1">&#39;/Dropbox/blog/content&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span>
+
+    <span class="k">def</span> <span class="nf">replace_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="si">{static}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blog_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">change_codeblocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TODO Pelican uses &#39;:::language&#39; to override syntax highlighting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">PelicanFormat</span><span class="p">()</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">replace_filenames</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="n">p</span>
+</code></pre></div>
+
+<p>Now I can preview images for my blog posts instead of broken images.</p>
+<hr />
+<p><em>Bonus!</em></p>
+<p>This is a Text Expander snippet I use to create image urls for Pelican. It looks for the last file that was added to my images folder and then creates the url</p>
+<div class="codehilite"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="nv">DROPBOX_PERSONAL</span><span class="o">=</span><span class="k">$(</span>python -c <span class="s2">&quot;import json;f=open(&#39;</span><span class="nv">$HOME</span><span class="s2">/.dropbox/info.json&#39;, &#39;r&#39;).read();data=json.loads(f);print data.get(&#39;personal&#39;, {}).get(&#39;path&#39;, &#39;&#39;)&quot;</span><span class="k">)</span>
+
+<span class="nv">BASE_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$DROPBOX_PERSONAL</span><span class="s2">/blog/content&quot;</span>
+<span class="nv">IMAGE_PATH</span><span class="o">=</span><span class="s2">&quot;images&quot;</span>
+<span class="nv">SEARCH_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$BASE_PATH</span><span class="s2">/</span><span class="nv">$IMAGE_PATH</span><span class="s2">&quot;</span>
+
+<span class="nv">LAST_ADDED</span><span class="o">=</span><span class="k">$(</span>mdfind <span class="se">\</span>
+    -onlyin <span class="s2">&quot;</span><span class="nv">$SEARCH_PATH</span><span class="s2">&quot;</span> <span class="se">\</span>
+    <span class="s1">&#39;kMDItemDateAdded &gt;= $time.today(-1)&#39;</span> <span class="se">\</span>
+    -attr <span class="s1">&#39;kMDItemDateAdded&#39;</span> <span class="p">|</span> <span class="se">\</span>
+awk -F<span class="s2">&quot;kMDItemDateAdded =&quot;</span> <span class="s1">&#39;{print $2 &quot;|&quot; $1}&#39;</span> <span class="p">|</span>
+sort -r <span class="p">|</span> <span class="se">\</span>
+cut -d<span class="s1">&#39;|&#39;</span> -f2 <span class="p">|</span> <span class="se">\</span>
+head -n1 <span class="p">|</span> <span class="se">\</span>
+sed -e <span class="s1">&#39;s/^ *//&#39;</span> -e <span class="s1">&#39;s/ *$//&#39;</span> -e <span class="s2">&quot;s:</span><span class="nv">$BASE_PATH</span><span class="s2">::&quot;</span><span class="k">)</span>
+
+<span class="nb">echo</span> -n <span class="s2">&quot;![]({static}</span><span class="nv">$LAST_ADDED</span><span class="s2">)&quot;</span>
+</code></pre></div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

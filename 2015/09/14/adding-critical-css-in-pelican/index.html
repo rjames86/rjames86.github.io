@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Adding Critical CSS in Pelican - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Adding Critical CSS in Pelican</h1>
+    <div class="article-meta">
+        <time datetime="2015-09-14T07:41:00-07:00">2015-09-14</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>As it turns out, adding <a href="http://www.smashingmagazine.com/2015/08/understanding-critical-css/">critical css</a> wasn't trivial, but didn't take as much effort as I had originally thought. My site's layout doesn't contain <em>that</em> much styling, and so I simply added all of my CSS as an inline <code>style</code> tag. The tricky part, was getting Jinja to play nicely.</p>
+<p>The first step was to generate a separate css file that only contained what was needed when you first load and see the page. I use Less as my pre-processor, and created a very small Less file that looked like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">@</span><span class="k">import</span> <span class="o">(</span><span class="nt">inline</span><span class="o">)</span> <span class="s1">&#39;../tipuesearch/tipuesearch.css&#39;</span><span class="p">;</span>
+
+<span class="p">@</span><span class="k">import</span> <span class="s1">&#39;default_mobile.less&#39;</span><span class="p">;</span>
+<span class="p">@</span><span class="k">import</span> <span class="s1">&#39;largescreens.less&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Once compiled and minimized<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, I needed to add it to my <code>base.html</code> template.</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&lt;style type=&quot;text/css&quot;&gt;</span>
+<span class="cp">{%</span> <span class="k">include</span> <span class="s1">&#39;critical.css&#39;</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">&lt;/style&gt;</span>
+</code></pre></div>
+
+<p>Here is where the problem when generating my site.</p>
+<div class="codehilite"><pre><span></span><code>WARNING: Caught exception <span class="s2">&quot;TemplateSyntaxError: Missing end of comment tag&quot;</span>. Reloading.
+</code></pre></div>
+
+<p>Since my minimized CSS contained <code>'{#'</code>, Jinja was interpreting this as a comment and raised an exception. While this is an easy fix by changing the Jinja environment variables within Pelican's generators.py, I didn't want to go this route since I would need to update this<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> every time there was an update to Pelican. Instead, I wrote a Jinja extension which Pelican supports natively. </p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># in pelicanconf.py</span>
+<span class="kn">from</span> <span class="nn">jinja2.ext</span> <span class="kn">import</span> <span class="n">Extension</span>
+
+<span class="k">class</span> <span class="nc">CustomCommentStrings</span><span class="p">(</span><span class="n">Extension</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomCommentStrings</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+
+        <span class="n">environment</span><span class="o">.</span><span class="n">comment_start_string</span> <span class="o">=</span> <span class="s1">&#39;###&#39;</span>
+        <span class="n">environment</span><span class="o">.</span><span class="n">comment_end_string</span> <span class="o">=</span> <span class="s1">&#39;/###&#39;</span>
+
+<span class="n">JINJA_EXTENSIONS</span> <span class="o">=</span> <span class="p">[</span><span class="n">CustomCommentStrings</span><span class="p">]</span>
+</code></pre></div>
+
+<hr />
+<p><em>Update 2017-01-05</em></p>
+<p>If you're using Pelican version 3.7+, you don't have to write the custom extension shown above, you can simply update the <code>JINJA_ENVIRONMENT</code> settings variable:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">JINJA_ENVIRONMENT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;comment_start_string&#39;</span><span class="p">:</span> <span class="s1">&#39;###&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;comment_end_string&#39;</span><span class="p">:</span> <span class="s1">&#39;/###&#39;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<p>One thing to note here is that if you are using <code>{# ... #}</code> as comment strings in Jinja, you'll need to update them to whatever new start and end strings you define.</p>
+<p>And success! The <code>critical.css</code> file was successfully imported and I now my critical CSS is included on page load. With this, Google now gives me a 100/100 speed score for mobile and 98/100 on desktop.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Google suggests that you minimize critical css to reduce your file size.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>I plan on submitting a pull-request to allow manually setting Jinja environment variables.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

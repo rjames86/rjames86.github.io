@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - markdown</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Sun, 06 Jul 2014 00:00:00 -0700</lastBuildDate><item><title>Log Foursquare Locations in Markdown</title><link>https://ryanmo.co/2014/07/06/log-foursquare-locations-in-markdown</link><description>&lt;p&gt;I've always used Foursquare as a way to remember the places I had visited while traveling. Foursquare isn't really meant to be used in this way, and as a result, they don't make it easy to answer the question, "what was that restaurant I went to last time I was here?" I'm now using IFTTT to log all my checkins to a text file in my Dropbox account.&lt;/p&gt;
+
+
+&lt;p&gt;I like MultiMarkdown tables. So that my Foursquare checkins looked nice, I first created a file in my Dropbox account with a heading&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;Date&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="nv"&gt;VenueName&lt;/span&gt;  &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;VenueUrl&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;Shout&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;MapURL&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="nv"&gt;City&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;State&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;Country&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In IFTTT, I then created a recipe which matches my table headers&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;a href="https://ifttt.com/view_embed_recipe/187719-share-foursquare-checkins-in-mamarkdown-table" target = "_blank" class="embed_recipe embed_recipe-l_45" id= "embed_recipe-187719"&gt;&lt;img src= 'https://ifttt.com/recipe_embed_img/187719' alt="IFTTT Recipe: Share Foursquare checkins in mamarkdown table connects foursquare to dropbox" width="370px" style="max-width:100%"/&gt;&lt;/a&gt;&lt;script async type="text/javascript" src= "//ifttt.com/assets/embed_recipe.js"&gt;&lt;/script&gt;&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IFTTT Content" src="https://ryanmo.co/2014/07/06/log-foursquare-locations-in-markdown/content.png" /&gt;&lt;/p&gt;
+&lt;p&gt;You may have noticed that I added an additional "Address" column that isn't getting filled out. IFTTT doesn't explicitly give the address of the venue you visited. However, the link to the Google Maps image contains GPS coordinates that I can use. Dr. Drang's &lt;a href="http://www.leancrew.com/all-this/2014/07/extracting-coordinates-from-apple-maps/" title="Extracting coordinates from Apple Maps - All this"&gt;post&lt;/a&gt; gave me the idea to parse out the coordinates and then use them how I'd like. This script, which I'm using with Hazel each time the file is updated, reverse geolocates the coordinates and returns the full address using OpenStreetMap. After that, it appends that address to each line in the markdown file.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="nv"&gt;FILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/Dropbox/IFTTT/foursquare/foursquare.txt&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;START&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$START&lt;/span&gt;
+&lt;span class="nv"&gt;IFS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;$&amp;#39;\n&amp;#39;&lt;/span&gt;     &lt;span class="c1"&gt;# new field separator, the end of line&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; line &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;cat &lt;span class="nv"&gt;$FILE&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="nv"&gt;mapsurl&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$line&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -n &lt;span class="s1"&gt;&amp;#39;s/.*(\(http.*\)).*/\1/p&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="nv"&gt;existingaddress&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$line&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep -E &lt;span class="s1"&gt;&amp;#39;^.*\(http.*\)(.*\|){2,}$&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; ! &lt;span class="nv"&gt;$mapsurl&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="nv"&gt;$existingaddress&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="o"&gt;((&lt;/span&gt; &lt;span class="nv"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; index + &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="o"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;continue&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;
+
+    &lt;span class="nv"&gt;coords&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$mapsurl&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -E &lt;span class="s1"&gt;&amp;#39;s/^.+\?center=([0-9.,-]+).+/\1/&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nv"&gt;lat&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$coords&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; cut -f1 -d,&lt;span class="k"&gt;)&lt;/span&gt;
+    &lt;span class="nv"&gt;long&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$coords&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; cut -f2 -d,&lt;span class="k"&gt;)&lt;/span&gt;
+
+    &lt;span class="nv"&gt;address&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl -s &lt;span class="s2"&gt;&amp;quot;http://nominatim.openstreetmap.org/reverse?format=json&amp;amp;lat=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;lat&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;lon=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;long&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;zoom=18&amp;amp;addressdetails=1&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+    &lt;span class="nv"&gt;country&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$address&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s/.*\(&amp;quot;country&amp;quot;:&amp;quot;.*&amp;quot;\),.*/\1/&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk -F&lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/country/ {print $4}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    &lt;span class="nv"&gt;city&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$address&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s/.*\(&amp;quot;city&amp;quot;:&amp;quot;.*&amp;quot;\),.*/\1/&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk -F&lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/city/ {print $4}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    &lt;span class="nv"&gt;state&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$address&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="s2"&gt;&amp;quot;\bstate\b&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s/.*\(&amp;quot;state&amp;quot;:&amp;quot;.*&amp;quot;\),.*/\1/&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk -F&lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/state/ {print $4}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# update the line of text&lt;/span&gt;
+    sed -i &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; -e &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;s/\(.*\)/\1 &lt;/span&gt;&lt;span class="nv"&gt;$city&lt;/span&gt;&lt;span class="s2"&gt; | &lt;/span&gt;&lt;span class="nv"&gt;$state&lt;/span&gt;&lt;span class="s2"&gt; | &lt;/span&gt;&lt;span class="nv"&gt;$country&lt;/span&gt;&lt;span class="s2"&gt; |/&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;((&lt;/span&gt; &lt;span class="nv"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; index + &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In the end, the table then ends up looking something like this:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align="center"&gt;Date&lt;/th&gt;
+&lt;th align="center"&gt;VenueName&lt;/th&gt;
+&lt;th align="center"&gt;VenueUrl&lt;/th&gt;
+&lt;th align="center"&gt;Shout&lt;/th&gt;
+&lt;th align="center"&gt;MapURL&lt;/th&gt;
+&lt;th align="center"&gt;City&lt;/th&gt;
+&lt;th align="center"&gt;State&lt;/th&gt;
+&lt;th align="center"&gt;Country&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align="center"&gt;July 06, 2014 at 07:07PM&lt;/td&gt;
+&lt;td align="center"&gt;Third Floor Espresso (3FE)&lt;/td&gt;
+&lt;td align="center"&gt;http://4sq.com/rtEJWP&lt;/td&gt;
+&lt;td align="center"&gt;&lt;/td&gt;
+&lt;td align="center"&gt;&lt;a href="http://maps.google.com/maps/api/staticmap?center=53.33998,-6.242084&amp;amp;zoom=16&amp;amp;size=710x440&amp;amp;maptype=roadmap&amp;amp;sensor=false&amp;amp;markers=color:red%7C53.33998,-6.242084"&gt;Map Link&lt;/a&gt;&lt;/td&gt;
+&lt;td align="center"&gt;Dublin&lt;/td&gt;
+&lt;td align="center"&gt;&lt;/td&gt;
+&lt;td align="center"&gt;Republic of Ireland&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="center"&gt;July 06, 2013 at 10:00AM&lt;/td&gt;
+&lt;td align="center"&gt;Wooly Pig Cafe&lt;/td&gt;
+&lt;td align="center"&gt;http://4sq.com/1n5Scct&lt;/td&gt;
+&lt;td align="center"&gt;&lt;/td&gt;
+&lt;td align="center"&gt;&lt;a href="http://maps.google.com/maps/api/staticmap?center=37.76522,-122.460266&amp;amp;zoom=16&amp;amp;size=710x440&amp;amp;maptype=roadmap&amp;amp;sensor=false&amp;amp;markers=color:red%7C53.33842395309077,-6.234097712535167"&gt;Map Link&lt;/a&gt;&lt;/td&gt;
+&lt;td align="center"&gt;San Francisco&lt;/td&gt;
+&lt;td align="center"&gt;California&lt;/td&gt;
+&lt;td align="center"&gt;United States of America&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 06 Jul 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-07-06:/2014/07/06/log-foursquare-locations-in-markdown</guid><category>Tech</category><category>markdown</category><category>automation</category><category>bash</category><category>ifttt</category></item></channel></rss>

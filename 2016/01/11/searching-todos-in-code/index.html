@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Searching Todo’s in Code - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Searching Todo’s in Code</h1>
+    <div class="article-meta">
+        <time datetime="2016-01-11T08:55:00-08:00">2016-01-11</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>Happy 2016! It's been a while since I've gotten something up here.</p>
+
+<p>Last week at work I was working on a fairly large refactor of our front-end. Large pieces of code were being moved around and others re-written to be cleaner and more understandable. Throughout this process, I was leaving myself todo's so that I'd remember to fix something later.  Problem is, I would rarely ever go back to them. That was until someone on my team shared some bash functions they had written to make following up on those todo's much easier</p>
+
+
+<p>It's fairly common practice to leave yourself todo's as comments in code such as</p>
+<div class="codehilite"><pre><span></span><code><span class="err"># TODO(ryan) fix this later.</span>
+</code></pre></div>
+
+<p>That way if someone comes across it in the future, they'll know that whatever is below may not be perfect and that I plan on fixing it at some point. Finding all your todo's later is a different story. That's where some fancy bash functions come in handy.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">function</span> ga_code_search<span class="o">()</span> <span class="o">{</span>
+    <span class="c1"># alias todo=&#39;ga_code_search &quot;TODO\(`whoami`\)&quot;&#39;</span>
+    <span class="nv">SCREEN_WIDTH</span><span class="o">=</span><span class="sb">`</span>stty size <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span><span class="sb">`</span>
+    <span class="nv">SCREEN_WIDTH</span><span class="o">=</span><span class="k">$((</span>SCREEN_WIDTH-4<span class="k">))</span>
+    <span class="c1"># Given a spooky name so you can alias to whatever you want. </span>
+    <span class="c1"># (cs for codesearch)</span>
+    <span class="c1"># AG is WAY faster but requires a binary </span>
+    <span class="c1"># (try brew install the_silver_searcher)</span>
+    <span class="nv">AG_SEARCH</span><span class="o">=</span><span class="s1">&#39;ag &quot;$1&quot; | sort -k1 | cat -n | cut -c 1-$SCREEN_WIDTH&#39;</span>
+
+    <span class="c1"># egrep is installed everywhere and is the default.</span>
+    <span class="nv">GREP_SEARCH</span><span class="o">=</span><span class="s1">&#39;egrep -nR &quot;$1&quot; * | sort -k1 | cat -n | cut -c 1-$SCREEN_WIDTH&#39;</span>
+
+    <span class="nv">SEARCH</span><span class="o">=</span><span class="nv">$AG_SEARCH</span>
+
+    <span class="k">if</span> <span class="o">[</span> <span class="nv">$#</span> -eq <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+
+        <span class="nb">echo</span> <span class="s2">&quot;Usage: ga_code_search &lt;search&gt; &lt;index_to_edit&gt;&quot;</span>
+        <span class="nb">echo</span> <span class="s2">&quot;&quot;</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Examples:&quot;</span>
+        <span class="nb">echo</span> <span class="s2">&quot;    ga_code_search TODO&quot;</span>
+        <span class="nb">echo</span> <span class="s2">&quot;    ga_code_search TODO 1&quot;</span>
+        <span class="nb">echo</span> <span class="s2">&quot;    ga_code_search \&quot;TODO\\(graham\\)\&quot;&quot;</span>
+        <span class="nb">echo</span> <span class="s2">&quot;    ga_code_search \&quot;TODO\\(graham\\)\&quot; 4&quot;</span>
+        <span class="nb">echo</span> <span class="s2">&quot;&quot;</span>        
+        <span class="k">return</span>
+    <span class="k">fi</span>
+
+    <span class="k">if</span> <span class="o">[</span> <span class="nv">$#</span> -eq <span class="m">1</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="c1"># There are no command line argumnets.</span>
+        <span class="nb">eval</span> <span class="nv">$SEARCH</span>
+    <span class="k">else</span>
+        <span class="c1"># arg one should be a line from the output of above.</span>
+        <span class="nv">LINE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$SEARCH</span><span class="s2"> | sed &#39;</span><span class="nv">$2</span><span class="s2">q;d&#39; | awk -F&#39;:&#39; &#39;{print +\$2 \&quot; \&quot; \$1}&#39; | awk -F&#39; &#39; &#39;{print \$1 \&quot; \&quot; \$3}&#39;&quot;</span>
+        <span class="c1"># Modify with your editor here.</span>
+        emacs <span class="se">\+</span><span class="sb">`</span><span class="nb">eval</span> <span class="nv">$LINE</span><span class="sb">`</span>
+    <span class="k">fi</span>    
+<span class="o">}</span>
+</code></pre></div>
+
+<p>If you read through the comments, <code>the_silver_searcher</code> is far faster than <code>grep</code> for searching contents of files. If you don't have it already, I'd highly suggest installing it with <code>brew install the_silver_searcher</code>. If you don't want to, be sure to change <code>SEARCH=$AG_SEARCH</code> to <code>SEARCH=$GREP_SEARCH</code>.</p>
+<p>The function itself isn't that interesting. It's when you assign aliases to use this function that things become interesting. Here are the three that were given to me:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Find todo items that are assigned to me. TODO(ryan)</span>
+<span class="c1"># You can change `whoami` to whatever you want.</span>
+<span class="nb">alias</span> <span class="nv">todo</span><span class="o">=</span><span class="s1">&#39;ga_code_search &quot;TODO\(`whoami`\)&quot;&#39;</span>
+
+<span class="c1"># Find merge conflicts that need to be resolved.</span>
+<span class="nb">alias</span> <span class="nv">conflicts</span><span class="o">=</span><span class="s1">&#39;ga_code_search &quot;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&quot;&#39;</span>
+
+<span class="c1"># Find anything below your CWD.</span>
+<span class="c1"># You can now type `cs some_piece_of_code`</span>
+<span class="nb">alias</span> <span class="nv">cs</span><span class="o">=</span><span class="s1">&#39;ga_code_search&#39;</span>
+</code></pre></div>
+
+<p>My favorite by far is the first alias <code>todo</code>. Here is some example output when running this command:</p>
+<div class="codehilite"><pre><span></span><code>&gt; my_project <span class="o">(</span>master<span class="o">)</span>: todo
+ <span class="m">1</span>  app/models/strava.py:102: <span class="c1"># TODO(ryan) probably should memoize this at some point so its faster.</span>
+ <span class="m">2</span>  app/models/strava.py:148: <span class="c1"># TODO(ryan) make this line prettier</span>
+ <span class="m">3</span>  app/templates/strava/index.html:50: &lt;!-- TODO<span class="o">(</span>ryan<span class="o">)</span> move this into its own template file at some point --&gt;
+</code></pre></div>
+
+<p>Notice how there are numbers next to each result? That's because you can also open the file right to that todo item by typing <code>todo 1</code>! As the function is written, it will open in emacs. If that's your editor of choice, you'll be set. I'm personally a fan of Sublime Text. There's a way to also open a file in Sublime Text to a specific line number. Simply change the text in red with that in green:</p>
+<div class="codehilite"><pre><span></span><code><span class="gd">- LINE=&quot;$SEARCH | sed &#39;$2q;d&#39; | awk -F&#39;:&#39; &#39;{print +\$2 \&quot; \&quot; \$1}&#39; | awk -F&#39; &#39; &#39;{print \$1 \&quot; \&quot; \$3}&#39;&quot;</span>
+<span class="gi">+ LINE=&quot;$SEARCH | sed &#39;$2q;d&#39; | awk -F&#39;:&#39; &#39;{print +\$2 \&quot; \&quot; \$1}&#39; | awk -F&#39; &#39; &#39;{print \$3 \&quot;:\&quot; \$1}&#39;&quot;</span>
+
+<span class="gd">- emacs \+`eval $LINE`</span>
+<span class="gi">+ subl `eval $LINE`</span>
+</code></pre></div>
+
+<p>I've only used the functions for a few days now, but it's greatly improved my workflow for getting old todo's done in code. If you'd like to download these scripts, <a href="https://gist.github.com/2819e0576e9280a985ae">here</a> is the Sublime Text version and the <a href="https://gist.github.com/1351952bdc55d206d939">emacs</a> version.</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

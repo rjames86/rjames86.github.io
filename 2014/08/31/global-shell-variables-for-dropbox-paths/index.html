@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Global Shell Variables for Dropbox Paths - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Global Shell Variables for Dropbox Paths</h1>
+    <div class="article-meta">
+        <time datetime="2014-08-31T00:00:00-07:00">2014-08-31</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I have multiple computers running Dropbox, all of which have different folder paths to where the Dropbox folder is located. I wanted to have a universal way to find and navigate to the folders regardless of what computer I was on.</p>
+
+
+<p>In most cases, setting a variable to your Dropbox path is relatively easy. You could set your .bashrc to look something like this</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">DROPBOX_PERSONAL</span><span class="o">=</span><span class="nv">$HOME</span>/Dropbox
+</code></pre></div>
+
+<p>But this fails in a few situations, all of which apply to me on one or more of my computers</p>
+<ul>
+<li>Multiple Dropbox accounts on one computer (Personal and Business accounts)</li>
+<li>Dropbox isn't located in my home folder</li>
+</ul>
+<p>If you're running Dropbox version 2.8 or higher (you should be anyways), there's a json file that tells you where your Dropbox folders are located. The json looks like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">{</span>
+    <span class="s2">&quot;personal&quot;</span>: <span class="o">{</span>
+        <span class="s2">&quot;path&quot;</span>: <span class="s2">&quot;/Users/username/Dropbox (Personal)&quot;</span>,
+        <span class="s2">&quot;host&quot;</span>: <span class="m">1234</span>
+    <span class="o">}</span>,
+    <span class="s2">&quot;business&quot;</span>: <span class="o">{</span>
+        <span class="s2">&quot;path&quot;</span>: <span class="s2">&quot;/Users/username/Dropbox (Business)&quot;</span>, 
+        <span class="s2">&quot;host&quot;</span>: <span class="m">5678</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+
+<p>What this means is that you can set global variables using this information in your .bashrc or .bash_profile so that you always know where your Dropbox folder is</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">DROPBOX_WORK</span><span class="o">=</span><span class="k">$(</span>python -c <span class="s2">&quot;import json;f=open(&#39;</span><span class="nv">$HOME</span><span class="s2">/.dropbox/info.json&#39;, &#39;r&#39;).read();data=json.loads(f);print data.get(&#39;business&#39;, {}).get(&#39;path&#39;, &#39;&#39;)&quot;</span><span class="k">)</span>
+<span class="nv">DROPBOX_PERSONAL</span><span class="o">=</span><span class="k">$(</span>python -c <span class="s2">&quot;import json;f=open(&#39;</span><span class="nv">$HOME</span><span class="s2">/.dropbox/info.json&#39;, &#39;r&#39;).read();data=json.loads(f);print data.get(&#39;personal&#39;, {}).get(&#39;path&#39;, &#39;&#39;)&quot;</span><span class="k">)</span>
+</code></pre></div>
+
+<p>Now all you have to do is reference your Dropbox folders with <code>$DROPBOX_PERSONAL</code> or <code>$DROPBOX_WORK</code>.</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

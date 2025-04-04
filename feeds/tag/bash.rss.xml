@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - bash</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Thu, 05 Jan 2017 08:54:00 -0800</lastBuildDate><item><title>Setting Keyboard Shortcuts from Terminal in macOS</title><link>https://ryanmo.co/2017/01/05/setting-keyboard-shortcuts-from-terminal-in-macos</link><description>&lt;p&gt;It's been a few months since my last post. I've spent a lot of time working on my blog, but all things behind the scenes that most people wouldn't even notice. &lt;/p&gt;
+&lt;p&gt;Setting keyboard shortcuts on Mac is actually fairly easy, but it requires a lot of clicking around. Fortunately there's a way to do this from the terminal that's faster and easier.&lt;/p&gt;
+
+
+&lt;p&gt;The &lt;code&gt;defaults&lt;/code&gt; command in MacOS is nothing short of a mystery. It does some powerful things, but the documentation is sparse and half of the time I don't know what I'm doing. That being said, I've had a script written for a long time called &lt;code&gt;new_computer.sh&lt;/code&gt; where I set all of my favorite global and application-specific shortcuts when getting a new computer.&lt;/p&gt;
+&lt;p&gt;Let's take an example of a shortcut everyone should have: Print As PDF from within a print dialog. I've always set it to ⌘ ⇧ P. To do this within System Preferences, the steps are:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Open the Keyboard preference Pane&lt;/li&gt;
+&lt;li&gt;Click the Shortcuts tab&lt;/li&gt;
+&lt;li&gt;Click App Shortcuts&lt;/li&gt;
+&lt;li&gt;Click the + symbol&lt;/li&gt;
+&lt;li&gt;Fill out the prompts&lt;ul&gt;
+&lt;li&gt;Leave All Applications Selected&lt;/li&gt;
+&lt;li&gt;Menu Title is "Save as PDF…" (it's an elipsis, not three periods. Type &lt;code&gt;option ;&lt;/code&gt; to get the symbol)&lt;/li&gt;
+&lt;li&gt;Choose your shortcut&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;It's almost too many steps for one shortcut, let alone multiple. Let's try this in Terminal:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;defaults write -globalDomain NSUserKeyEquivalents  -dict-add &lt;span class="s2"&gt;&amp;quot;Save as PDF\\U2026&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;@\$p&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Easy, right? Sort of. The syntax for writing global shortcuts is fairly straight forward. If you're not creating a shortcut for a specific application, you can use the command above and simply change the title and shortcut. Here are how to represent all of the modifier keys:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;@ is command&lt;/li&gt;
+&lt;li&gt;^ is control&lt;/li&gt;
+&lt;li&gt;~ is option&lt;/li&gt;
+&lt;li&gt;$ is shift&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So command-shift p becomes &lt;code&gt;"@\$p"&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The reason this came up was that Omnifocus recently added tabs. This is great except that there's no shortcut for cycling through the tabs. This makes the feature almost pointless for me. So to add shortcuts, I ended up using the command above, but I need to target Omnifocus only.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;defaults write com.omnigroup.OmniFocus2 NSUserKeyEquivalents -dict-add &lt;span class="s2"&gt;&amp;quot;Show Next Tab&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;^\\U005D&amp;quot;&lt;/span&gt;
+defaults write com.omnigroup.OmniFocus2 NSUserKeyEquivalents -dict-add &lt;span class="s2"&gt;&amp;quot;Show Previous Tab&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;^\\U005B&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Here I'm setting show next/previous tab to control [ and control ]. Once you've set your keyboard shortcuts, you'll need to quit and re-launch the application in order for the new preferences to be read.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Thu, 05 Jan 2017 08:54:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2017-01-05:/2017/01/05/setting-keyboard-shortcuts-from-terminal-in-macos</guid><category>Tech</category><category>automation</category><category>bash</category></item><item><title>Searching Todo’s in Code</title><link>https://ryanmo.co/2016/01/11/searching-todos-in-code</link><description>&lt;p&gt;Happy 2016! It's been a while since I've gotten something up here.&lt;/p&gt;
+
+&lt;p&gt;Last week at work I was working on a fairly large refactor of our front-end. Large pieces of code were being moved around and others re-written to be cleaner and more understandable. Throughout this process, I was leaving myself todo's so that I'd remember to fix something later.  Problem is, I would rarely ever go back to them. That was until someone on my team shared some bash functions they had written to make following up on those todo's much easier&lt;/p&gt;
+
+
+&lt;p&gt;It's fairly common practice to leave yourself todo's as comments in code such as&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;# TODO(ryan) fix this later.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;That way if someone comes across it in the future, they'll know that whatever is below may not be perfect and that I plan on fixing it at some point. Finding all your todo's later is a different story. That's where some fancy bash functions come in handy.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;function&lt;/span&gt; ga_code_search&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;# alias todo=&amp;#39;ga_code_search &amp;quot;TODO\(`whoami`\)&amp;quot;&amp;#39;&lt;/span&gt;
+    &lt;span class="nv"&gt;SCREEN_WIDTH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;stty size &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+    &lt;span class="nv"&gt;SCREEN_WIDTH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$((&lt;/span&gt;SCREEN_WIDTH-4&lt;span class="k"&gt;))&lt;/span&gt;
+    &lt;span class="c1"&gt;# Given a spooky name so you can alias to whatever you want. &lt;/span&gt;
+    &lt;span class="c1"&gt;# (cs for codesearch)&lt;/span&gt;
+    &lt;span class="c1"&gt;# AG is WAY faster but requires a binary &lt;/span&gt;
+    &lt;span class="c1"&gt;# (try brew install the_silver_searcher)&lt;/span&gt;
+    &lt;span class="nv"&gt;AG_SEARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ag &amp;quot;$1&amp;quot; | sort -k1 | cat -n | cut -c 1-$SCREEN_WIDTH&amp;#39;&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# egrep is installed everywhere and is the default.&lt;/span&gt;
+    &lt;span class="nv"&gt;GREP_SEARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;egrep -nR &amp;quot;$1&amp;quot; * | sort -k1 | cat -n | cut -c 1-$SCREEN_WIDTH&amp;#39;&lt;/span&gt;
+
+    &lt;span class="nv"&gt;SEARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$AG_SEARCH&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="nv"&gt;$#&lt;/span&gt; -eq &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Usage: ga_code_search &amp;lt;search&amp;gt; &amp;lt;index_to_edit&amp;gt;&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Examples:&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;    ga_code_search TODO&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;    ga_code_search TODO 1&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;    ga_code_search \&amp;quot;TODO\\(graham\\)\&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;    ga_code_search \&amp;quot;TODO\\(graham\\)\&amp;quot; 4&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;        
+        &lt;span class="k"&gt;return&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="nv"&gt;$#&lt;/span&gt; -eq &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="c1"&gt;# There are no command line argumnets.&lt;/span&gt;
+        &lt;span class="nb"&gt;eval&lt;/span&gt; &lt;span class="nv"&gt;$SEARCH&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;
+        &lt;span class="c1"&gt;# arg one should be a line from the output of above.&lt;/span&gt;
+        &lt;span class="nv"&gt;LINE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$SEARCH&lt;/span&gt;&lt;span class="s2"&gt; | sed &amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;&lt;span class="s2"&gt;q;d&amp;#39; | awk -F&amp;#39;:&amp;#39; &amp;#39;{print +\$2 \&amp;quot; \&amp;quot; \$1}&amp;#39; | awk -F&amp;#39; &amp;#39; &amp;#39;{print \$1 \&amp;quot; \&amp;quot; \$3}&amp;#39;&amp;quot;&lt;/span&gt;
+        &lt;span class="c1"&gt;# Modify with your editor here.&lt;/span&gt;
+        emacs &lt;span class="se"&gt;\+&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="nb"&gt;eval&lt;/span&gt; &lt;span class="nv"&gt;$LINE&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;    
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If you read through the comments, &lt;code&gt;the_silver_searcher&lt;/code&gt; is far faster than &lt;code&gt;grep&lt;/code&gt; for searching contents of files. If you don't have it already, I'd highly suggest installing it with &lt;code&gt;brew install the_silver_searcher&lt;/code&gt;. If you don't want to, be sure to change &lt;code&gt;SEARCH=$AG_SEARCH&lt;/code&gt; to &lt;code&gt;SEARCH=$GREP_SEARCH&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The function itself isn't that interesting. It's when you assign aliases to use this function that things become interesting. Here are the three that were given to me:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Find todo items that are assigned to me. TODO(ryan)&lt;/span&gt;
+&lt;span class="c1"&gt;# You can change `whoami` to whatever you want.&lt;/span&gt;
+&lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;todo&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ga_code_search &amp;quot;TODO\(`whoami`\)&amp;quot;&amp;#39;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Find merge conflicts that need to be resolved.&lt;/span&gt;
+&lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;conflicts&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ga_code_search &amp;quot;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;quot;&amp;#39;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Find anything below your CWD.&lt;/span&gt;
+&lt;span class="c1"&gt;# You can now type `cs some_piece_of_code`&lt;/span&gt;
+&lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;cs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ga_code_search&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;My favorite by far is the first alias &lt;code&gt;todo&lt;/code&gt;. Here is some example output when running this command:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt; my_project &lt;span class="o"&gt;(&lt;/span&gt;master&lt;span class="o"&gt;)&lt;/span&gt;: todo
+ &lt;span class="m"&gt;1&lt;/span&gt;  app/models/strava.py:102: &lt;span class="c1"&gt;# TODO(ryan) probably should memoize this at some point so its faster.&lt;/span&gt;
+ &lt;span class="m"&gt;2&lt;/span&gt;  app/models/strava.py:148: &lt;span class="c1"&gt;# TODO(ryan) make this line prettier&lt;/span&gt;
+ &lt;span class="m"&gt;3&lt;/span&gt;  app/templates/strava/index.html:50: &amp;lt;!-- TODO&lt;span class="o"&gt;(&lt;/span&gt;ryan&lt;span class="o"&gt;)&lt;/span&gt; move this into its own template file at some point --&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Notice how there are numbers next to each result? That's because you can also open the file right to that todo item by typing &lt;code&gt;todo 1&lt;/code&gt;! As the function is written, it will open in emacs. If that's your editor of choice, you'll be set. I'm personally a fan of Sublime Text. There's a way to also open a file in Sublime Text to a specific line number. Simply change the text in red with that in green:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gd"&gt;- LINE=&amp;quot;$SEARCH | sed &amp;#39;$2q;d&amp;#39; | awk -F&amp;#39;:&amp;#39; &amp;#39;{print +\$2 \&amp;quot; \&amp;quot; \$1}&amp;#39; | awk -F&amp;#39; &amp;#39; &amp;#39;{print \$1 \&amp;quot; \&amp;quot; \$3}&amp;#39;&amp;quot;&lt;/span&gt;
+&lt;span class="gi"&gt;+ LINE=&amp;quot;$SEARCH | sed &amp;#39;$2q;d&amp;#39; | awk -F&amp;#39;:&amp;#39; &amp;#39;{print +\$2 \&amp;quot; \&amp;quot; \$1}&amp;#39; | awk -F&amp;#39; &amp;#39; &amp;#39;{print \$3 \&amp;quot;:\&amp;quot; \$1}&amp;#39;&amp;quot;&lt;/span&gt;
+
+&lt;span class="gd"&gt;- emacs \+`eval $LINE`&lt;/span&gt;
+&lt;span class="gi"&gt;+ subl `eval $LINE`&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I've only used the functions for a few days now, but it's greatly improved my workflow for getting old todo's done in code. If you'd like to download these scripts, &lt;a href="https://gist.github.com/2819e0576e9280a985ae"&gt;here&lt;/a&gt; is the Sublime Text version and the &lt;a href="https://gist.github.com/1351952bdc55d206d939"&gt;emacs&lt;/a&gt; version.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Mon, 11 Jan 2016 08:55:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2016-01-11:/2016/01/11/searching-todos-in-code</guid><category>Tech</category><category>automation</category><category>bash</category><category>sublimetext</category></item><item><title>Automatically Attach tmux in SSH Session</title><link>https://ryanmo.co/2015/05/09/automatically-attach-tmux-in-ssh-session</link><description>&lt;p&gt;I frequently work in ssh sessions and have found terminal multiplexers like &lt;code&gt;tmux&lt;/code&gt; to be invaluable. The problem I was constantly facing was having to re-attach or create a new  session each time I would ssh into a machine. Sometimes I would accidentally create a new session when one already existed and would then have to find where I had been working previously.&lt;/p&gt;
+
+
+&lt;p&gt;After searching around, I found a nice way to automatically create a  session each time I ssh into a machine, or re-attach if it already exists.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$TMUX&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+        &lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$SSH_CONNECTION&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; !&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+    &lt;span class="c1"&gt;# Attempt to discover a detached session and attach&lt;/span&gt;
+    &lt;span class="c1"&gt;# it, else create a new session&lt;/span&gt;
+    &lt;span class="nv"&gt;WHOAMI&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;whoami&lt;span class="k"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; tmux has-session -t &lt;span class="nv"&gt;$WHOAMI&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&amp;gt;/dev/null&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+    tmux -2 attach-session -t &lt;span class="nv"&gt;$WHOAMI&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;
+        tmux -2 new-session -s &lt;span class="nv"&gt;$WHOAMI&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I first check to be sure I'm not in a &lt;code&gt;screen&lt;/code&gt; session and also that I'm using ssh and not local to my machine. After that, it's a simple check to see if a  session exists. If so, re-attach it, otherwise create a new one. This can be simple added to the bottom of your ~/.bashrc file. Now every time I ssh in to any machine, my previous session is sitting there waiting for me.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="tmux" src="https://ryanmo.co/posts/Tech/2015-05-09/tmux.gif" /&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sat, 09 May 2015 09:47:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2015-05-09:/2015/05/09/automatically-attach-tmux-in-ssh-session</guid><category>Tech</category><category>automation</category><category>bash</category></item><item><title>Global Shell Variables for Dropbox Paths</title><link>https://ryanmo.co/2014/08/31/global-shell-variables-for-dropbox-paths</link><description>&lt;p&gt;I have multiple computers running Dropbox, all of which have different folder paths to where the Dropbox folder is located. I wanted to have a universal way to find and navigate to the folders regardless of what computer I was on.&lt;/p&gt;
+
+
+&lt;p&gt;In most cases, setting a variable to your Dropbox path is relatively easy. You could set your .bashrc to look something like this&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;DROPBOX_PERSONAL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/Dropbox
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;But this fails in a few situations, all of which apply to me on one or more of my computers&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Multiple Dropbox accounts on one computer (Personal and Business accounts)&lt;/li&gt;
+&lt;li&gt;Dropbox isn't located in my home folder&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you're running Dropbox version 2.8 or higher (you should be anyways), there's a json file that tells you where your Dropbox folders are located. The json looks like this:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;personal&amp;quot;&lt;/span&gt;: &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;path&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;/Users/username/Dropbox (Personal)&amp;quot;&lt;/span&gt;,
+        &lt;span class="s2"&gt;&amp;quot;host&amp;quot;&lt;/span&gt;: &lt;span class="m"&gt;1234&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;business&amp;quot;&lt;/span&gt;: &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;path&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;/Users/username/Dropbox (Business)&amp;quot;&lt;/span&gt;, 
+        &lt;span class="s2"&gt;&amp;quot;host&amp;quot;&lt;/span&gt;: &lt;span class="m"&gt;5678&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;What this means is that you can set global variables using this information in your .bashrc or .bash_profile so that you always know where your Dropbox folder is&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;DROPBOX_WORK&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;python -c &lt;span class="s2"&gt;&amp;quot;import json;f=open(&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/.dropbox/info.json&amp;#39;, &amp;#39;r&amp;#39;).read();data=json.loads(f);print data.get(&amp;#39;business&amp;#39;, {}).get(&amp;#39;path&amp;#39;, &amp;#39;&amp;#39;)&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;DROPBOX_PERSONAL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;python -c &lt;span class="s2"&gt;&amp;quot;import json;f=open(&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/.dropbox/info.json&amp;#39;, &amp;#39;r&amp;#39;).read();data=json.loads(f);print data.get(&amp;#39;personal&amp;#39;, {}).get(&amp;#39;path&amp;#39;, &amp;#39;&amp;#39;)&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now all you have to do is reference your Dropbox folders with &lt;code&gt;$DROPBOX_PERSONAL&lt;/code&gt; or &lt;code&gt;$DROPBOX_WORK&lt;/code&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 31 Aug 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-08-31:/2014/08/31/global-shell-variables-for-dropbox-paths</guid><category>Tech</category><category>bash</category><category>automation</category><category>Dropbox</category></item><item><title>Find images with No Exif Dates</title><link>https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates</link><description>&lt;p&gt;My Dropbox folder is full of images claiming to be "missing dates." &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt; Some of these photos were thumbnails or images from DayOne that didn't necessarily need dates, but others were real photos that for whatever reason didn't have dates that Dropbox recognized.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;img alt="Carousel Missing Photos" src="https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates/carousel_missing.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I did some poking around, and found that there were a couple of different reasons why my photos in Dropbox weren't displaying dates:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The DateTimeOriginal exif tag was missing entirely&lt;/li&gt;
+&lt;li&gt;The DateTimeOriginal was set to 0000:00:00 00:00:00&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;With the magic of &lt;a href="http://www.sno.phy.queensu.ca/~phil/exiftool/"&gt;exiftool&lt;/a&gt;, I found a way to find all the photos in my Dropbox folder that were missing dates and output the results to a CSV.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;exiftool -filename -r -if &lt;span class="s1"&gt;&amp;#39;(not $datetimeoriginal or ($datetimeoriginal eq &amp;quot;0000:00:00 00:00:00&amp;quot;)) and ($filetype eq &amp;quot;JPEG&amp;quot;)&amp;#39;&lt;/span&gt; -common -csv &amp;gt; ~/Dropbox/nodates.csv
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This will give you a CSV with all of the common file information for the images. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="CSV of Missing Photos" src="https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates/csv.png" /&gt;&lt;/p&gt;
+&lt;p&gt;At this point, you'll need to decide how you'll want to fix these photos. From what I have seen so far, the best exif tag to go on is &lt;code&gt;-filemodifydate&lt;/code&gt;, but you'll probably need to figure that out on your own. If you want to fix any photo that matches the above criteria, you can do something like this&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;exiftool &lt;span class="sb"&gt;`&lt;/span&gt;-datetimeoriginal&amp;lt;filemodifydate&lt;span class="sb"&gt;`&lt;/span&gt; -r -if &lt;span class="s1"&gt;&amp;#39;(not $datetimeoriginal or ($datetimeoriginal eq &amp;quot;0000:00:00 00:00:00&amp;quot;)) and ($filetype eq &amp;quot;JPEG&amp;quot;)&amp;#39;&lt;/span&gt; ~/Dropbox
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;2965 photos to be exact.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Fri, 01 Aug 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-08-01:/2014/08/01/find-images-with-no-exif-dates</guid><category>Tech</category><category>bash</category><category>automation</category><category>exiftool</category><category>photos</category></item><item><title>Log Foursquare Locations in Markdown</title><link>https://ryanmo.co/2014/07/06/log-foursquare-locations-in-markdown</link><description>&lt;p&gt;I've always used Foursquare as a way to remember the places I had visited while traveling. Foursquare isn't really meant to be used in this way, and as a result, they don't make it easy to answer the question, "what was that restaurant I went to last time I was here?" I'm now using IFTTT to log all my checkins to a text file in my Dropbox account.&lt;/p&gt;
+
+
+&lt;p&gt;I like MultiMarkdown tables. So that my Foursquare checkins looked nice, I first created a file in my Dropbox account with a heading&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;Date&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="nv"&gt;VenueName&lt;/span&gt;  &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;VenueUrl&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;Shout&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;MapURL&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="nv"&gt;City&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;State&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;Country&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In IFTTT, I then created a recipe which matches my table headers&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;a href="https://ifttt.com/view_embed_recipe/187719-share-foursquare-checkins-in-mamarkdown-table" target = "_blank" class="embed_recipe embed_recipe-l_45" id= "embed_recipe-187719"&gt;&lt;img src= 'https://ifttt.com/recipe_embed_img/187719' alt="IFTTT Recipe: Share Foursquare checkins in mamarkdown table connects foursquare to dropbox" width="370px" style="max-width:100%"/&gt;&lt;/a&gt;&lt;script async type="text/javascript" src= "//ifttt.com/assets/embed_recipe.js"&gt;&lt;/script&gt;&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IFTTT Content" src="https://ryanmo.co/2014/07/06/log-foursquare-locations-in-markdown/content.png" /&gt;&lt;/p&gt;
+&lt;p&gt;You may have noticed that I added an additional "Address" column that isn't getting filled out. IFTTT doesn't explicitly give the address of the venue you visited. However, the link to the Google Maps image contains GPS coordinates that I can use. Dr. Drang's &lt;a href="http://www.leancrew.com/all-this/2014/07/extracting-coordinates-from-apple-maps/" title="Extracting coordinates from Apple Maps - All this"&gt;post&lt;/a&gt; gave me the idea to parse out the coordinates and then use them how I'd like. This script, which I'm using with Hazel each time the file is updated, reverse geolocates the coordinates and returns the full address using OpenStreetMap. After that, it appends that address to each line in the markdown file.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="nv"&gt;FILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/Dropbox/IFTTT/foursquare/foursquare.txt&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;START&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$START&lt;/span&gt;
+&lt;span class="nv"&gt;IFS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;$&amp;#39;\n&amp;#39;&lt;/span&gt;     &lt;span class="c1"&gt;# new field separator, the end of line&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; line &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;cat &lt;span class="nv"&gt;$FILE&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="nv"&gt;mapsurl&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$line&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -n &lt;span class="s1"&gt;&amp;#39;s/.*(\(http.*\)).*/\1/p&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="nv"&gt;existingaddress&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$line&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep -E &lt;span class="s1"&gt;&amp;#39;^.*\(http.*\)(.*\|){2,}$&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; ! &lt;span class="nv"&gt;$mapsurl&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="nv"&gt;$existingaddress&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="o"&gt;((&lt;/span&gt; &lt;span class="nv"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; index + &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="o"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;continue&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;
+
+    &lt;span class="nv"&gt;coords&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$mapsurl&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -E &lt;span class="s1"&gt;&amp;#39;s/^.+\?center=([0-9.,-]+).+/\1/&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nv"&gt;lat&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$coords&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; cut -f1 -d,&lt;span class="k"&gt;)&lt;/span&gt;
+    &lt;span class="nv"&gt;long&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$coords&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; cut -f2 -d,&lt;span class="k"&gt;)&lt;/span&gt;
+
+    &lt;span class="nv"&gt;address&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl -s &lt;span class="s2"&gt;&amp;quot;http://nominatim.openstreetmap.org/reverse?format=json&amp;amp;lat=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;lat&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;lon=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;long&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;zoom=18&amp;amp;addressdetails=1&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+    &lt;span class="nv"&gt;country&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$address&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s/.*\(&amp;quot;country&amp;quot;:&amp;quot;.*&amp;quot;\),.*/\1/&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk -F&lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/country/ {print $4}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    &lt;span class="nv"&gt;city&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$address&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s/.*\(&amp;quot;city&amp;quot;:&amp;quot;.*&amp;quot;\),.*/\1/&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk -F&lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/city/ {print $4}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    &lt;span class="nv"&gt;state&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$address&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="s2"&gt;&amp;quot;\bstate\b&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s/.*\(&amp;quot;state&amp;quot;:&amp;quot;.*&amp;quot;\),.*/\1/&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk -F&lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/state/ {print $4}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# update the line of text&lt;/span&gt;
+    sed -i &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; -e &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;s/\(.*\)/\1 &lt;/span&gt;&lt;span class="nv"&gt;$city&lt;/span&gt;&lt;span class="s2"&gt; | &lt;/span&gt;&lt;span class="nv"&gt;$state&lt;/span&gt;&lt;span class="s2"&gt; | &lt;/span&gt;&lt;span class="nv"&gt;$country&lt;/span&gt;&lt;span class="s2"&gt; |/&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;((&lt;/span&gt; &lt;span class="nv"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; index + &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In the end, the table then ends up looking something like this:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align="center"&gt;Date&lt;/th&gt;
+&lt;th align="center"&gt;VenueName&lt;/th&gt;
+&lt;th align="center"&gt;VenueUrl&lt;/th&gt;
+&lt;th align="center"&gt;Shout&lt;/th&gt;
+&lt;th align="center"&gt;MapURL&lt;/th&gt;
+&lt;th align="center"&gt;City&lt;/th&gt;
+&lt;th align="center"&gt;State&lt;/th&gt;
+&lt;th align="center"&gt;Country&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align="center"&gt;July 06, 2014 at 07:07PM&lt;/td&gt;
+&lt;td align="center"&gt;Third Floor Espresso (3FE)&lt;/td&gt;
+&lt;td align="center"&gt;http://4sq.com/rtEJWP&lt;/td&gt;
+&lt;td align="center"&gt;&lt;/td&gt;
+&lt;td align="center"&gt;&lt;a href="http://maps.google.com/maps/api/staticmap?center=53.33998,-6.242084&amp;amp;zoom=16&amp;amp;size=710x440&amp;amp;maptype=roadmap&amp;amp;sensor=false&amp;amp;markers=color:red%7C53.33998,-6.242084"&gt;Map Link&lt;/a&gt;&lt;/td&gt;
+&lt;td align="center"&gt;Dublin&lt;/td&gt;
+&lt;td align="center"&gt;&lt;/td&gt;
+&lt;td align="center"&gt;Republic of Ireland&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="center"&gt;July 06, 2013 at 10:00AM&lt;/td&gt;
+&lt;td align="center"&gt;Wooly Pig Cafe&lt;/td&gt;
+&lt;td align="center"&gt;http://4sq.com/1n5Scct&lt;/td&gt;
+&lt;td align="center"&gt;&lt;/td&gt;
+&lt;td align="center"&gt;&lt;a href="http://maps.google.com/maps/api/staticmap?center=37.76522,-122.460266&amp;amp;zoom=16&amp;amp;size=710x440&amp;amp;maptype=roadmap&amp;amp;sensor=false&amp;amp;markers=color:red%7C53.33842395309077,-6.234097712535167"&gt;Map Link&lt;/a&gt;&lt;/td&gt;
+&lt;td align="center"&gt;San Francisco&lt;/td&gt;
+&lt;td align="center"&gt;California&lt;/td&gt;
+&lt;td align="center"&gt;United States of America&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 06 Jul 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-07-06:/2014/07/06/log-foursquare-locations-in-markdown</guid><category>Tech</category><category>markdown</category><category>automation</category><category>bash</category><category>ifttt</category></item><item><title>Show Time in Multiple Time Zones with TextExpander</title><link>https://ryanmo.co/2014/05/10/show-time-in-multiple-time-zones-with-textexpander</link><description>&lt;p&gt;I'm really bad at converting a time to other timezones. Now that the company I work for has offices in multiple countries, scheduling has become much more difficult. In an effort to eliminate the need for people to convert times themselves, I wrote a TextExpander snippet to take care of it for me.&lt;/p&gt;
+
+
+&lt;p&gt;There are tons of tools out there that show you what time it is in other parts of the world. One thing that isn't as readily available is a quick way to tell me what time it would be in California if it's 3:00pm in Dublin. I decided to write a quick TextExpander snippet that would let me pick the time and then it would output the time in all of my chosen time zones. &lt;/p&gt;
+&lt;p&gt;The first step is to choose the time zones that you want to appear. In my case, I chose the following since we have offices in these locations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Europe/Dublin&lt;/li&gt;
+&lt;li&gt;America/Los_Angeles&lt;/li&gt;
+&lt;li&gt;America/Chicago&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now I need to convert a chosen time to all of these time zones. This can be done using the &lt;code&gt;date&lt;/code&gt; command in bash. Here's a quick example to try in the Terminal:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;TZ=Europe/Dublin date -jf &amp;quot;%H:%M %z&amp;quot; &amp;quot;$(date &amp;quot;+%H:%M %z&amp;quot;)&amp;quot; &amp;quot;+%H:%M %Z&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;TZ lets you choose the time zone for the &lt;code&gt;date&lt;/code&gt; command&lt;/li&gt;
+&lt;li&gt;-f tells &lt;code&gt;date&lt;/code&gt; the format to expect for the input&lt;/li&gt;
+&lt;li&gt;-j tells &lt;code&gt;date&lt;/code&gt; to not change the date allowing the -f flag to convert a time&lt;/li&gt;
+&lt;li&gt;"$(date "+%H:%M %z")" just gives the current date that looks like HH:MM +0100&lt;/li&gt;
+&lt;li&gt;"+%H:%M %Z" is the output format&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This gives you the following result:&lt;/p&gt;
+&lt;p&gt;04:52 IST&lt;/p&gt;
+&lt;p&gt;Now to do this for multiple time zones:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;timezones&lt;/span&gt;&lt;span class="o"&gt;=(&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;America/Los_Angeles&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;America/Chicago&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Europe/Dublin&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; zone &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;timezones&lt;/span&gt;&lt;span class="p"&gt;[@]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="nv"&gt;TZ&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$zone&lt;/span&gt; date -jf &lt;span class="s2"&gt;&amp;quot;%H:%M %z&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;date &lt;span class="s2"&gt;&amp;quot;+%H:%M %z&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;+%H:%M %Z&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Which gives:&lt;/p&gt;
+&lt;p&gt;08:55 PDT&lt;br /&gt;
+10:55 CDT&lt;br /&gt;
+16:55 IST  &lt;/p&gt;
+&lt;p&gt;Lastly, let's add in some TextExpander input methods, and we have a way to use this with whatever time we want:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#! /bin/bash&lt;/span&gt;
+
+/* 
+Enter a &lt;span class="nb"&gt;time&lt;/span&gt; using 24H. &lt;span class="m"&gt;1&lt;/span&gt;:30pm is &lt;span class="m"&gt;13&lt;/span&gt;:30
+*/
+&lt;span class="nv"&gt;ENTERTIME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;%filltext:name=Hour:width=2%:%filltext:name=Minute:width=2%&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;timezones&lt;/span&gt;&lt;span class="o"&gt;=(&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;America/Los_Angeles&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;America/Chicago&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Europe/Dublin&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; zone &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;timezones&lt;/span&gt;&lt;span class="p"&gt;[@]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;do&lt;/span&gt;
+        &lt;span class="nv"&gt;TZ&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$zone&lt;/span&gt; date -jf &lt;span class="s2"&gt;&amp;quot;%H:%M %z&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$ENTERTIME&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;date &lt;span class="s2"&gt;&amp;quot;+%z&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;+%H:%M %Z&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sat, 10 May 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-05-10:/2014/05/10/show-time-in-multiple-time-zones-with-textexpander</guid><category>Tech</category><category>bash</category><category>automation</category><category>textexpander</category></item><item><title>Digitizing the Family Photos</title><link>https://ryanmo.co/2014/03/01/digitizing-the-family-photos</link><description>&lt;p&gt;I had this ongoing fear that all of our family photos would get lost or destroyed. I've always wanted to have a central place for all of my photos, both past and present. In early 2012, my mom and I started on a project to scan, crop and organize all of our old photos from negatives.&lt;/p&gt;
+
+
+&lt;h1 id="going-digital"&gt;Going Digital&lt;/h1&gt;
+&lt;p&gt;I was fortunate that when I decided to take on this project, my mom already had two large Epson flatbed scanners with transparency adapters. What was even better was that my mom was highly organized over the years and archived all of the negatives of every photo she had ever taken. This only left us with one thing to do: scan the photos.  Since I was living in California and my mom in Montana, the work of pulling the negatives and scanning them was going to be done by my mom. We also needed to have a way to transfer the files from her computer to mine. Dropbox was an obvious choice in this case, but there was one problem that would complicate everything: hard drive space. &lt;/p&gt;
+&lt;p&gt;My mom was still using her PowerMac G5 at the time and hard drive space was pretty limited. It wouldn't have taken long before she wouldn't have enough space to even scan the photos. As a simple solution, once the scans were uploaded and synced to my computer, I could have manually removed the files and place them on my own computer, but I was lazy and didn't want to check constantly whether new files had been added. At the time, I was just learning how to code and thought this would be good practice &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. I ended up writing a script that would mirror the folder structure for the scans in our Dropbox shared folder on my local Desktop and then remove the original file in Dropbox. The old folder structure was maintained so that if any new files were added to the same folder, my mom wouldn't have to recreate them. I then set this up as a cron job to run once a day and then send me an email digest of all the files that were transferred.&lt;/p&gt;
+&lt;p&gt;After a couple of weeks, I had nearly 15 years of photos in folders organized by year totaling around 85GB. Each Photoshop file was around 1.GB each and the photos were scanned at 300dpi. Now the hardest and longest part of the project was about to begin.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Folder Structure" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/folders.png" /&gt;&lt;/p&gt;
+&lt;h1 id="cropping-resizing-and-renaming"&gt;Cropping, Resizing, and Renaming&lt;/h1&gt;
+&lt;p&gt;I wasn't entirely sure how I was going to do this part efficiently. My mom hadn't laid out the photos in a symmetric grid and there wasn't a reliable way to detect photo borders. I also decided beforehand that I wanted to preserve the original files and so I would save an individual Photoshop file for each photo that was cropped. I then wanted to have a separate folder that was simply for viewing the files.&lt;/p&gt;
+&lt;p&gt;Starting off, I wanted to try manually doing everything and automate things over time. Cropping the files using the marquee tool was always going to be manual. I would select the file, copy it, create a new file with the dimensions from the clipboard and then paste the photo into the new file. After I had gone through the entire file, I would save all the files at once with random names (you'll see later why the naming here didn't matter). This part immediately became tedious. I did some research on how I could make this easier or faster and discovered Photoshop actions&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2"&gt;2&lt;/a&gt;&lt;/sup&gt;. What was great about this was I was able to record every step I was taking into one single keyboard shortcut. This broke down the process to simply selecting the photo and hitting shift-F1. This one keyboard shortcut took care of copying the file, creating a new file with the dimensions of the clipboard, pasting and then finally selecting the previous file. That last step was key. Instead of a final control-tab to move back to the original file, the action took care of it for me. You can download the Photoshop action &lt;a href="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/Scans.atn"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Actions Screenshot" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/actions_screenshot.png" /&gt;&lt;/p&gt;
+&lt;p&gt;At this point, I had an original Photoshop file and a folder called Cropped where all the new photos lived. I now needed a way to rename these files to something meaningful. Automator and Alfred made this simple. After I finished cropping, I would select all of the newly created files, run my Alfred extension "Rename Scans" which would trigger an automator script, prompt me to name the files, and then each file would be renamed from something like Untitled1.psd to November 1987_1.psd.&lt;/p&gt;
+&lt;p&gt;At this point, the final step for each of these files was to create a viewable JPG for every photo. Turns out, Photoshop has a great feature called Image Processor. After the files were neatly renamed, I would open up the Image Processor, select the folder, and hit go. My settings were always saved so there wasn't much else to be done each time I ran this. I would take the Photoshop files, create a new JPG at 5 quality in a new folder called Low Res Images with the same naming convention. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Image Processor" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/image_processor.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I was then able to share this folder back with my mom and the rest of my family. They enjoyed watching the photos get added over the last year or so as I casually worked on the files.&lt;/p&gt;
+&lt;p&gt;Once I had done all of the steps for each file, I would move the folder of PSD files into a folder called Done. This simply gave me a better idea of how many folders I had left to work on.&lt;/p&gt;
+&lt;h1 id="viewing"&gt;Viewing&lt;/h1&gt;
+&lt;p&gt;In late January 2014, I finally finished cropping all of the photos. I never intended on it taking quite this long, but it was never something that needed to have a deadline. It felt great to know that I was finally done and could just sit back and look at all of the old photos from what I was little. I was using &lt;a href="http://www.lynapp.com"&gt;Lyn&lt;/a&gt; to view all the photos and realized that something was a little off. All of the photos were out of order. All of the folders had been named as Month Year, and even if I was viewing all of the photos at the same time, they were sorted in the order that I had created the files, not the time they were actually taken. I couldn't sort them in a photo viewer, Dropbox's photo tab would sort them by file creation and not EXIF date taken, and using Spotlight search was more-or-less pointless. There was no way  that I was going to manually date 3,300 photos by hand. I had used the command line tool &lt;a href="http://www.sno.phy.queensu.ca/~phil/exiftool/"&gt;exiftools&lt;/a&gt; a few times, and I started looking into whether this would be a possibility for dating the files. It turned out that the command was really straightforward for naming a folder&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;exiftool&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-AllDates=1999:12:31 12:00:00&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;foldername&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Even though I could have done it by hand, I didn't really want to have to type this in for 80 or so folders of photos. I quickly wrote up a Python script that would parse out the date from the folder names and prompt me to confirm whether this was correct or not. I was fine hitting Enter 80 times. &lt;/p&gt;
+&lt;p&gt;Some of the folders were called things like January-March 1995. For these cases, I would just assume the first month for the date. I wasn't going for perfection, but rather a good estimate for the time the photos were taken.&lt;/p&gt;
+&lt;p&gt;You can take a look at the script &lt;a href="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/convert_exif_dates.py"&gt;here&lt;/a&gt;. Do note that the script is really specific to my folder structure so it might not work perfectly for you, but it'll be a good start if you need to do something like this.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Lyn App" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/lynapp.png" /&gt;&lt;/p&gt;
+&lt;h1 id="what-i-learned"&gt;What I Learned&lt;/h1&gt;
+&lt;p&gt;Epson now makes a &lt;a href="http://www.epson.com/cgi-bin/Store/jsp/Product.do?BV_UseBVCookie=yes&amp;amp;sku=B11B178061"&gt;scanner&lt;/a&gt; that eliminates a lot of the hard work around cropping the photos. It's expensive, but it would have saved me a lot of work.&lt;/p&gt;
+&lt;p&gt;I've made this comment before, but I still would love to have a way to embed facial recognition into the metadata of photos. My perfect world would be having the ability to do something like search for all of the photos of my brother before 1995.&lt;/p&gt;
+&lt;p&gt;Ultimately, this was a long, but satisfying project. I sleep better at night knowing that all of our family photos are backed up and not be lost forever if there were ever to be a disaster.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;For those who want to see the script, &lt;a href="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/movescans.py"&gt;here&lt;/a&gt; it is. Please don't judge me. This was actually one of my first real scripts I had ever written. I know there are better ways to do a lot of it.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;I'm a total Photoshop newb&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sat, 01 Mar 2014 00:00:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-03-01:/2014/03/01/digitizing-the-family-photos</guid><category>Tech</category><category>python</category><category>alfred</category><category>hazel</category><category>dropbox</category><category>bash</category><category>photos</category></item><item><title>Your .bash_profile everywhere</title><link>https://ryanmo.co/2013/03/31/bashprofile</link><description>&lt;p&gt;I have two computers, one for work and one for personal. I keep mostly everything separate, but one thing I want to always have with me is my terminal environment and aliases. With Dropbox, I can not only access, but edit my .bash_profile from anywhere &lt;em&gt;without&lt;/em&gt; using symlinks.&lt;/p&gt;
+
+
+&lt;p&gt;The first thing to do is figure out where you want to keep your .bash_profile in your Dropbox account. I keep mine in a folder called Sync that's shared between my work and personal Dropbox accounts. To move your .bash_profile, use the following command in Terminal:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;mv ~/.bash_profile ~/path/to/Dropbox/.bash_profile&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Once you've moved it here, create a new .bash_profile in your home directory and add the single line:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;source ~/that/path/to/.bash_profile&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Thats it! From now on, just point the local .bash_profile to the one location in your Dropbox folder.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 31 Mar 2013 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2013-03-31:/2013/03/31/bashprofile</guid><category>Tech</category><category>dropbox</category><category>automation</category><category>bash</category></item></channel></rss>

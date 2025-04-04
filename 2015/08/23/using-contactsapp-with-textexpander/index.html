@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Using Contacts.app with TextExpander - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Using Contacts.app with TextExpander</h1>
+    <div class="article-meta">
+        <time datetime="2015-08-23T11:41:00-07:00">2015-08-23</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>Changing your email or phone number isn't fun. You have to tell everyone, update all of your online accounts, and make sure your TextExpanders are up-to-date with the right information. One of the places I will always update is my contact information in Contacts.app, so why not just use that as the source of truth for TextExpander snippets?</p>
+
+
+<p>In TextExpander 5, you can now use Javascript in snippets. Since I had <a href="{static}../2014-12-14/2014-12-14_backup-your-contacts-v2.md">already created some scripts</a> using Contacts, I re-used some of the bits to create TextExpander snippets to expand information directly from Contacts.app.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">Contacts</span> <span class="o">=</span> <span class="nx">Application</span><span class="p">(</span><span class="s1">&#39;/Applications/Contacts.app&#39;</span><span class="p">)</span>
+
+<span class="c1">// ::attr is the attribute you want pull (emails, phones, etc.)</span>
+<span class="c1">// ::accountType is what you see to the left of the info in Contacts.app</span>
+<span class="kd">function</span> <span class="nx">getMyInfo</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="nx">accountType</span><span class="p">){</span>
+    <span class="nx">method</span> <span class="o">=</span> <span class="nx">attr</span> <span class="o">==</span> <span class="s1">&#39;addresses&#39;</span> <span class="o">?</span> <span class="s1">&#39;formattedAddress&#39;</span> <span class="o">:</span> <span class="s1">&#39;value&#39;</span>
+    <span class="nx">search</span> <span class="o">=</span> <span class="nx">Contacts</span><span class="p">.</span><span class="nx">myCard</span><span class="p">()[</span><span class="nx">attr</span><span class="p">].</span><span class="nx">where</span><span class="p">({</span><span class="nx">label</span><span class="o">:</span> <span class="nx">accountType</span><span class="p">})</span>
+    <span class="nx">results</span> <span class="o">=</span> <span class="nx">search</span><span class="p">.</span><span class="nx">length</span> <span class="o">?</span> <span class="nx">search</span><span class="p">().</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">){</span><span class="k">return</span> <span class="nx">a</span><span class="p">[</span><span class="nx">method</span><span class="p">]()})</span> <span class="o">:</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mf">1</span><span class="p">){</span>
+        <span class="k">return</span> <span class="nx">results</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mf">1</span><span class="p">){</span>
+        <span class="k">return</span> <span class="nx">results</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+<span class="p">}</span>
+
+<span class="c1">// Grab my &#39;blog&#39; email address </span>
+<span class="nx">getMyInfo</span><span class="p">(</span><span class="s1">&#39;emails&#39;</span><span class="p">,</span> <span class="s1">&#39;blog&#39;</span><span class="p">)</span> <span class="c1">// returns email address</span>
+</code></pre></div>
+
+<p>The <code>getMyInfo</code> function is fairly generalized to allow you to get any basic information like emails or phone numbers from your contacts. The first argument is the type<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, and the second is the label you want, such as Home, Work, etc. To get a phone number, just change the function called to <code>getMyInfo('phones', 'iPhone)</code>. To get an address, change to <code>getMyInfo('addresses', 'home')</code>, which will return a formatted address.</p>
+<p><em>Update 2015-08-23</em>: Updated the <code>getMyInfo</code> function to support addresses.  </p>
+<p><em>Update 2015-09-20</em>: For a while, I couldn't figure out why occasionally expanding things from Contacts would take a little while. Then I realized, for AppleScript to work, the application you're calling needs to be open. If you do want to use this as a way to expand your information from Contacts, just know that you'll need to be running the application for the TextExpander snippets to work.</p>
+<p><em>Update 2015-09-20</em>: I've figured out a way to do this without Contacts.app running! Check out my post <a href="{static}../2015-10-24/2015-10-24-Using_Contacts_TextExpander_v2.md">here</a> for more info.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>You can find all the attributes in the Contacts.app scripts library in Address Book Script Suite → Application → myCard&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

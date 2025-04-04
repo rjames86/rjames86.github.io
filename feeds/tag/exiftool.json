@@ -1,0 +1,46 @@
+{
+    "author": {
+        "name": "Ryan M"
+    },
+    "favicon": "https://ryanmo.co/images/favicon.png",
+    "feed_url": "https://ryanmo.co/feeds/tag/exiftool.json",
+    "home_page_url": "https://ryanmo.co",
+    "items": [
+        {
+            "id": "https://ryanmo.co/2014/09/28/exiftool-cheatsheet",
+            "url": "https://ryanmo.co/2014/09/28/exiftool-cheatsheet",
+            "title": "My Exiftool Cheatsheet",
+            "content_html": "<p>I've spent a lot of time organizing and <a href=\"{static}../2014-03-01/2014-03-01%20Digitizing%20the%20Family%20Photos.md\">digitizing</a> old photos. Exiftool has been a great tool, but the learning curve is fairly steep and you can end up making a lot of bad mistakes<sup id=\"fnref:1\"><a class=\"footnote-ref\" href=\"#fn:1\">1</a></sup>. Here is my ongoing cheat sheet of exiftool commands.</p>\n\n\n<script src=\"https://gist.github.com/rjames86/33b9af12548adf091a26.js\"></script>\n\n<div class=\"footnote\">\n<hr />\n<ol>\n<li id=\"fn:1\">\n<p>I still make a backup copy of my photos before ever making changes.&#160;<a class=\"footnote-backref\" href=\"#fnref:1\" title=\"Jump back to footnote 1 in the text\">&#8617;</a></p>\n</li>\n</ol>\n</div>",
+            "summary": "<p>I've spent a lot of time organizing and <a href=\"{static}../2014-03-01/2014-03-01%20Digitizing%20the%20Family%20Photos.md\">digitizing</a> old photos. Exiftool has been a great tool, but the learning curve is fairly steep and you can end up making a lot of bad mistakes<sup id=\"fnref:1\"><a class=\"footnote-ref\" href=\"#fn:1\">1</a></sup>. Here is my ongoing cheat sheet of exiftool commands.</p>\n",
+            "date_published": "2014-09-28T12:22:00-07:00",
+            "author": {
+                "name": "Ryan M",
+                "url": "https://ryanmo.co/author/ryan-m.html"
+            },
+            "tags": [
+                "exiftool",
+                "photos"
+            ]
+        },
+        {
+            "id": "https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates",
+            "url": "https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates",
+            "title": "Find images with No Exif Dates",
+            "content_html": "<p>My Dropbox folder is full of images claiming to be \"missing dates.\" <sup id=\"fnref:1\"><a class=\"footnote-ref\" href=\"#fn:1\">1</a></sup> Some of these photos were thumbnails or images from DayOne that didn't necessarily need dates, but others were real photos that for whatever reason didn't have dates that Dropbox recognized.</p>\n\n\n<p><img alt=\"Carousel Missing Photos\" src=\"https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates/carousel_missing.png\" /></p>\n<p>I did some poking around, and found that there were a couple of different reasons why my photos in Dropbox weren't displaying dates:</p>\n<ul>\n<li>The DateTimeOriginal exif tag was missing entirely</li>\n<li>The DateTimeOriginal was set to 0000:00:00 00:00:00</li>\n</ul>\n<p>With the magic of <a href=\"http://www.sno.phy.queensu.ca/~phil/exiftool/\">exiftool</a>, I found a way to find all the photos in my Dropbox folder that were missing dates and output the results to a CSV.</p>\n<div class=\"codehilite\"><pre><span></span><code>exiftool -filename -r -if <span class=\"s1\">&#39;(not $datetimeoriginal or ($datetimeoriginal eq &quot;0000:00:00 00:00:00&quot;)) and ($filetype eq &quot;JPEG&quot;)&#39;</span> -common -csv &gt; ~/Dropbox/nodates.csv\n</code></pre></div>\n\n<p>This will give you a CSV with all of the common file information for the images. </p>\n<p><img alt=\"CSV of Missing Photos\" src=\"https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates/csv.png\" /></p>\n<p>At this point, you'll need to decide how you'll want to fix these photos. From what I have seen so far, the best exif tag to go on is <code>-filemodifydate</code>, but you'll probably need to figure that out on your own. If you want to fix any photo that matches the above criteria, you can do something like this</p>\n<div class=\"codehilite\"><pre><span></span><code>exiftool <span class=\"sb\">`</span>-datetimeoriginal&lt;filemodifydate<span class=\"sb\">`</span> -r -if <span class=\"s1\">&#39;(not $datetimeoriginal or ($datetimeoriginal eq &quot;0000:00:00 00:00:00&quot;)) and ($filetype eq &quot;JPEG&quot;)&#39;</span> ~/Dropbox\n</code></pre></div>\n\n<div class=\"footnote\">\n<hr />\n<ol>\n<li id=\"fn:1\">\n<p>2965 photos to be exact.&#160;<a class=\"footnote-backref\" href=\"#fnref:1\" title=\"Jump back to footnote 1 in the text\">&#8617;</a></p>\n</li>\n</ol>\n</div>",
+            "summary": "<p>My Dropbox folder is full of images claiming to be \"missing dates.\" <sup id=\"fnref:1\"><a class=\"footnote-ref\" href=\"#fn:1\">1</a></sup> Some of these photos were thumbnails or images from DayOne that didn't necessarily need dates, but others were real photos that for whatever reason didn't have dates that Dropbox recognized.</p>\n",
+            "date_published": "2014-08-01T00:00:00-07:00",
+            "author": {
+                "name": "Ryan M",
+                "url": "https://ryanmo.co/author/ryan-m.html"
+            },
+            "tags": [
+                "bash",
+                "automation",
+                "exiftool",
+                "photos"
+            ]
+        }
+    ],
+    "title": "ryanmo.co",
+    "version": "https://jsonfeed.org/version/1"
+}

@@ -1,0 +1,27 @@
+Title: Create Multiple Tasks in Omnifocus on iOS
+Date: 2017-08-30 11:22
+Tags: applescript, automation, ios, javascript, omnifocus
+Author: Ryan M
+
+Throughout the day I think of things that I need to do after work or this coming weekend. The best way for me to not forget these is to quickly get them into Omnifocus. I've been using Drafts on my iPhone and Alfred on my Mac to quickly create tasks with the appropriate deferral and due dates. This has worked really well except for when I want to add more than one task at a time. 
+
+Not too long ago, Omnifocus added the ability to import tasks in Taskpaper format. The import initially seemed very basic and only allowed you to dump them into Omnifocus' Inbox for processing. Digging into the documentation shows that you can be more specific about what project you want those tasks to go into as well as context, defer and due dates.
+
+ Up until now, if I wanted to create multiple tasks for tonight, I would have to add each one individually in Drafts and use my "Due Tonight" action, return to Drafts and repeat. Using the Taskpaper syntax import, I can now add multiple lines as tasks in Drafts and import. Each line would look something like this:
+
+	:::text
+	- Take out the garbage @flagged(true) @context(Admin & Routines) @defer(6pm) @due(8pm)
+	- Finish blog post @flagged(true) @context(Admin & Routines) @defer(6pm) @due(8pm)
+
+Since Drafts supports JavaScript, I can create a single script to support my tonight, weekend or today tasks.
+
+{! drafts.js !}
+
+The action will first prompt me asking whether these lines are for tonight, this weekend or today and will then create the TaskPaper lines and open Omnifocus.
+
+![drafts-prompt]({static}drafts-prompt.png)
+
+You can download the action for Drafts [here][download].
+
+[download]: https://drafts4-actions.agiletortoise.com/a/2Ex
+

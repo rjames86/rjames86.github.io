@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - hazel</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Mon, 23 Jan 2017 07:16:00 -0800</lastBuildDate><item><title>Syncing Photos from Dropbox to the Photos App on iPhone</title><link>https://ryanmo.co/2017/01/23/syncing-photos-from-dropbox-to-the-photos-app-on-iphone</link><description>&lt;p&gt;I've chosen to not use iCloud Photo Library for a few reasons. I have a decent system set up for storing my photos in Dropbox, but I've always wanted to have my photos local on my iPhone. Now that iOS 10 has some cool features like memories and image search, I've been looking for a way to have my photos on my iPhone and also in Dropbox.&lt;/p&gt;
+
+
+&lt;p&gt;The easy solution is to simply point iTunes to your photo library in Dropbox and sync your photos over. This has a few downsides:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;If your photo library is large, you can't sync everything over&lt;/li&gt;
+&lt;li&gt;iTunes doesn't let you sync multiple folders, so its all or nothing&lt;/li&gt;
+&lt;li&gt;iTunes creates a thumbnail cache in the folder of photos, which means you have a large folder constantly syncing to Dropbox, which isn't ideal&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I already use Hazel to sort and organize my photos, so I figured adding another workflow would be fairly easy. On the computer where I sync my iPhone to iTunes, I set up a workflow that looks like this&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1" src="https://ryanmo.co/posts/Tech/2017-01-23/1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Since my photo folder structure looks like [year]/[month]/[event], I need to look at each of the photos and then continue the workflow if it matches a matches a shell command&lt;/p&gt;
+&lt;p&gt;&lt;img alt="2" src="https://ryanmo.co/posts/Tech/2017-01-23/2.png" /&gt;&lt;/p&gt;
+&lt;p&gt;As long as what Hazel processes is a folder, and matches this regular expression, we can continue on to process the photos. This regular expression looks for a folder path that contains the the numbers 2015 through 2019&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. You can change the 5 to be whatever range you need, but I didn't need to go back to photos older than that.&lt;/p&gt;
+&lt;p&gt;The next step is creating a hard link to the photo to a new folder I keep in &lt;code&gt;~/Pictures&lt;/code&gt; called "Photos for iPhone."&lt;/p&gt;
+&lt;p&gt;&lt;img alt="3" src="https://ryanmo.co/posts/Tech/2017-01-23/3.png" /&gt;&lt;/p&gt;
+&lt;p&gt;A hard link is nice here since it simply references the original file and doesn't take up space on your hard drive.&lt;/p&gt;
+&lt;p&gt;Now I can point iTunes to my newly created folder. Each time a new photo gets added to my Dropbox photos folder, a new hard link is created and then synced to my iPhone the next time I plug it in.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;This will stop working after 2019, but by that point, I'd hope that syncing and viewing photos will be in a better place.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Mon, 23 Jan 2017 07:16:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2017-01-23:/2017/01/23/syncing-photos-from-dropbox-to-the-photos-app-on-iphone</guid><category>Tech</category><category>applescript</category><category>javascript</category><category>automation</category><category>hazel</category></item><item><title>Publishing from Day One to Pelican with Hazel and Dropbox</title><link>https://ryanmo.co/2016/08/19/publishing-from-day-one-to-pelican-with-hazel-and-dropbox</link><description>&lt;p&gt;I'll be soon embarking on a long bike tour and was searching for a way to keep a journal of my trip but also post updates to a website. Day One was an obvious journaling choice, but with version 2, publishing isn't yet available. With a little poking around, it turned out to be fairly easy to export Day One entries and publish to Pelican (my static blog generator of choice).&lt;/p&gt;
+
+
+&lt;p&gt;I've not been a heavy user of Day One, and with the new version, I've stopped entirely until they provide end-to-end encryption with their proprietary sync service. Journaling my bike trip isn't anything I'm worried about being out in the open, and so I'll use it to keep a log of my days on the trip. At the same time, I want to keep my friends and family up-to-date on my trip. Since I use Pelican for this site, it seemed like a reasonable choice to use it for this trip and use Github Pages as an easy, free place to host it.&lt;/p&gt;
+&lt;p&gt;The first step was getting the Pelican site set up. I used the basic quickstart and put in a custom theme that I found online. The only modifications I made was using the &lt;a href="https://github.com/getpelican/pelican-plugins/tree/master/photos"&gt;photos plugin&lt;/a&gt; to make it easier to add galleries if I want in the future. Publishing to Github Pages is trivial. You can follow the steps &lt;a href="http://docs.getpelican.com/en/3.6.3/tips.html#publishing-to-github"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Now the fun part. Day One lets you export a journal entry as Markdown. When exported, it's compressed into a zip file which includes a folder of photos if you've included any in the journal entry. For each post, I use the export action and then upload to a folder I've created in Dropbox. I have Hazel watching this folder which will do the following:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Unarchive any file that appears&lt;/li&gt;
+&lt;li&gt;Move the unarchived contents into a new folder I unoriginally name "decompressed"&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img alt="unarchive" src="https://ryanmo.co/posts/Tech/2016-08-19/unarchive.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I then have a separate rule watching "decompressed" which will&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Move any image file type into my blog's images folder&lt;/li&gt;
+&lt;li&gt;Move any text file into the content folder&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img alt="move_text" src="https://ryanmo.co/posts/Tech/2016-08-19/move_text.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Step 2 here requires a little bit of extra work. Day One has some weird formatting issues and I also need to update the image urls in the entry to match what Pelican expects. The script isn't my finest, but it takes care of everything&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/usr/bin/python&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;codecs&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;datetime&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;
+
+&lt;span class="n"&gt;input_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;codecs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;input_file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="n"&gt;mode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;r&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="n"&gt;encoding&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;utf-8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Get rid of the tabs that DayOne inserts&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s1"&gt;Date:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Date:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s1"&gt;Weather:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Weather:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s1"&gt;Location:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Location:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;# Replace default Markdown image syntax with Pelican&amp;#39;s syntax + photos plugin&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;![](photos/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;![](&lt;/span&gt;&lt;span class="si"&gt;{photo}&lt;/span&gt;&lt;span class="s1"&gt;/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;title_re&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;\n\n#\s+(.*)\n&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;title_search&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;title_re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;now_datestring&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;now&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strftime&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;%B &lt;/span&gt;&lt;span class="si"&gt;%d&lt;/span&gt;&lt;span class="s1"&gt;, %Y at %H:%M:%S %Z&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# We need a title: header for Pelican&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;title_search&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Title: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;title_search&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;title_re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Title: Update &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;now_datestring&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Date:&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Date: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;now_datestring&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+
+&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;codecs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;input_file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;w&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;encoding&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;utf-8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;new_file&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;new_file&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p&gt;Now the file is cleaned up and in the right place. We can now publish and push to Github.&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="nb"&gt;cd&lt;/span&gt; ~/Dropbox/blogs/biketour/pelican_site
+
+make publish
+
+git add ..
+
+git commit -am &lt;span class="s1"&gt;&amp;#39;update blog&amp;#39;&lt;/span&gt;
+
+/Users/rjames/dev/pelican/bin/ghp-import output
+
+git push git@github.com:rjames86/rjames86.github.io.git gh-pages:master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p&gt;That's it! You can see the posts and follow my bike tour at &lt;a href="http://rjames86.github.io"&gt;http://rjames86.github.io&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Fri, 19 Aug 2016 11:02:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2016-08-19:/2016/08/19/publishing-from-day-one-to-pelican-with-hazel-and-dropbox</guid><category>Tech</category><category>hazel</category><category>pelican</category><category>automation</category><category>dropbox</category></item><item><title>How I use my Mac Mini Server on Macminicolo</title><link>https://ryanmo.co/2015/02/09/how-i-use-my-mac-mini-server-on-macminicolo</link><description>&lt;p&gt;I frequently get asked why I use &lt;a href="http://www.macminicolo.net"&gt;Macminicolo&lt;/a&gt; and if it's worth it. It's a relatively expensive hobby, but it gives me so much benefit that at this point I couldn't live without it. Having an always-on Mac opens up a lot of opportunity and I'm always finding new things to use it for. &lt;/p&gt;
+
+
+&lt;p&gt;If you haven't already read it, Macminicolo has already posted their own [50 ways to use your server][50ways]. I thought it would be worth sharing some of the ways that I use my Mac Mini. Some of these things I've already shared in the past and I'll be sure to post more details on any of the other things in the future. &lt;/p&gt;
+&lt;h2 id="50ways-httpblogmacminicolonetpost4703882550250-ways-to-use-your-server"&gt;[50ways]: http://blog.macminicolo.net/post/47038825502/50-ways-to-use-your-server&lt;/h2&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#50ways-httpblogmacminicolonetpost4703882550250-ways-to-use-your-server"&gt;[50ways]: http://blog.macminicolo.net/post/47038825502/50-ways-to-use-your-server&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#syncing-and-backup"&gt;Syncing and Backup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#hazel"&gt;Hazel&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#web-server"&gt;Web Server&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#blogs"&gt;Blogs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#site-analytics"&gt;Site Analytics&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#url-shortening"&gt;URL Shortening&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#vpn"&gt;VPN&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#tapiriik"&gt;Tapiriik&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#webdav"&gt;WebDAV&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#automation-and-scripts"&gt;Automation and Scripts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#media"&gt;Media&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="syncing-and-backup"&gt;Syncing and Backup&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Dropbox&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;All of my Dropbox files are synced to this computer. My MacBook Air doesn't have enough space to store all my files and so the Mac Mini is the place where I store all my Dropbox files locally so that I can run workflows and have a local backup. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Off-site Backup&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Since I have so much space, I use it as an offsite backup for my laptop using Arq over sftp. Nothing too fancy or special here, but it's a nice alternative to Time Machine as an offsite backup. &lt;/p&gt;
+&lt;h2 id="hazel"&gt;Hazel&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://www.noodlesoft.com/hazel.php"&gt;Hazel&lt;/a&gt; may be my favorite reason for having an always-on Mac. Hazel watches multiple folders in my Dropbox folder and keeps my Dropbox much more organized than I ever would manually. Some of my favorites are&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Organizing my photos&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I've talked about this one a bit in the past. I love that Carousel will automatically upload my photos to Dropbox, but the Camera Uploads folder becomes a wasteland of files if you don't organize them on a regular basis. I move all of my photos into a photos folder organized by year. I've written about this in more detail &lt;a href="http://ryanmo.co/2014/01/11/my-photo-workflow/"&gt;here&lt;/a&gt;. If you use Carousel and have ever saved photos that someone else shared with you, you'll know that a completely different folder is created in Dropbox called Carousel. In this folder, more folders are created with the email address of the person who shared the photos with you. I want these photos in my normal photos folder and so I run the same set of rules as my Camera Uploads to reorganize these photos. The only exception is that I add a "carousel" tag to these photos so that I know they were added from Carousel. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="organize_photos" src="https://ryanmo.co/posts/Tech/2015-02-09/organize_photos.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I take a selfie every day (620 days and counting) and am far too lazy to move that photo to its own special photo every day. I've made sure to always use Camera+ to take these photos. Hazel looks at the metadata of the photos in Camera Uploads and if the photo was taken by the front camera and the app used to create the file was Camera+, it's moved to its own special folder and renamed to just YYYY-MM-DD. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Publishing my blog&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I use a static blog generator, &lt;a href="http://blog.getpelican.com"&gt;Pelican&lt;/a&gt;,  which means that I can store the entire project, including the Python code in my Dropbox account. While I'm on my Mac, it's easy to run a shell script to publish my blog. On iOS, it's not quite as easy and so I use Hazel to watch my blog folder for a file called 'publish.blog'. If that file exists, the shell script is run and the file is then deleted. Since my girlfriend runs her blog over at &lt;a href="http://www.keepitlit.co"&gt;keepitlit.co&lt;/a&gt; with the same static blog generator, it's much simpler for her to create a file just like this when she wants to publish her blog. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IFTTT → Dropbox → Flickr → AppleTV&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I have a rule set up in IFTTT that will append to a text file each time my girlfriend or I post a photo to Instagram. Each time this file runs, I have a script that uploads the photo to a private Flickr album. My AppleTV is then set to that album so that we have an updated list of photos as a screen saver. I realize I could do this directly in IFTTT, but I don't like that you can't make the album private. &lt;/p&gt;
+&lt;p&gt;Download the script &lt;a href="https://ryanmo.co/posts/Tech/2015-02-09/ifttt_to_flickr.py"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Time sensitive Dropbox shared links&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If you have a Dropbox Pro account,  this is now a feature built right in.  I have two folders named "One day" and "One week". Files that I want to share temporarily are copied to that folder. After the set amount of time, the files will be deleted and I'm sent a push notification. For the one week folder, I also get a notification the day before to remind me that it'll get deleted.&lt;/p&gt;
+&lt;p&gt;You can download the 1 Day rule &lt;a href="https://ryanmo.co/posts/Tech/2015-02-09/1 day.hazelrules"&gt;here&lt;/a&gt;. Be sure to add your own Pushover key and secret, or remove it if you don't need notifications.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1%20day" src="https://ryanmo.co/posts/Tech/2015-02-09/1 day.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Scanned files&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This folder is for files added from my Fujitsu ScanSnap or Scanbot for iOS. If the file hasn't been OCR'd already, a script will run to launch PDFPenPro and OCR the file. I then have a series of rules set up to move the files based on their names.&lt;/p&gt;
+&lt;p&gt;Work Receipts is my favorite. When I scan a receipt in Scanbot, I have a snippet "wwr" that expands to "Work receipt". Hazel watches for any new PDFs with that string in the filename. Files are then moved to my expenses folder, organized by date. It then creates a new task in Due.app with a due date of one week in the future so that I'll remember to do my expenses for the file. I no longer have to keep all my receipts and I'll never forget to actually do the expenses&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;Business cards obviously moves any business cards to a special folder. Hazel watches for a string match in the filename to know to file these as well. Finally, personal receipts moves the files to my own receipts folder for archiving.&lt;/p&gt;
+&lt;h2 id="web-server"&gt;Web Server&lt;/h2&gt;
+&lt;p&gt;I use this Mac Mini as a web server since it has more than enough bandwidth and speed. I had never set up an server before, and so this was a fun learning experience to do it all myself. I run a very basic Apache, MySQL, PHP stack for my web server. &lt;/p&gt;
+&lt;h3 id="blogs"&gt;Blogs&lt;/h3&gt;
+&lt;p&gt;I host this blog from my Mac Mini as well as a couple of others, most notably my girlfriend's. &lt;/p&gt;
+&lt;h3 id="site-analytics"&gt;Site Analytics&lt;/h3&gt;
+&lt;p&gt;I don't want to use Google Analytics. They know enough about me already and so I use an open source version called Piwik. I've been fairly happy with it so far. &lt;/p&gt;
+&lt;h3 id="url-shortening"&gt;URL Shortening&lt;/h3&gt;
+&lt;p&gt;I don't like long urls and will shorten them whenever I can. When I publish my blog, I always shorten the URL. I like having full control over that and so I'm using &lt;a href="http://yourls.org"&gt;yourls&lt;/a&gt; to shorten and track URLs. &lt;/p&gt;
+&lt;h3 id="vpn"&gt;VPN&lt;/h3&gt;
+&lt;p&gt;I was running OS X Server and used the Mac Mini as a VPN server. Since upgrading to Yosemite, I haven't gotten around to upgrading server, but it's on the todo list. Check out Macminicolo's blog for some great instructions on setting up a VPN &lt;a href="http://blog.macminicolo.net/post/102283942903/setup-a-vpn-with-yosemite-server-10-10"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id="tapiriik"&gt;Tapiriik&lt;/h3&gt;
+&lt;p&gt;When I'm out cycling, I use a Garmin GPS. Most of my friends use RunKeeper, and I prefer Strava over all of the services. &lt;a href="https://tapiriik.com"&gt;Tapiriik&lt;/a&gt; is a great service that lets you keep your fitness services all in sync, including syncing TCX files to your Dropbox account. It's open source, so you can run a local version on your own computer.&lt;/p&gt;
+&lt;h3 id="webdav"&gt;WebDAV&lt;/h3&gt;
+&lt;p&gt;When I was using Omnifocus, I didn't want to sync my database through their servers. I could be wrong, but I don't believe it's encrypted on their servers. I feel much better knowing that it's on my machine and I have completely control of it. I have set up my own WebDAV server so that I can sync my database. It's been extremely fast and reliable. &lt;/p&gt;
+&lt;h2 id="automation-and-scripts"&gt;Automation and Scripts&lt;/h2&gt;
+&lt;p&gt;I have crons running on an hourly, daily and weekly bases. I don't want to bore you with all of them, but here are a few of the better ones. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;getmail&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I use getmail  for archiving my Gmail daily (they've been known to lose data once in a while). I've never needed to use it, but if I ever decide to change providers or Gmail just hits the delete key someday, I'll have a complete backup of my email. A great introduction to getmail can be found &lt;a href="http://www.makethenmakeinstall.com/2013/02/script-gmail-backup-with-getmail-on-linux/"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Slogger&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I love Slogger and Day One. I've customized a lot of the current plugins and even wrote my own for Instagram. You can read more about it &lt;a href="http://ryanmo.co/2014/09/04/instagram-slogger/"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Download Pinboard&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;My updated version of Brett Terpstra's pinboard → webloc file script to have tagged webloc files locally. You can read more about this project &lt;a href="{static}../2014-12-23/2014-12-23_Download-Pinboard-as-Webloc-Files.md"&gt;here&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Face detection → Finder tags&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I don't want to use iPhoto, Aperture or Picasa as a photo management application. Instead, I use Picasa to harvest the facial recognition data, and then have a script that applies Finder tags of the person's name to the photo. I haven't shared this one, because it's not done yet, but it's functional. It's a lot of fun to be able to get all the photos of a person with a simple Spotlight search. Hopefully I can share this in the near future.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dropbox Deletions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I like to keep tabs on my shared folders and any scripts that might be running in my Dropbox account. I parse my Dropbox RSS feeds for deletions of more than 50 files and send myself a push notification with Pushover.&lt;/p&gt;
+&lt;p&gt;You can download the script &lt;a href="https://ryanmo.co/posts/Tech/2015-02-09/dropbox_events.py"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dropbox inbox&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Throughout the week, I'll add files to an "Inbox" in my Dropbox folder. On the weekends, I send myself a push notification if there have been any files added so that I can deal with them.&lt;/p&gt;
+&lt;h2 id="media"&gt;Media&lt;/h2&gt;
+&lt;p&gt;I don't have a lot of media. I've never been attached to the idea of owning my music or video and stream whatever I can. For any content that I've ripped over the years, I have &lt;a href="https://plex.tv"&gt;Plex&lt;/a&gt; running on my Mac Mini. Again, since the connection is so fast, there's little to no lag when streaming something from home or on my phone. &lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;I've recently switched from Omnifocus to Due2. It took me a bit to figure out how to programmatically create task items, especially if I want emojis in it. See &lt;a href="http://unduressing.com/post/108269360039/how-i-use-due-2-come-with-me-if-you-want-to-live"&gt;this&lt;/a&gt; post for a good reason to use emojis for tasks in Due. If you're interested, &lt;a href="https://ryanmo.co/posts/Tech/2015-02-09/due_hazel.scpt"&gt;here&lt;/a&gt; is the script I wrote to create tasks in Due for Mac within Hazel.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Mon, 09 Feb 2015 22:04:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2015-02-09:/2015/02/09/how-i-use-my-mac-mini-server-on-macminicolo</guid><category>Tech</category><category>Dropbox</category><category>automation</category><category>hazel</category><category>scripting</category></item><item><title>Save First Page of PDF for Expenses with Hazel</title><link>https://ryanmo.co/2015/01/25/save-first-page-of-pdf-for-expenses-with-hazel</link><description>&lt;p&gt;Once a month I have to submit my Verizon bill as an expense. The process of getting the PDF of the bill and then modifying it turned out to be a big pain by first reminding my mom to send the bill&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;, saving the first page and then submitting it for reimbursement. Turns out that Hazel can take care of everything beyond the actual submission.&lt;/p&gt;
+
+&lt;p&gt;I'm fine with reminding my mom to put the PDF in Dropbox, but I then have to check back every-so-often to see if she's actually done it. I've created a rule now that will check for any files in our shared Verizon Bill folder and if Hazel hasn't seen it before, it will send me a push notification with Pushover.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="pushover_hazel_verizon" src="https://ryanmo.co/posts/Tech/2015-01-25/pushover_hazel_verizon.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I then wrote a handy little Applescript based on PDFPenPro's default script called Split PDFs that will take the first page of a PDF and save it to a new file. I differentiate the files by just adding "SINGLE PAGE" to the filename&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;basePath&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/path/to/verizon/folder&amp;quot;&lt;/span&gt;
+
+&lt;span class="k"&gt;tell&lt;/span&gt; &lt;span class="nb"&gt;application&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;PDFpenPro&amp;quot;&lt;/span&gt;
+    &lt;span class="nb"&gt;open&lt;/span&gt; &lt;span class="nv"&gt;theFile&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nv"&gt;alias&lt;/span&gt;
+    &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;originalDoc&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="na"&gt;document&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+    &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;originalDoc&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt; &lt;span class="ow"&gt;ends with&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.pdf&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;docNameLength&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;length&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;characters&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="nb"&gt;thru&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;docNameLength&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt; &lt;span class="k"&gt;as &lt;/span&gt;&lt;span class="nc"&gt;string&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;newDoc&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nb"&gt;make&lt;/span&gt; &lt;span class="nb"&gt;new&lt;/span&gt; &lt;span class="na"&gt;document&lt;/span&gt;
+    &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;savePath&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="nv"&gt;basePath&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="na"&gt;rich text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot; SINGLE PAGE&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.pdf&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="nb"&gt;copy&lt;/span&gt; &lt;span class="nv"&gt;page&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;originalDoc&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;pages&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;newDoc&lt;/span&gt;
+
+    &lt;span class="nv"&gt;save&lt;/span&gt; &lt;span class="nv"&gt;newDoc&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nv"&gt;POSIX&lt;/span&gt; &lt;span class="nv"&gt;file&lt;/span&gt; &lt;span class="nv"&gt;savePath&lt;/span&gt;
+
+    &lt;span class="nb"&gt;quit&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;tell&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Finally, so that I don't forget to submit the expense, I have one final Applescript that creates a todo item in Omnifocus based on David Spark's post &lt;a href="http://macsparky.com/blog/2012/8/applescript-omnifocus-tasks"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theDate&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nb"&gt;current date&lt;/span&gt;
+&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;deferDate&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;current date&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;dueDate&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;current date&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nb"&gt;days&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theTask&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Expense Verizon Bill&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theNote&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nv"&gt;theFile&lt;/span&gt;
+
+&lt;span class="k"&gt;tell&lt;/span&gt; &lt;span class="nb"&gt;application&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;OmniFocus&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;tell&lt;/span&gt; &lt;span class="nb"&gt;front&lt;/span&gt; &lt;span class="na"&gt;document&lt;/span&gt;
+        &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theContext&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nb"&gt;first&lt;/span&gt; &lt;span class="nv"&gt;flattened&lt;/span&gt; &lt;span class="na"&gt;context&lt;/span&gt; &lt;span class="nb"&gt;where&lt;/span&gt; &lt;span class="k"&gt;its&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;A Context&amp;quot;&lt;/span&gt;
+        &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theProject&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nb"&gt;first&lt;/span&gt; &lt;span class="nv"&gt;flattened&lt;/span&gt; &lt;span class="nv"&gt;project&lt;/span&gt; &lt;span class="nb"&gt;where&lt;/span&gt; &lt;span class="k"&gt;its&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Expenses&amp;quot;&lt;/span&gt;
+        &lt;span class="k"&gt;tell&lt;/span&gt; &lt;span class="nv"&gt;theProject&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nb"&gt;make&lt;/span&gt; &lt;span class="nb"&gt;new&lt;/span&gt; &lt;span class="nv"&gt;task&lt;/span&gt; &lt;span class="nv"&gt;with&lt;/span&gt; &lt;span class="na"&gt;properties&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;theTask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;note&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;theNote&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;context&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;theContext&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;defer&lt;/span&gt; &lt;span class="nv"&gt;date&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;deferDate&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;due&lt;/span&gt; &lt;span class="nv"&gt;date&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;dueDate&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;tell&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;tell&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;We're on a family plan&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 25 Jan 2015 12:46:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2015-01-25:/2015/01/25/save-first-page-of-pdf-for-expenses-with-hazel</guid><category>Tech</category><category>hazel</category><category>applescript</category><category>automation</category></item><item><title>100 Happy Days</title><link>https://ryanmo.co/2014/04/06/100-happy-days</link><description>&lt;p&gt;A few people from work convinced me to participate in &lt;a href="http://100happydays.com"&gt;100 Happy Days&lt;/a&gt;. Since I'm already doing a "selfie a day" so I figured adding one more photo a day wouldn't hurt. What I didn't want to do is post to the various social media sites every single day and spam all my followers. Hazel and my blog helped me solve this problem.&lt;/p&gt;
+
+
+&lt;h3 id="hazel"&gt;Hazel&lt;/h3&gt;
+&lt;p&gt;Similar to my &lt;a href="{static}../2014-01-05/2014-01-05_Organizing-Special-Photo-with-Hazel.md"&gt;previous post&lt;/a&gt;, I'm using Hazel to detect special types of photos. I decided for 100 Happy Days I would always take the photos using the default Camera in square mode.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1 Happy Day of Coffee" src="https://ryanmo.co/posts/Tech/2014-04-06/3.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Hazel makes this really simple. Each time a photo that matches the criteria comes into my Dropbox Camera Uploads folder, it gets resorted and renamed to YYYY-mm-dd.jpg.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Hazel Rule for Photos" src="https://ryanmo.co/posts/Tech/2014-04-06/hazel1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;This simply takes care of the photos themselves. But now I want them to also appear on my blog. I have a separate rule that watches this new folder of photos and moves them into my Pelican project folder.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Hazel Rule for Pelican" src="https://ryanmo.co/posts/Tech/2014-04-06/hazel2.png" /&gt;&lt;/p&gt;
+&lt;p&gt;The key to this one is that I name them with sequential numbers, starting with 1.jpg. This will be useful later for my blog.&lt;/p&gt;
+&lt;h3 id="pelican-blog"&gt;Pelican Blog&lt;/h3&gt;
+&lt;p&gt;I decided to set up a hidden page on my blog to host these images. I created a custom template since it's fairly unique and different from the rest of my blog. The meat of the template is just this:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;article&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;h3&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;a&lt;/span&gt; &lt;span class="na"&gt;href&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{{ SITEURL }}/{{ page.url }}&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;{{ page.title }}&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;a&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;h3&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;two-columns&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;grid-container&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;style&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;display:block;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;ul&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;rig columns-2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;ul&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;article&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I'm using the CSS for the gallery from &lt;a href="http://alijafarian.com/responsive-image-grids-using-css/"&gt;this&lt;/a&gt; post by Ali Jafarian.&lt;/p&gt;
+&lt;p&gt;This is where my Hazel photo naming comes in handy. I'm using a simply JavaScript function to embed these images on page load.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;createImages&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;start_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;2014&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mo"&gt;03&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mo"&gt;03&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;// April 3, 2014&lt;/span&gt;
+    &lt;span class="nx"&gt;days_passed&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;Math&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;floor&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="nx"&gt;start_date&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mf"&gt;1000&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mf"&gt;86400&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="nx"&gt;extension&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;.jpg&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="nx"&gt;days_passed&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mf"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;li&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;createElement&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;li&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;img&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;createElement&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;img&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="nx"&gt;img&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;src&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/images/100daysofhappiness/&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nx"&gt;extension&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;img&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;setAttribute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;onError&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;this.onerror=null;this.src=&amp;#39;/images/imagenotfound.jpg&amp;#39;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;h3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;createElement&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;h3&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="nx"&gt;h3&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;textContent&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Day &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;li&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;appendChild&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;img&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="nx"&gt;li&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;appendChild&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;h3&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="nx"&gt;jQuery&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;.rig&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;li&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nx"&gt;jQuery&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;ready&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;createImages&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I can easily compute the number of days that have passed and safely assume that an image exists for each of those days. I learned today that if you add the attribute &lt;code&gt;onError&lt;/code&gt; to an image, you can create a fallback image in case the real image source doesn't exist.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 06 Apr 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-04-06:/2014/04/06/100-happy-days</guid><category>Tech</category><category>hazel</category><category>pelican</category><category>photos</category></item><item><title>Digitizing the Family Photos</title><link>https://ryanmo.co/2014/03/01/digitizing-the-family-photos</link><description>&lt;p&gt;I had this ongoing fear that all of our family photos would get lost or destroyed. I've always wanted to have a central place for all of my photos, both past and present. In early 2012, my mom and I started on a project to scan, crop and organize all of our old photos from negatives.&lt;/p&gt;
+
+
+&lt;h1 id="going-digital"&gt;Going Digital&lt;/h1&gt;
+&lt;p&gt;I was fortunate that when I decided to take on this project, my mom already had two large Epson flatbed scanners with transparency adapters. What was even better was that my mom was highly organized over the years and archived all of the negatives of every photo she had ever taken. This only left us with one thing to do: scan the photos.  Since I was living in California and my mom in Montana, the work of pulling the negatives and scanning them was going to be done by my mom. We also needed to have a way to transfer the files from her computer to mine. Dropbox was an obvious choice in this case, but there was one problem that would complicate everything: hard drive space. &lt;/p&gt;
+&lt;p&gt;My mom was still using her PowerMac G5 at the time and hard drive space was pretty limited. It wouldn't have taken long before she wouldn't have enough space to even scan the photos. As a simple solution, once the scans were uploaded and synced to my computer, I could have manually removed the files and place them on my own computer, but I was lazy and didn't want to check constantly whether new files had been added. At the time, I was just learning how to code and thought this would be good practice &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. I ended up writing a script that would mirror the folder structure for the scans in our Dropbox shared folder on my local Desktop and then remove the original file in Dropbox. The old folder structure was maintained so that if any new files were added to the same folder, my mom wouldn't have to recreate them. I then set this up as a cron job to run once a day and then send me an email digest of all the files that were transferred.&lt;/p&gt;
+&lt;p&gt;After a couple of weeks, I had nearly 15 years of photos in folders organized by year totaling around 85GB. Each Photoshop file was around 1.GB each and the photos were scanned at 300dpi. Now the hardest and longest part of the project was about to begin.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Folder Structure" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/folders.png" /&gt;&lt;/p&gt;
+&lt;h1 id="cropping-resizing-and-renaming"&gt;Cropping, Resizing, and Renaming&lt;/h1&gt;
+&lt;p&gt;I wasn't entirely sure how I was going to do this part efficiently. My mom hadn't laid out the photos in a symmetric grid and there wasn't a reliable way to detect photo borders. I also decided beforehand that I wanted to preserve the original files and so I would save an individual Photoshop file for each photo that was cropped. I then wanted to have a separate folder that was simply for viewing the files.&lt;/p&gt;
+&lt;p&gt;Starting off, I wanted to try manually doing everything and automate things over time. Cropping the files using the marquee tool was always going to be manual. I would select the file, copy it, create a new file with the dimensions from the clipboard and then paste the photo into the new file. After I had gone through the entire file, I would save all the files at once with random names (you'll see later why the naming here didn't matter). This part immediately became tedious. I did some research on how I could make this easier or faster and discovered Photoshop actions&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2"&gt;2&lt;/a&gt;&lt;/sup&gt;. What was great about this was I was able to record every step I was taking into one single keyboard shortcut. This broke down the process to simply selecting the photo and hitting shift-F1. This one keyboard shortcut took care of copying the file, creating a new file with the dimensions of the clipboard, pasting and then finally selecting the previous file. That last step was key. Instead of a final control-tab to move back to the original file, the action took care of it for me. You can download the Photoshop action &lt;a href="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/Scans.atn"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Actions Screenshot" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/actions_screenshot.png" /&gt;&lt;/p&gt;
+&lt;p&gt;At this point, I had an original Photoshop file and a folder called Cropped where all the new photos lived. I now needed a way to rename these files to something meaningful. Automator and Alfred made this simple. After I finished cropping, I would select all of the newly created files, run my Alfred extension "Rename Scans" which would trigger an automator script, prompt me to name the files, and then each file would be renamed from something like Untitled1.psd to November 1987_1.psd.&lt;/p&gt;
+&lt;p&gt;At this point, the final step for each of these files was to create a viewable JPG for every photo. Turns out, Photoshop has a great feature called Image Processor. After the files were neatly renamed, I would open up the Image Processor, select the folder, and hit go. My settings were always saved so there wasn't much else to be done each time I ran this. I would take the Photoshop files, create a new JPG at 5 quality in a new folder called Low Res Images with the same naming convention. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Image Processor" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/image_processor.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I was then able to share this folder back with my mom and the rest of my family. They enjoyed watching the photos get added over the last year or so as I casually worked on the files.&lt;/p&gt;
+&lt;p&gt;Once I had done all of the steps for each file, I would move the folder of PSD files into a folder called Done. This simply gave me a better idea of how many folders I had left to work on.&lt;/p&gt;
+&lt;h1 id="viewing"&gt;Viewing&lt;/h1&gt;
+&lt;p&gt;In late January 2014, I finally finished cropping all of the photos. I never intended on it taking quite this long, but it was never something that needed to have a deadline. It felt great to know that I was finally done and could just sit back and look at all of the old photos from what I was little. I was using &lt;a href="http://www.lynapp.com"&gt;Lyn&lt;/a&gt; to view all the photos and realized that something was a little off. All of the photos were out of order. All of the folders had been named as Month Year, and even if I was viewing all of the photos at the same time, they were sorted in the order that I had created the files, not the time they were actually taken. I couldn't sort them in a photo viewer, Dropbox's photo tab would sort them by file creation and not EXIF date taken, and using Spotlight search was more-or-less pointless. There was no way  that I was going to manually date 3,300 photos by hand. I had used the command line tool &lt;a href="http://www.sno.phy.queensu.ca/~phil/exiftool/"&gt;exiftools&lt;/a&gt; a few times, and I started looking into whether this would be a possibility for dating the files. It turned out that the command was really straightforward for naming a folder&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;exiftool&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-AllDates=1999:12:31 12:00:00&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;foldername&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Even though I could have done it by hand, I didn't really want to have to type this in for 80 or so folders of photos. I quickly wrote up a Python script that would parse out the date from the folder names and prompt me to confirm whether this was correct or not. I was fine hitting Enter 80 times. &lt;/p&gt;
+&lt;p&gt;Some of the folders were called things like January-March 1995. For these cases, I would just assume the first month for the date. I wasn't going for perfection, but rather a good estimate for the time the photos were taken.&lt;/p&gt;
+&lt;p&gt;You can take a look at the script &lt;a href="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/convert_exif_dates.py"&gt;here&lt;/a&gt;. Do note that the script is really specific to my folder structure so it might not work perfectly for you, but it'll be a good start if you need to do something like this.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Lyn App" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/lynapp.png" /&gt;&lt;/p&gt;
+&lt;h1 id="what-i-learned"&gt;What I Learned&lt;/h1&gt;
+&lt;p&gt;Epson now makes a &lt;a href="http://www.epson.com/cgi-bin/Store/jsp/Product.do?BV_UseBVCookie=yes&amp;amp;sku=B11B178061"&gt;scanner&lt;/a&gt; that eliminates a lot of the hard work around cropping the photos. It's expensive, but it would have saved me a lot of work.&lt;/p&gt;
+&lt;p&gt;I've made this comment before, but I still would love to have a way to embed facial recognition into the metadata of photos. My perfect world would be having the ability to do something like search for all of the photos of my brother before 1995.&lt;/p&gt;
+&lt;p&gt;Ultimately, this was a long, but satisfying project. I sleep better at night knowing that all of our family photos are backed up and not be lost forever if there were ever to be a disaster.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;For those who want to see the script, &lt;a href="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/movescans.py"&gt;here&lt;/a&gt; it is. Please don't judge me. This was actually one of my first real scripts I had ever written. I know there are better ways to do a lot of it.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;I'm a total Photoshop newb&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sat, 01 Mar 2014 00:00:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-03-01:/2014/03/01/digitizing-the-family-photos</guid><category>Tech</category><category>python</category><category>alfred</category><category>hazel</category><category>dropbox</category><category>bash</category><category>photos</category></item><item><title>My Photo Workflow</title><link>https://ryanmo.co/2014/01/11/my-photo-workflow</link><description>&lt;p&gt;After listening to the Mac Power Users &lt;a href="http://www.macpowerusers.com/2014/01/05/mac-power-users-171-photo-management/"&gt;episode&lt;/a&gt; on photo management and reading the slew of follow up blog posts on other photo management workflows, I thought I would share mine as well.  While my workflow will be fairly similar to &lt;a href="http://www.macstories.net/tutorials/my-photo-management-workflow-early-2014/"&gt;Federico Viticci's&lt;/a&gt; with a few exceptions, I thought I would share the way that I take, organize, view and share my photos.&lt;/p&gt;
+
+
+&lt;h2 id="taking-photos"&gt;Taking Photos&lt;/h2&gt;
+&lt;p&gt;My iPhone is one of the main ways that I take photos. Since it's always in my pocket and takes great quality photos, it's by far the easiest way to take photos no matter where I am.  I've had a lot of fun with the iPhone 5S and the burst and slo-mo modes.&lt;/p&gt;
+&lt;p&gt;I've never considered myself a photographer. For a long time, I had my mom's hand-me-down Olympus E-500. It was a great camera, but I had no idea how to use it and it was bigger than I preferred. Before moving to Ireland, I decided that I wanted to learn the basics of photography and have a camera that would grow with me as I learned more. The Olympus PEN E-P5 had just started pre-order and I decided that this would be my first "real" camera. I only had a few requirements, and it fortunately satisfied both of them: GPS tagging and small/lightweight. I've now had this the E-P5 for a little over 6 months and couldn't be happier. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Olympus PEN E-P5" src="https://ryanmo.co/2014/01/11/my-photo-workflow/ep5.jpg" /&gt;&lt;/p&gt;
+&lt;h2 id="importing"&gt;Importing&lt;/h2&gt;
+&lt;p&gt;I only have one main way to upload my photos - Dropbox Camera Uploads. Whether I use the Dropbox app for iOS or the desktop application, my photos end up in the same place to get processed (more on that later in &lt;a href="#organization"&gt;Organization&lt;/a&gt;). &lt;/p&gt;
+&lt;p&gt;Any photos that are taken on my iPhone are quickly uploaded via the Dropbox app. When I use my E-P5, I will first turn on the built-in Wifi to sync GPS data from my phone to the camera&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. Once that is all taken care of, I plug the camera into my laptop and Dropbox grabs the new photos and imports them.&lt;/p&gt;
+&lt;h2 id="organization"&gt;Organization&lt;/h2&gt;
+&lt;p&gt;I'm still pretty new to Hazel, but dealing with my photos was the reason I decided to bite the bullet and buy it. My Dropbox Camera Uploads folder was nearing 900 photos and I hadn't taken the time to organize them in over a year. &lt;/p&gt;
+&lt;p&gt;Before Camera Uploads, I was suffering through iPhoto. It always bothered me that my photos were obfuscated from view. I always found myself wasting time trying to find the original or using the export option. When Camera Uploads was released, I searched for a way to cleanly export my photos into a Year-Month-Event folder structure. I discovered &lt;a href="https://github.com/BMorearty/exportiphoto"&gt;this script&lt;/a&gt; that gave me more than what I wanted and solved my problem perfectly. For anyone who wants to use this, the command I used was&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# -x deconflict export directories of same name&lt;/span&gt;
+&lt;span class="c1"&gt;# -d stop use date prefix in folder name&lt;/span&gt;
+&lt;span class="c1"&gt;# -y add year directory to output&lt;/span&gt;
+python exporti_photo.py -x -d -y
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I've been using the Year-Month-Event structure for a few years now and have starting running into a slight annoyance. I find myself constantly flipping between months trying to remember when a certain event happened. I finally came to the conclusion that the month directory was pretty unnecessary. What I decided on was the folder structure Year-MM.YY Event Name. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="New Photo Structure" src="https://ryanmo.co/2014/01/11/my-photo-workflow/photo_list.png" /&gt;&lt;/p&gt;
+&lt;p&gt;This gives me a much easier way to visualize my photos by event name rather than poking through folders by month.&lt;/p&gt;
+&lt;p&gt;My Hazel workflow is fairly simple, but takes care of everything in one rule. I've set up a few exceptions for photo types that don't need to be sorted, such as screenshots or other PNG files. I also have rules set up for fun projects like my &lt;a href="/2014/01/05/organizing-special-photos-with-hazel"&gt;"photo a day"&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Hazel Rule" src="https://ryanmo.co/2014/01/11/my-photo-workflow/photos_hazel.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Finally once photos are sorted, I will manually go in and individually name all of the events that were created. This makes it much easier to search for events in the future. The next step in my process here is to tag photos. The one feature I do miss about iPhoto was the facial recognition. Since I haven't found a way to do facial recognition outside of Aperture or iPhoto, I will manually go in and tag photos with the names of those in the photos. This has been very useful when I want to find photos of people in certain contexts. For example,  the tags &lt;code&gt;me&lt;/code&gt;, &lt;code&gt;office&lt;/code&gt;, &lt;code&gt;dublin&lt;/code&gt; will give me photos of myself in the Dublin office, but not San Francisco.&lt;/p&gt;
+&lt;h2 id="consumption-and-sharing"&gt;Consumption and Sharing&lt;/h2&gt;
+&lt;p&gt;In Mac OS X, I have three ways that I view my photos. The first, and most basic is Finder.  The Cover Flow view in Finder is actually a great way to quickly go through photos and get the ones that you want. When I'm wanting to share my photos with others, I use the &lt;a href="https://www.dropbox.com/photos"&gt;Dropbox Photos&lt;/a&gt; page. As a quick way to share a select number of photos quickly, I've still found this to be the best way. For general viewing and pruning of photos I don't want, I've been using a not so well known app called &lt;a href="http://www.lynapp.com"&gt;Lyn&lt;/a&gt;. It has some nice features for sharing to multiple services, but what I really like about it is that it'll just watch a folder and display the photos in that folder. Lyn will also let me see all of the metadata about the photos, including a map if there is GPS information. Lastly, on the rare occasion that I want to edit my photo, I will import the photo into Aperture. For the same reasons I dislike iPhoto, I dislike Aperture. I will typically import the photo, edit it, and then export back into Dropbox.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Lyn.app" src="https://ryanmo.co/2014/01/11/my-photo-workflow/lyn.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;On iOS, I have two primary apps that I use to view my photos. The first, unsurprisingly, is the Dropbox app. For quick viewing and sharing, I will use Dropbox since that's where all of my photos live. As a Photos app replacement, I use &lt;a href="http://unboundapp.com"&gt;Unbound&lt;/a&gt;. What's great about Unbound is that it treats folders in your Dropbox account like albums. Since my photos are organized this way anyways, I get perfectly created albums that I can view and even cache to my phone for offline viewing.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Dropbox and Unbound" src="https://ryanmo.co/2014/01/11/my-photo-workflow/unbound_dropbox.jpg" /&gt;&lt;/p&gt;
+&lt;h2 id="the-future"&gt;The Future&lt;/h2&gt;
+&lt;p&gt;Dropbox has been doing a great job improving the photo experience. Photo organization is a very personal thing and trying to solve this for the majority is not an easy task. Many companies are trying to do this, and so far there has been no clear winner. As much as I love my folder organization, I would really like to get to a point where I don't even have to worry about where my photos are. The metadata of the photos should be enough for an application or website to organize the photos for me.&lt;/p&gt;
+&lt;p&gt;I mentioned this earlier, but one other thing I would really like to see is a 3rd-party app that does facial recognition and applies tags or some other bit of metadata to the file. Tagging my photos with peoples' names is by far the most manual part of my photos workflow, but also one of the most important to me.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;The GPS data is stored on the SD card, but I haven't taken the time to see if I can add this metadata after importing from Dropbox&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sat, 11 Jan 2014 00:00:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-01-11:/2014/01/11/my-photo-workflow</guid><category>Tech</category><category>hazel</category><category>automation</category><category>dropbox</category><category>ios</category><category>photos</category></item><item><title>Organizing Special Photos with Hazel</title><link>https://ryanmo.co/2014/01/05/organizing-special-photos-with-hazel</link><description>&lt;p&gt;Nearly all of my photos are sorted based on year, month and day. Hazel easily takes care of of this for me, but occasionally I will have projects where photos need to be excluded or organized in a different way. With Hazel, I can still account for these special cases with extra bits of metadata.&lt;/p&gt;
+
+
+&lt;p&gt;This may not come in handy to anyone, but I thought it would be worth showing some of the creative ways that Hazel can be used to organize your files based on more than just creation/modification time or file type.&lt;/p&gt;
+&lt;p&gt;In late May 2013, I decided I wanted to do one of those time lapse videos where you take a picture of yourself in front of the camera every day. At first, the hardest part was just remembering to take the picture each day. Once I was in the routine, I started to find the task monotonous to pull the photo from my Dropbox folder, rename it to YYYY-MM-DD.jpg and then move it into a special folder I had creatively named "Picture a Day." Hazel was already taking care of my general photo organization, but I wanted to ensure that these photos got organized specifically so I started digging into the special traits of these photos. I quickly found a few default options in Hazel that would help me do this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Device make&lt;/li&gt;
+&lt;li&gt;Pixel width/height&lt;/li&gt;
+&lt;li&gt;Content creator&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I was always using Camera+ for these photos because of the grid and level features. It allowed me to align my face in the same place in the photos. Since I always used the front camera, the dimensions of the photos remained the same. After playing around, here is the Hazel rule I came up with&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Hazel Picture a Day" src="https://ryanmo.co/2014/01/05/organizing-special-photos-with-hazel/hazel_picture_a_day.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Another key piece here is the datestamp token. The rule watches for Dropbox's Camera Uploads filename format YYYY-MM-DD HH.MM.SS.jpg. This wouldn't be necessary except for that this token then becomes useful in the actions portion. I can take that token and rename the file based on the token to simply YYYY-MM-DD.jpg since I don't care about the hour the photo was taken. What's great about the token is that this will prevent accidental naming of the file if I happen to upload it the next day or I'm flying between Ireland and the US and date times get messed up.&lt;/p&gt;
+&lt;p&gt;While this rule is fairly specific, it's saved me a lot of time having to organize the photos manually. &lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 05 Jan 2014 00:00:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-01-05:/2014/01/05/organizing-special-photos-with-hazel</guid><category>Tech</category><category>hazel</category><category>automation</category><category>photos</category></item></channel></rss>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Filling Forms with PDFPen and Javascript - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Filling Forms with PDFPen and Javascript</h1>
+    <div class="article-meta">
+        <time datetime="2015-06-06T04:15:00-07:00">2015-06-06</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>My adventure with Mac Javascript Automation continues. Things still aren't easy and the documentation is poor, but I'm finding that it's still easier to write automation scripts in Javascript than it ever was with Applescript.</p>
+
+<p>Every month I need to fill out four receipts in a PDF form that I made with PDFPenPro. I never liked doing it and I felt like there had to be a way to do this better. I did some searching, and of course came across an <a href="http://leancrew.com/all-this/2012/02/automatic-w-9s-with-pdfpen">old post</a> by Dr. Drang where he was adding rich text to PDFs. This was close to what I wanted, but since I had taken the time to create the form fields myself, I figured I should take advantage of them if I could.</p>
+<p>After some painful reading of the PDFPen Javascript library and playing around, I found that I was able to set the values of form fields if they had assigned names. I first went through the process of naming all of my form fields.</p>
+<p><img alt="formnames" src="https://ryanmo.co/posts/Tech/2015-06-06/formnames.png" /></p>
+<p>First we start with creating our app variable for PDFPen</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">app</span> <span class="o">=</span> <span class="nx">Application</span><span class="p">(</span><span class="s2">&quot;PdfPenPro&quot;</span><span class="p">)</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">includeStandardAdditions</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</code></pre></div>
+
+<p>After that, I created a few functions to easily set the values for text fields and buttons</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">function</span> <span class="nx">getFormField</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">formField</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">pages</span><span class="p">()[</span><span class="mf">0</span><span class="p">].</span><span class="nx">imprints</span><span class="p">.</span><span class="nx">whose</span><span class="p">({</span><span class="nx">fieldName</span><span class="o">:</span> <span class="nx">field</span><span class="p">})()</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">formField</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">formField</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="k">return</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">setFormField</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">theField</span> <span class="o">=</span> <span class="nx">getFormField</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">field</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">theField</span><span class="p">.</span><span class="kd">class</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;button&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">theField</span><span class="p">.</span><span class="nx">checked</span> <span class="o">=</span> <span class="nx">value</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">theField</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">value</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>I've found that with PDFPen (or maybe more generally), keeping track of windows in applications with Javascript can get tricky. The order in which they appear can change, and so I've written myself a few helper functions to keep track of documents as I work through scripts.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span> <span class="nx">getByName</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fileName</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">app</span><span class="p">.</span><span class="nx">documents</span><span class="p">.</span><span class="nx">byName</span><span class="p">(</span><span class="nx">fileName</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kd">var</span> <span class="nx">getDocPage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fileName</span><span class="p">,</span> <span class="nx">pageNum</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">getByName</span><span class="p">(</span><span class="nx">fileName</span><span class="p">).</span><span class="nx">pages</span><span class="p">[</span><span class="nx">pageNum</span><span class="o">-</span><span class="mf">1</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>These are helpful when I want to duplicate my template receipt that I've created and not run the risk of overwriting the original.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">function</span> <span class="nx">createNewReceipt</span><span class="p">()</span> <span class="p">{</span> 
+    <span class="cm">/*</span>
+<span class="cm">        Opens the Receipt template</span>
+<span class="cm">        Creates a new document and duplicates</span>
+<span class="cm">        the template into the new doc</span>
+<span class="cm">    */</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">templatePath</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">currentDoc</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">windows</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nb">document</span>
+    <span class="kd">var</span> <span class="nx">currentDocName</span> <span class="o">=</span> <span class="nx">currentDoc</span><span class="p">.</span><span class="nx">name</span><span class="p">()</span>
+    <span class="nx">doc</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">Document</span><span class="p">().</span><span class="nx">make</span><span class="p">()</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">duplicate</span><span class="p">(</span><span class="nx">getDocPage</span><span class="p">(</span><span class="nx">currentDocName</span><span class="p">,</span> <span class="mf">1</span><span class="p">),</span> <span class="p">{</span><span class="nx">to</span><span class="o">:</span><span class="nx">doc</span><span class="p">})</span>
+    <span class="k">return</span> <span class="nx">doc</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>At this point, it's simply a matter of filling in the fields however<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> I like. I chose to have a few input fields and optional lists. Here are examples of both of those and how they can be implemented in Javascript.</p>
+<div class="codehilite"><pre><span></span><code><span class="cm">/*</span>
+<span class="cm">    Creates a list to choose from where the options</span>
+<span class="cm">    are an array called dateOptions.</span>
+<span class="cm">    I always take the 0 element since I don&#39;t allow</span>
+<span class="cm">    empty selections and multiples aren&#39;t allowed</span>
+<span class="cm">*/</span>
+<span class="nx">dateChoice</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">chooseFromList</span><span class="p">(</span>
+                        <span class="nx">dateOptions</span><span class="p">,</span>
+                        <span class="p">{</span><span class="nx">withTitle</span><span class="o">:</span> <span class="s2">&quot;Start Date&quot;</span><span class="p">,</span>
+                        <span class="nx">withPrompt</span><span class="o">:</span> <span class="s2">&quot;Choose Start Date&quot;</span><span class="p">,</span> 
+                        <span class="nx">defaultItems</span><span class="o">:</span> <span class="nx">dateOptions</span><span class="p">[</span><span class="mf">1</span><span class="p">],</span>
+                        <span class="nx">multipleSelectionsAllowed</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+                        <span class="nx">emptySelectionAllowed</span><span class="o">:</span> <span class="kc">false</span><span class="p">}</span>
+            <span class="p">)[</span><span class="mf">0</span><span class="p">]</span>
+
+<span class="cm">/* </span>
+<span class="cm">    Basic dialog box. </span>
+<span class="cm">    defaultAnswer has to exist, otherwise there</span>
+<span class="cm">    won&#39;t be a text box to type into</span>
+<span class="cm">*/</span>
+<span class="nx">receivedFrom</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">displayDialog</span><span class="p">(</span><span class="s2">&quot;Who sent the check?&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">defaultAnswer</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">})</span>
+</code></pre></div>
+
+<p>I then created an array of all the fields that I wanted to be filled.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">fieldsToFill</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">{</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">receivedFrom</span><span class="p">.</span><span class="nx">textReturned</span><span class="p">,</span> <span class="nx">fieldName</span><span class="o">:</span> <span class="s2">&quot;ReceivedFrom&quot;</span> <span class="p">},</span>
+    <span class="p">...</span>
+<span class="p">{</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">paymentType</span> <span class="o">==</span> <span class="s2">&quot;Check&quot;</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">fieldName</span><span class="o">:</span> <span class="s2">&quot;CheckCheckBox&quot;</span> <span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<p>The very last lines are where the magic happens and all the fields are filled out. It was pretty fun to watch the form fill almost instantly and then let me save it.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">newDoc</span> <span class="o">=</span> <span class="nx">createNewReceipt</span><span class="p">()</span>
+<span class="nx">fieldsToFill</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">){</span><span class="nx">setFormField</span><span class="p">(</span><span class="nx">newDoc</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">fieldName</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">value</span><span class="p">)})</span>
+
+<span class="nx">saveLocation</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">chooseFileName</span><span class="p">({</span><span class="nx">defaultName</span><span class="o">:</span> <span class="nx">rentReceiptName</span><span class="p">(</span><span class="nx">dateChoice</span><span class="p">),</span> <span class="nx">defaultLocation</span><span class="o">:</span> <span class="nx">savePath</span><span class="p">})</span>
+<span class="nx">newDoc</span><span class="p">.</span><span class="nx">save</span><span class="p">({</span><span class="k">in</span><span class="o">:</span> <span class="nx">saveLocation</span><span class="p">})</span>
+</code></pre></div>
+
+<p>That's it! This will take a lot of the slow process out of filling out my receipts each month. The next step will probably be generating the email and attaching the PDF. PDFPen already includes a script to do this very thing, so no more work needed for me. You can see the entire script <a href="https://gist.github.com/rjames86/8ee61652087a2c44802f">here</a></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>I found <a href="https://github.com/dtinth/JXA-Cookbook/wiki/User-Interactions">this resource</a> helpful to get me started on user input interactions&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>
