@@ -18,8 +18,7 @@ class JSONEncoder(json.JSONEncoder):
 
 class Base(object):
     def as_json(self):
-        return self.__dict__
-
+        return {k: v for k, v in self.__dict__.items() if v is not None}
 
 class Author(Base):
     def __init__(self, name, url=None, avatar=None):
@@ -214,7 +213,7 @@ class JsonFeedGenerator(object):
             pass
 
         with open(path, 'w') as f:
-            json.dump(json_feed, f, cls=JSONEncoder)
+            json.dump(json_feed, f, cls=JSONEncoder, indent=4)
 
 
 def get_generators(article_generator):
