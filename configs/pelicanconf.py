@@ -61,8 +61,8 @@ MARKDOWN = {
     "output_format": "html5",
 }
 
-OUTPUT_PATH = os.path.join("/", "tmp", "ryanmoco")
-PATH = "../../content"
+OUTPUT_PATH = os.path.join(BASE_BLOG_PATH, "output")
+PATH = CONTENT_PATH
 PAGE_PATHS = ["pages"]
 OUTPUT_SOURCES = True
 OUTPUT_SOURCES_EXTENSION = ".txt"
