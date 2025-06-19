@@ -6,7 +6,7 @@ docutils==0.19
 feedgenerator==1.9.1
 importlib-metadata==5.2.0
 Jinja2==3.0.1
-Markdown==3.3.5
+Markdown==3.8.1
 MarkupSafe==2.0.1
 pelican==4.6.0
 pelican-series==3.0.0
