@@ -16,6 +16,7 @@ FEED_ALL_RSS = "feed.xml"
 CATEGORY_FEED_RSS = "feeds/category/{slug}.rss.xml"
 TAG_FEED_RSS = "feeds/tag/{slug}.rss.xml"
 RSS_FEED_SUMMARY_ONLY = False
+FEED_DOMAIN = SITEURL
 
 
 EXTRA_PATH_METADATA = {
