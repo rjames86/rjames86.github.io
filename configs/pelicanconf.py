@@ -39,7 +39,21 @@ EXTRA_PATH_METADATA = {
     "extra/.htaccess": {"path": ".htaccess"},
 }
 EXTRA_PATH_METADATA.update(LIST_METADATA)
-JINJA_ENVIRONMENT = dict(comment_start_string="###", comment_end_string="/###")
+# Custom Jinja2 filter to strip quotes from URLs (for GitHub Actions compatibility)
+def strip_quotes(value):
+    """Strip surrounding quotes from a string value"""
+    if isinstance(value, str) and len(value) >= 2:
+        if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
+            return value[1:-1]
+    return value
+
+JINJA_ENVIRONMENT = dict(
+    comment_start_string="###", 
+    comment_end_string="/###"
+)
+JINJA_FILTERS = {
+    'strip_quotes': strip_quotes
+}
 DEFAULT_METADATA = {
     'author': 'Ryan M',
 }

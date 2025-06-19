@@ -7,31 +7,31 @@
     <link rel="alternate" title="{{ SITENAME }} JSON Feed" type="application/json" href="{{ JSON_FEED }}" />
     {% endif %}
     {% if FEED_ALL_ATOM %}
-    <link href="{{ FEED_DOMAIN }}/{{ FEED_ALL_ATOM }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} Full Atom Feed" />
+    <link href="{{ FEED_DOMAIN|strip_quotes }}/{{ FEED_ALL_ATOM }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} Full Atom Feed" />
     {% endif %}
     {% if FEED_ALL_RSS %}
     <link href="{{ FEEDPRESS_RSS }}" type="application/rss+xml" rel="alternate" title="{{ SITENAME }} Full RSS Feed" />
     {% endif %}
 
     <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/style.css">
+    <link rel="stylesheet" href="{{ SITEURL|strip_quotes }}/{{ THEME_STATIC_DIR }}/css/style.css">
 </head>
 <body>
     <!-- Fixed navigation banner -->
     <div class="nav-banner">
         <div class="nav-container">
-            <h2 class="site-title"><a href="{{ SITEURL }}/">{{ SITENAME }}</a></h2>
+            <h2 class="site-title"><a href="{{ SITEURL|strip_quotes }}/">{{ SITENAME }}</a></h2>
             <nav class="nav-links">
-                <a href="{{ SITEURL }}/">Home</a>
+                <a href="{{ SITEURL|strip_quotes }}/">Home</a>
                 {% for title, link in MENUITEMS %}
                 <a href="{{ link }}">{{ title }}</a>
                 {% endfor %}
                 {% if DISPLAY_PAGES_ON_MENU %}
                 {% for p in pages %}
-                <a href="{{ SITEURL }}/{{ p.url }}">{{ p.title }}</a>
+                <a href="{{ SITEURL|strip_quotes }}/{{ p.url }}">{{ p.title }}</a>
                 {% endfor %}
                 {% if TESTING %}
-                <a href="{{ SITEURL }}/drafts.html">Drafts</a>
+                <a href="{{ SITEURL|strip_quotes }}/drafts.html">Drafts</a>
                 {% endif %}
                 {% endif %}
             </nav>

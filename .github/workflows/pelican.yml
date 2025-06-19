@@ -15,5 +15,4 @@ jobs:
     with:
       settings: "configs/publishconf.py"
       requirements: "-r requirements.txt"
-      siteurl: https://ryanmo.co
-      feed_domain: https://ryanmo.co
+      siteurl: "https://ryanmo.co"
