@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>JSON Feed in Pelican - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>JSON Feed in Pelican</h1>
+    <div class="article-meta">
+        <time datetime="2017-05-18T07:28:00-07:00">2017-05-18</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>Brent Simmons and Manton Reece recently <a href="https://jsonfeed.org/2017/05/17/announcing_json_feed">announced</a> an alternative to RSS and Atom using JSON. The format is straight forward and seemed like a great fit to implement in Pelican.</p>
+<p>I've been spending a considerable amount of my time lately writing Apex code (Salesforce's proprietary language similar to Java and C#) and have come to appreciate it's ability to serialize different objects. Python isn't particularly good at this, and so I initially struggled with coming up with a clean way of implementing the generator. The new JSON feed spec has many nested objects and so representing these as separate classes made sense. Let's look at an author</p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">Author</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">avatar</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">avatar</span> <span class="o">=</span> <span class="n">avatar</span>
+</code></pre></div>
+
+<p>This is a basic representation of an author based on JSON feed's <a href="https://jsonfeed.org/version/1">spec</a>. If we were to simply try to serialize this in Python using the <code>json</code> library, we'd come across this exception</p>
+<div class="codehilite"><pre><span></span><code><span class="ne">TypeError</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Author</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x107d23e10</span><span class="o">&gt;</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">JSON</span> <span class="n">serializable</span>
+</code></pre></div>
+
+<p>The <code>json</code> library allows you to pass in your own custom parser, and so I created a base class for all my my objects that would contain one method that the parser would look for as a way to tell it how to serialize each class.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">json</span>
+
+<span class="k">class</span> <span class="nc">JSONEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;as_json&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">as_json</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Base</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">as_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
+
+<span class="k">class</span> <span class="nc">Author</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">avatar</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">avatar</span> <span class="o">=</span> <span class="n">avatar</span>
+</code></pre></div>
+
+<p>Now we can call the same method, while passing in our custom JSON encoder to serialize our class</p>
+<div class="codehilite"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="n">Author</span><span class="p">(</span><span class="s1">&#39;Ryan M&#39;</span><span class="p">)</span>
+<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">JSONEncoder</span><span class="p">)</span>
+<span class="c1"># &#39;{&quot;url&quot;: null, &quot;name&quot;: &quot;Ryan M&quot;, &quot;avatar&quot;: null}&#39;</span>
+</code></pre></div>
+
+<p>Now it's just a matter of building a class for each object in the JSON feed top-level object</p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">Item</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="c1"># a list of Item classes, since there are many</span>
+<span class="k">class</span> <span class="nc">Items</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+      <span class="c1"># list type doesn&#39;t have a __dict__ accessor, so we just return the list to be serialized</span>
+    <span class="k">def</span> <span class="nf">as_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+<span class="c1"># The top-level JSON feed object containing all child objects</span>
+<span class="k">class</span> <span class="nc">JsonFeed</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="k">pass</span>
+</code></pre></div>
+
+<p>I've left out the implementation details for generating each of these objects for brevity, but the idea is all there. Each class now knows how to tell the <code>json</code> encoder how to be serialized, so it's just a matter of implementing the Pelican plugin and writing the output.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">JsonFeedGenerator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">article_generator</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">articles</span> <span class="o">=</span> <span class="n">article_generator</span><span class="o">.</span><span class="n">articles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">article_generator</span><span class="o">.</span><span class="n">settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">article_generator</span><span class="o">.</span><span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">article_generator</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;feed.json&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">site_url</span> <span class="o">=</span> <span class="n">article_generator</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SITEURL&#39;</span><span class="p">,</span>
+                                                      <span class="n">path_to_url</span><span class="p">(</span><span class="n">get_relative_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_domain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;FEED_DOMAIN&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_domain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write_feed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">complete_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">complete_path</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">complete_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">JsonFeed</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">f</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">JSONEncoder</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_generators</span><span class="p">(</span><span class="n">article_generator</span><span class="p">):</span>
+    <span class="n">json_feed_generator</span> <span class="o">=</span> <span class="n">JsonFeedGenerator</span><span class="p">(</span><span class="n">article_generator</span><span class="p">)</span>
+    <span class="n">json_feed_generator</span><span class="o">.</span><span class="n">write_feed</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">register</span><span class="p">():</span>
+    <span class="n">signals</span><span class="o">.</span><span class="n">article_generator_finalized</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">get_generators</span><span class="p">)</span>
+</code></pre></div>
+
+<p>You can see the feed for this blog <a href="/feed.json">here</a>. The source for the entire plugin can be found on Github <a href="https://github.com/rjames86/myblog/tree/master/pelican_site/plugins/json_feed">here</a>. The plugin should work for all sites right now. I chose not to implement multiple languages into the feed since it doesn't seem like the spec supports this. Hopefully they consider this as they improve the format.</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Download Paychecks from ADP with Python - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Download Paychecks from ADP with Python</h1>
+    <div class="article-meta">
+        <time datetime="2015-04-05T03:44:00-07:00">2015-04-05</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>If your employer uses ADP, you'll know how terrible their website is.  I always dread having to go to the website, but I like to download my paychecks every two weeks. </p>
+
+<p>I started playing around with writing a script to download them using Python, but decided I should check Github to see if anyone had already done this. Sure enough, the <a href="https://github.com/rayhe/adp">first result</a> was a script that someone had written that would download all your paychecks. </p>
+<p>The script worked perfectly, but there were a few small changes I wanted to make. First, I added a new method that let me easily set the destination path.  I also didn't want to have to remember to run this every two weeks, nor did I want a cron job running this script with my password in plain text. I forked the repo, and started incorporating OS X's Keychain to let me store my password securely and running the script once a day to pull down any new paychecks. I borrowed the Keychain library from the <a href="https://github.com/deanishe/alfred-workflow">alfred-workflow</a>. This lets me easily save and retrieve passwords from Keychain in python. To set my for ADP in Keychain, I used the quick script (you could also do this manually in Keychain.app):</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">keychain</span> <span class="kn">import</span> <span class="n">KeyChain</span>
+<span class="kn">import</span> <span class="nn">getpass</span>
+
+<span class="n">my_password</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s2">&quot;Enter pw: &quot;</span><span class="p">)</span>
+
+<span class="n">KeyChain</span><span class="p">()</span><span class="o">.</span><span class="n">save_password</span><span class="p">(</span><span class="s2">&quot;my_username&quot;</span><span class="p">,</span> <span class="n">my_password</span><span class="p">,</span> <span class="s1">&#39;adp&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>The script is smart enough to not re-download paychecks that you've already saved, so now it was as simple as adding a new line to my daily cron jobs</p>
+<div class="codehilite"><pre><span></span><code><span class="n">python</span> <span class="n">adp</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;my_username&quot;</span>
+</code></pre></div>
+
+<p>Lastly, just so that I know when a new paycheck has been added, I set up a small Hazel rule to send me a notification through Pushover whenever a new file is added</p>
+<p><img alt="adp_hazel" src="https://ryanmo.co/posts/Tech/2015-04-05/adp_hazel.png" /></p>
+<p>You can see my fork of ADP-paychecks <a href="https://github.com/rjames86/adp/tree/keychain">here</a>. You can download a zip of the project <a href="https://github.com/rjames86/adp/archive/keychain.zip">here</a>.</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

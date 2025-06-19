@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Writing Notes with Alfred 2 - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Writing Notes with Alfred 2</h1>
+    <div class="article-meta">
+        <time datetime="2013-05-14T00:00:00-07:00">2013-05-14</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I started coding about two years ago and only recently discovered the wonders of Markdown.  Every time I'd learn something new, I would keep it in a text file with TextEdit. This was good and fine until a coworker introduced me to Notational Velocity. This completely changed the way I managed my notes but I always felt like I was missing something. That's when I discovered NVAlt. It let me keep the simplicity of plain text but format the note with the wonders of Markdown. </p>
+
+
+<p>Now I was left with another problem. I was annoyed having to command-tab over to NVAlt, command-D to go to the search field and type just to find the note. With Alfred 2's new File Filter, I can now search specifically for my notes within Alfred. I now just launch Alfred, type 'note' and any keywords I want and am immediately taken to my note in NVAlt. </p>
+<p><img alt="alfred_note" src="https://ryanmo.co/2013/05/14/notes_and_alfred/alfred_note.png" /></p>
+<p>This last week I've spent a lot of time writing up plans and documents. I wouldn't put NVAlt in the category of great text editors and so I've been using MultiMarkdown Composer, but I'm still saving to the same notes folder. It seemed only obvious to add more functionality to my Alfred script. Now I can optionally hold down command or control to open my note in MultiMarkdown Composer or Byword respectively. </p>
+<p><img alt="open_in_mmc" src="https://ryanmo.co/2013/05/14/notes_and_alfred/open_in_mmc.png" /></p>
+<p>You can download the Alfred Extension here:</p>
+<p><a href="https://ryanmo.co/2013/05/14/notes_and_alfred/Notes.alfredworkflow"><img alt="image" src="https://ryanmo.co/images/alfred_extension.jpg" /></a>  </p>
+<p>Be sure to set your path to your notes folder in the File Filter under Search Scope. If you're using Notational Velocity, you can change which application is opened in the action script. </p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

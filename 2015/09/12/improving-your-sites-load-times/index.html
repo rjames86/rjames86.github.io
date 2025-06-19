@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Improving Your Site's Load Times - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Improving Your Site's Load Times</h1>
+    <div class="article-meta">
+        <time datetime="2015-09-12T01:15:00-07:00">2015-09-12</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>While reading through my RSS feeds the other night, I came across <a href="https://onetapless.com/whats-new-one-tap-less">this</a> article from One Tap Less about what he did to improve load times on his site. My first thought was,  "I use a static site, I don't need to worry about this" and dismissed it. Then I figured, why not just try out my site on Google's <a href="https://developers.google.com/speed/pagespeed/insights/">PageSpeed Insights</a>. Turns out, I had some work to do.</p>
+
+
+<p>When I initially ran the test, this site came back with a score of around 41/100 for both desktop and mobile. I would have been fine leaving it, but that was pretty bad. Google does a great job telling you what things need to be improved, even down to the specific files causing problems.</p>
+<p><img alt="file_specific" src="https://ryanmo.co/posts/Tech/2015-09-12/file_specific.png" /></p>
+<p>My first task was "eliminating render-blocking JavaScript and CSS." I was lazily loading all of my JavaScript in the <code>&lt;head&gt;</code> tag, so this was as simple as moving that to the bottom of the page. Google also suggested using the <code>async</code> attribute.</p>
+<div class="codehilite"><pre><span></span><code><span class="c">&lt;!-- Initial setup --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;{{ DEFAULT_LANG }}&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">async</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;{{ SITEURL }}/theme/js/main.js&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+  ...
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+
+<span class="c">&lt;!-- New setup --&gt;</span>
+...
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">async</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;{{ SITEURL }}/theme/js/main.js&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<p>Eliminating render-blocking CSS was a little more tricky. Google suggests inlining <a href="http://www.smashingmagazine.com/2015/08/understanding-critical-css/">critical CSS</a>. I haven't taken the time to figure out which CSS that would require and how this would change my workflow. For now, I've taken their suggestion and load my CSS at the bottom of the page using a <code>&lt;script&gt;</code> tag.</p>
+<p><em>[Update 2015-09-14]</em>: I figured it out. You can read how I added the critical css <a href="{static}../2015-09-14/2015-09-14-critical_css.md">here</a></p>
+<div class="codehilite"><pre><span></span><code><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+  <span class="kd">var</span> <span class="nx">cb</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">l</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;link&#39;</span><span class="p">);</span> <span class="nx">l</span><span class="p">.</span><span class="nx">rel</span> <span class="o">=</span> <span class="s1">&#39;stylesheet&#39;</span><span class="p">;</span>
+    <span class="nx">l</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s2">&quot;{{ SITEURL }}/theme/css/style.css&quot;</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">)[</span><span class="mf">0</span><span class="p">];</span> <span class="nx">h</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">l</span><span class="p">,</span> <span class="nx">h</span><span class="p">);</span>
+  <span class="p">};</span>
+  <span class="kd">var</span> <span class="nx">raf</span> <span class="o">=</span> <span class="nx">requestAnimationFrame</span> <span class="o">||</span> <span class="nx">mozRequestAnimationFrame</span> <span class="o">||</span>
+      <span class="nx">webkitRequestAnimationFrame</span> <span class="o">||</span> <span class="nx">msRequestAnimationFrame</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">raf</span><span class="p">)</span> <span class="nx">raf</span><span class="p">(</span><span class="nx">cb</span><span class="p">);</span>
+  <span class="k">else</span> <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;load&#39;</span><span class="p">,</span> <span class="nx">cb</span><span class="p">);</span>
+<span class="o">&lt;</span><span class="err">/script&gt;</span>
+</code></pre></div>
+
+<p>Ok. Easy stuff done. This put my site up into the 50's range. Good, but still not great. Let's tackle the one that's lowering my score the most: gzip compression and caching.</p>
+<p>I host my blog at the wonderful <a href="http://macminicolo.net">macminicolo.net</a>, which means I control the server and have to do my own optimizations. Turns out, this really wasn't that hard to do. Here's how to easily enable compression in Apache.</p>
+<div class="codehilite"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="n">Always</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="n">up</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="k">before</span><span class="w"> </span><span class="n">changing</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">bunch</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nf">stuff</span><span class="w"></span>
+<span class="n">sudo</span><span class="w"> </span><span class="n">emacs</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">httpd</span><span class="p">.</span><span class="n">conf</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Make</span><span class="w"> </span><span class="n">sure</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">enabled</span><span class="w"></span>
+<span class="n">LoadModule</span><span class="w"> </span><span class="n">deflate_module</span><span class="w"> </span><span class="n">libexec</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">mod_deflate</span><span class="p">.</span><span class="n">so</span><span class="w"></span>
+
+<span class="o">&lt;</span><span class="n">IfModule</span><span class="w"> </span><span class="n">mod_deflate</span><span class="p">.</span><span class="n">c</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="k">Restrict</span><span class="w"> </span><span class="n">compression</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="n">MIME</span><span class="w"> </span><span class="n">types</span><span class="w"></span>
+<span class="w">    </span><span class="n">AddOutputFilterByType</span><span class="w"> </span><span class="n">DEFLATE</span><span class="w"> </span><span class="nc">text</span><span class="o">/</span><span class="n">plain</span><span class="w"></span>
+<span class="w">    </span><span class="n">AddOutputFilterByType</span><span class="w"> </span><span class="n">DEFLATE</span><span class="w"> </span><span class="nc">text</span><span class="o">/</span><span class="n">html</span><span class="w"></span>
+<span class="w">    </span><span class="n">AddOutputFilterByType</span><span class="w"> </span><span class="n">DEFLATE</span><span class="w"> </span><span class="n">application</span><span class="o">/</span><span class="n">xhtml</span><span class="o">+</span><span class="nc">xml</span><span class="w"></span>
+<span class="w">    </span><span class="n">AddOutputFilterByType</span><span class="w"> </span><span class="n">DEFLATE</span><span class="w"> </span><span class="nc">text</span><span class="o">/</span><span class="nc">xml</span><span class="w"></span>
+<span class="w">    </span><span class="n">AddOutputFilterByType</span><span class="w"> </span><span class="n">DEFLATE</span><span class="w"> </span><span class="n">application</span><span class="o">/</span><span class="nc">xml</span><span class="w"></span>
+<span class="w">    </span><span class="n">AddOutputFilterByType</span><span class="w"> </span><span class="n">DEFLATE</span><span class="w"> </span><span class="n">application</span><span class="o">/</span><span class="n">x</span><span class="o">-</span><span class="n">javascript</span><span class="w"></span>
+<span class="w">    </span><span class="n">AddOutputFilterByType</span><span class="w"> </span><span class="n">DEFLATE</span><span class="w"> </span><span class="nc">text</span><span class="o">/</span><span class="n">javascript</span><span class="w"></span>
+<span class="w">    </span><span class="n">AddOutputFilterByType</span><span class="w"> </span><span class="n">DEFLATE</span><span class="w"> </span><span class="n">application</span><span class="o">/</span><span class="n">javascript</span><span class="w"></span>
+<span class="w">    </span><span class="n">AddOutputFilterByType</span><span class="w"> </span><span class="n">DEFLATE</span><span class="w"> </span><span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="w"></span>
+<span class="w">    </span><span class="n">AddOutputFilterByType</span><span class="w"> </span><span class="n">DEFLATE</span><span class="w"> </span><span class="nc">text</span><span class="o">/</span><span class="n">css</span><span class="w"></span>
+
+<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="k">Level</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">compression</span><span class="w"> </span><span class="p">(</span><span class="n">Highest</span><span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Lowest</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">DeflateCompressionLevel</span><span class="w"> </span><span class="mi">9</span><span class="w"></span>
+
+<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="n">Netscape</span><span class="w"> </span><span class="mf">4.</span><span class="n">x</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="ow">some</span><span class="w"> </span><span class="n">problems</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">BrowserMatch</span><span class="w"> </span><span class="o">^</span><span class="n">Mozilla</span><span class="o">/</span><span class="mi">4</span><span class="w"> </span><span class="n">gzip</span><span class="o">-</span><span class="k">only</span><span class="o">-</span><span class="nc">text</span><span class="o">/</span><span class="n">html</span><span class="w"></span>
+
+<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="n">Netscape</span><span class="w"> </span><span class="mf">4.06</span><span class="o">-</span><span class="mf">4.08</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="ow">some</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">problems</span><span class="w"></span>
+<span class="w">    </span><span class="n">BrowserMatch</span><span class="w"> </span><span class="o">^</span><span class="n">Mozilla</span><span class="o">/</span><span class="mi">4</span><span class="err">\</span><span class="mf">.0</span><span class="o">[</span><span class="n">678</span><span class="o">]</span><span class="w"> </span><span class="k">no</span><span class="o">-</span><span class="n">gzip</span><span class="w"></span>
+
+<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="n">MSIE</span><span class="w"> </span><span class="n">masquerades</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">Netscape</span><span class="p">,</span><span class="w"> </span><span class="n">but</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">fine</span><span class="w"></span>
+<span class="w">    </span><span class="n">BrowserMatch</span><span class="w"> </span><span class="err">\</span><span class="n">bMSI</span><span class="o">[</span><span class="n">E</span><span class="o">]</span><span class="w"> </span><span class="err">!</span><span class="k">no</span><span class="o">-</span><span class="n">gzip</span><span class="w"> </span><span class="err">!</span><span class="n">gzip</span><span class="o">-</span><span class="k">only</span><span class="o">-</span><span class="nc">text</span><span class="o">/</span><span class="n">html</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">&lt;</span><span class="n">IfModule</span><span class="w"> </span><span class="n">mod_headers</span><span class="p">.</span><span class="n">c</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="n">Make</span><span class="w"> </span><span class="n">sure</span><span class="w"> </span><span class="n">proxies</span><span class="w"> </span><span class="n">don</span><span class="err">&#39;</span><span class="n">t</span><span class="w"> </span><span class="n">deliver</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">wrong</span><span class="w"> </span><span class="n">content</span><span class="w"></span>
+<span class="w">        </span><span class="n">Header</span><span class="w"> </span><span class="n">append</span><span class="w"> </span><span class="n">Vary</span><span class="w"> </span><span class="k">User</span><span class="o">-</span><span class="n">Agent</span><span class="w"> </span><span class="n">env</span><span class="o">=</span><span class="err">!</span><span class="n">dont</span><span class="o">-</span><span class="n">vary</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;/</span><span class="n">IfModule</span><span class="o">&gt;</span><span class="w"></span>
+<span class="o">&lt;/</span><span class="n">IfModule</span><span class="o">&gt;</span><span class="w"></span>
+</code></pre></div>
+
+<p>Save and restart Apache</p>
+<div class="codehilite"><pre><span></span><code><span class="err">sudo /usr/sbin/apachectl restart</span>
+</code></pre></div>
+
+<p>You can test to be sure it's working by using <code>curl</code> on a file that matches any of the above content types. You should see <code>Content-Encoding: gzip</code> in the response headers.</p>
+<div class="codehilite"><pre><span></span><code>curl -I -H <span class="s1">&#39;Accept-Encoding: gzip,deflate&#39;</span> https://ryanmo.co/theme/js/main.js
+
+
+HTTP/1.1 <span class="m">200</span> OK
+Date: Sat, <span class="m">12</span> Sep <span class="m">2015</span> <span class="m">20</span>:38:24 GMT
+Server: Apache/2.4.10 <span class="o">(</span>Unix<span class="o">)</span> PHP/5.5.20 OpenSSL/0.9.8zd
+Last-Modified: Sat, <span class="m">12</span> Sep <span class="m">2015</span> <span class="m">02</span>:47:24 GMT
+ETag: <span class="s2">&quot;38169-51f83da1c0700-gzip&quot;</span>
+Accept-Ranges: bytes
+Vary: Accept-Encoding,User-Agent
+Content-Encoding: gzip
+Cache-Control: max-age<span class="o">=</span><span class="m">2592000</span>
+Expires: Mon, <span class="m">12</span> Oct <span class="m">2015</span> <span class="m">20</span>:38:24 GMT
+Content-Type: application/javascript
+</code></pre></div>
+
+<p>Next is content caching. This is also something to edit in the httpd.conf file for Apache. Google suggests at <em>least</em> 7 days for default caching, and up to a year for content that doesn't change often.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Make sure this is uncommented</span>
+LoadModule expires_module libexec/apache2/mod_expires.so
+
+<span class="c1">## EXPIRES CACHING ##</span>
+&lt;IfModule mod_expires.c&gt;
+    ExpiresActive On
+    ExpiresByType image/jpg <span class="s2">&quot;access plus 1 year&quot;</span>
+    ExpiresByType image/jpeg <span class="s2">&quot;access plus 1 year&quot;</span>
+    ExpiresByType image/gif <span class="s2">&quot;access plus 1 year&quot;</span>
+    ExpiresByType image/png <span class="s2">&quot;access plus 1 year&quot;</span>
+    ExpiresByType application/x-font-ttf <span class="s2">&quot;access plus 1 year&quot;</span>
+    ExpiresByType text/css <span class="s2">&quot;access plus 1 month&quot;</span>
+    ExpiresByType application/javascript <span class="s2">&quot;access plus 1 month&quot;</span>
+    ExpiresByType image/x-icon <span class="s2">&quot;access plus 1 year&quot;</span>
+    ExpiresDefault <span class="s2">&quot;access plus 7 days&quot;</span>
+&lt;/IfModule&gt;
+<span class="c1">## EXPIRES CACHING ##</span>
+</code></pre></div>
+
+<p>At this point, I was getting into the mid to high 80s for my score. Awesome. At this point, I could probably stop and be satisfied with the results. The remaining suggestions were easy, so I kept going. The first was to minimize all of my CSS and JavaScript. Easy. I just hit that checkbox in CodeKit and moved along. I did take one additional step here and took advantage of CodeKit's ability to combine JavaScript files into a single file by adding a header to my main JavaScript file.</p>
+<div class="codehilite"><pre><span></span><code><span class="err"># @codekit-prepend &quot;../js/jquery-1.10.1.min.js&quot;, &quot;../js/bigfoot.min.js&quot;;</span>
+</code></pre></div>
+
+<p>Lastly, Google suggested that I compress my images. They were even nice enough to provide a zipped file of all your CSS, JavaScript and images compressed for you. If I don't have to do the work, then I won't. I downloaded the file and replaced all my images with the ones they gave me. In the future, I'll be using <a href="https://imageoptim.com">ImageOptim</a> to optimize the images on my site.</p>
+<p>My final score check: 91/100 on mobile and 97/100 on desktop! I think I can call that a success. Honestly, when trying to load my site on different devices, I didn't notice a significant increase. That being said, at least I'll be in Google's good graces for being a good web citizen, and I'll avoid any risk of them down-ranking my site for doing things incorrectly. I still want to take advantage of the critical CSS at some point, but I can leave that for another day.</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

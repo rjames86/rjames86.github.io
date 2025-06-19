@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Show Time in Multiple Time Zones with TextExpander - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Show Time in Multiple Time Zones with TextExpander</h1>
+    <div class="article-meta">
+        <time datetime="2014-05-10T00:00:00-07:00">2014-05-10</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I'm really bad at converting a time to other timezones. Now that the company I work for has offices in multiple countries, scheduling has become much more difficult. In an effort to eliminate the need for people to convert times themselves, I wrote a TextExpander snippet to take care of it for me.</p>
+
+
+<p>There are tons of tools out there that show you what time it is in other parts of the world. One thing that isn't as readily available is a quick way to tell me what time it would be in California if it's 3:00pm in Dublin. I decided to write a quick TextExpander snippet that would let me pick the time and then it would output the time in all of my chosen time zones. </p>
+<p>The first step is to choose the time zones that you want to appear. In my case, I chose the following since we have offices in these locations:</p>
+<ul>
+<li>Europe/Dublin</li>
+<li>America/Los_Angeles</li>
+<li>America/Chicago</li>
+</ul>
+<p>Now I need to convert a chosen time to all of these time zones. This can be done using the <code>date</code> command in bash. Here's a quick example to try in the Terminal:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">TZ=Europe/Dublin date -jf &quot;%H:%M %z&quot; &quot;$(date &quot;+%H:%M %z&quot;)&quot; &quot;+%H:%M %Z&quot;</span>
+</code></pre></div>
+
+<ul>
+<li>TZ lets you choose the time zone for the <code>date</code> command</li>
+<li>-f tells <code>date</code> the format to expect for the input</li>
+<li>-j tells <code>date</code> to not change the date allowing the -f flag to convert a time</li>
+<li>"$(date "+%H:%M %z")" just gives the current date that looks like HH:MM +0100</li>
+<li>"+%H:%M %Z" is the output format</li>
+</ul>
+<p>This gives you the following result:</p>
+<p>04:52 IST</p>
+<p>Now to do this for multiple time zones:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">timezones</span><span class="o">=(</span> <span class="s2">&quot;America/Los_Angeles&quot;</span> <span class="s2">&quot;America/Chicago&quot;</span> <span class="s2">&quot;Europe/Dublin&quot;</span><span class="o">)</span>
+
+<span class="k">for</span> zone <span class="k">in</span> <span class="si">${</span><span class="nv">timezones</span><span class="p">[@]</span><span class="si">}</span>
+<span class="k">do</span>
+    <span class="nv">TZ</span><span class="o">=</span><span class="nv">$zone</span> date -jf <span class="s2">&quot;%H:%M %z&quot;</span> <span class="s2">&quot;</span><span class="k">$(</span>date <span class="s2">&quot;+%H:%M %z&quot;</span><span class="k">)</span><span class="s2">&quot;</span> <span class="s2">&quot;+%H:%M %Z&quot;</span><span class="p">;</span>
+<span class="k">done</span>
+</code></pre></div>
+
+<p>Which gives:</p>
+<p>08:55 PDT<br />
+10:55 CDT<br />
+16:55 IST  </p>
+<p>Lastly, let's add in some TextExpander input methods, and we have a way to use this with whatever time we want:</p>
+<div class="codehilite"><pre><span></span><code><span class="ch">#! /bin/bash</span>
+
+/* 
+Enter a <span class="nb">time</span> using 24H. <span class="m">1</span>:30pm is <span class="m">13</span>:30
+*/
+<span class="nv">ENTERTIME</span><span class="o">=</span><span class="s2">&quot;%filltext:name=Hour:width=2%:%filltext:name=Minute:width=2%&quot;</span>
+
+<span class="nv">timezones</span><span class="o">=(</span> <span class="s2">&quot;America/Los_Angeles&quot;</span> <span class="s2">&quot;America/Chicago&quot;</span> <span class="s2">&quot;Europe/Dublin&quot;</span> <span class="o">)</span>
+
+<span class="k">for</span> zone <span class="k">in</span> <span class="si">${</span><span class="nv">timezones</span><span class="p">[@]</span><span class="si">}</span>
+<span class="k">do</span>
+        <span class="nv">TZ</span><span class="o">=</span><span class="nv">$zone</span> date -jf <span class="s2">&quot;%H:%M %z&quot;</span> <span class="s2">&quot;</span><span class="nv">$ENTERTIME</span><span class="s2"> </span><span class="k">$(</span>date <span class="s2">&quot;+%z&quot;</span><span class="k">)</span><span class="s2">&quot;</span> <span class="s2">&quot;+%H:%M %Z&quot;</span><span class="p">;</span>
+<span class="k">done</span>
+</code></pre></div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

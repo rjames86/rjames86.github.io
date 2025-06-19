@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Organizing Special Photos with Hazel - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Organizing Special Photos with Hazel</h1>
+    <div class="article-meta">
+        <time datetime="2014-01-05T00:00:00-08:00">2014-01-05</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>Nearly all of my photos are sorted based on year, month and day. Hazel easily takes care of of this for me, but occasionally I will have projects where photos need to be excluded or organized in a different way. With Hazel, I can still account for these special cases with extra bits of metadata.</p>
+
+
+<p>This may not come in handy to anyone, but I thought it would be worth showing some of the creative ways that Hazel can be used to organize your files based on more than just creation/modification time or file type.</p>
+<p>In late May 2013, I decided I wanted to do one of those time lapse videos where you take a picture of yourself in front of the camera every day. At first, the hardest part was just remembering to take the picture each day. Once I was in the routine, I started to find the task monotonous to pull the photo from my Dropbox folder, rename it to YYYY-MM-DD.jpg and then move it into a special folder I had creatively named "Picture a Day." Hazel was already taking care of my general photo organization, but I wanted to ensure that these photos got organized specifically so I started digging into the special traits of these photos. I quickly found a few default options in Hazel that would help me do this:</p>
+<ul>
+<li>Device make</li>
+<li>Pixel width/height</li>
+<li>Content creator</li>
+</ul>
+<p>I was always using Camera+ for these photos because of the grid and level features. It allowed me to align my face in the same place in the photos. Since I always used the front camera, the dimensions of the photos remained the same. After playing around, here is the Hazel rule I came up with</p>
+<p><img alt="Hazel Picture a Day" src="https://ryanmo.co/2014/01/05/organizing-special-photos-with-hazel/hazel_picture_a_day.png" /></p>
+<p>Another key piece here is the datestamp token. The rule watches for Dropbox's Camera Uploads filename format YYYY-MM-DD HH.MM.SS.jpg. This wouldn't be necessary except for that this token then becomes useful in the actions portion. I can take that token and rename the file based on the token to simply YYYY-MM-DD.jpg since I don't care about the hour the photo was taken. What's great about the token is that this will prevent accidental naming of the file if I happen to upload it the next day or I'm flying between Ireland and the US and date times get messed up.</p>
+<p>While this rule is fairly specific, it's saved me a lot of time having to organize the photos manually. </p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

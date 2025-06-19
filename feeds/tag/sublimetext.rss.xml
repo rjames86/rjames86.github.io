@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - sublimetext</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Mon, 11 Jan 2016 08:55:00 -0800</lastBuildDate><item><title>Searching Todo’s in Code</title><link>https://ryanmo.co/2016/01/11/searching-todos-in-code</link><description>&lt;p&gt;Happy 2016! It's been a while since I've gotten something up here.&lt;/p&gt;
+
+&lt;p&gt;Last week at work I was working on a fairly large refactor of our front-end. Large pieces of code were being moved around and others re-written to be cleaner and more understandable. Throughout this process, I was leaving myself todo's so that I'd remember to fix something later.  Problem is, I would rarely ever go back to them. That was until someone on my team shared some bash functions they had written to make following up on those todo's much easier&lt;/p&gt;
+
+
+&lt;p&gt;It's fairly common practice to leave yourself todo's as comments in code such as&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;# TODO(ryan) fix this later.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;That way if someone comes across it in the future, they'll know that whatever is below may not be perfect and that I plan on fixing it at some point. Finding all your todo's later is a different story. That's where some fancy bash functions come in handy.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;function&lt;/span&gt; ga_code_search&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;# alias todo=&amp;#39;ga_code_search &amp;quot;TODO\(`whoami`\)&amp;quot;&amp;#39;&lt;/span&gt;
+    &lt;span class="nv"&gt;SCREEN_WIDTH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;stty size &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+    &lt;span class="nv"&gt;SCREEN_WIDTH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$((&lt;/span&gt;SCREEN_WIDTH-4&lt;span class="k"&gt;))&lt;/span&gt;
+    &lt;span class="c1"&gt;# Given a spooky name so you can alias to whatever you want. &lt;/span&gt;
+    &lt;span class="c1"&gt;# (cs for codesearch)&lt;/span&gt;
+    &lt;span class="c1"&gt;# AG is WAY faster but requires a binary &lt;/span&gt;
+    &lt;span class="c1"&gt;# (try brew install the_silver_searcher)&lt;/span&gt;
+    &lt;span class="nv"&gt;AG_SEARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ag &amp;quot;$1&amp;quot; | sort -k1 | cat -n | cut -c 1-$SCREEN_WIDTH&amp;#39;&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# egrep is installed everywhere and is the default.&lt;/span&gt;
+    &lt;span class="nv"&gt;GREP_SEARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;egrep -nR &amp;quot;$1&amp;quot; * | sort -k1 | cat -n | cut -c 1-$SCREEN_WIDTH&amp;#39;&lt;/span&gt;
+
+    &lt;span class="nv"&gt;SEARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$AG_SEARCH&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="nv"&gt;$#&lt;/span&gt; -eq &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Usage: ga_code_search &amp;lt;search&amp;gt; &amp;lt;index_to_edit&amp;gt;&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Examples:&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;    ga_code_search TODO&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;    ga_code_search TODO 1&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;    ga_code_search \&amp;quot;TODO\\(graham\\)\&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;    ga_code_search \&amp;quot;TODO\\(graham\\)\&amp;quot; 4&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;        
+        &lt;span class="k"&gt;return&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="nv"&gt;$#&lt;/span&gt; -eq &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="c1"&gt;# There are no command line argumnets.&lt;/span&gt;
+        &lt;span class="nb"&gt;eval&lt;/span&gt; &lt;span class="nv"&gt;$SEARCH&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;
+        &lt;span class="c1"&gt;# arg one should be a line from the output of above.&lt;/span&gt;
+        &lt;span class="nv"&gt;LINE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$SEARCH&lt;/span&gt;&lt;span class="s2"&gt; | sed &amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;&lt;span class="s2"&gt;q;d&amp;#39; | awk -F&amp;#39;:&amp;#39; &amp;#39;{print +\$2 \&amp;quot; \&amp;quot; \$1}&amp;#39; | awk -F&amp;#39; &amp;#39; &amp;#39;{print \$1 \&amp;quot; \&amp;quot; \$3}&amp;#39;&amp;quot;&lt;/span&gt;
+        &lt;span class="c1"&gt;# Modify with your editor here.&lt;/span&gt;
+        emacs &lt;span class="se"&gt;\+&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="nb"&gt;eval&lt;/span&gt; &lt;span class="nv"&gt;$LINE&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;    
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If you read through the comments, &lt;code&gt;the_silver_searcher&lt;/code&gt; is far faster than &lt;code&gt;grep&lt;/code&gt; for searching contents of files. If you don't have it already, I'd highly suggest installing it with &lt;code&gt;brew install the_silver_searcher&lt;/code&gt;. If you don't want to, be sure to change &lt;code&gt;SEARCH=$AG_SEARCH&lt;/code&gt; to &lt;code&gt;SEARCH=$GREP_SEARCH&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The function itself isn't that interesting. It's when you assign aliases to use this function that things become interesting. Here are the three that were given to me:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Find todo items that are assigned to me. TODO(ryan)&lt;/span&gt;
+&lt;span class="c1"&gt;# You can change `whoami` to whatever you want.&lt;/span&gt;
+&lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;todo&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ga_code_search &amp;quot;TODO\(`whoami`\)&amp;quot;&amp;#39;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Find merge conflicts that need to be resolved.&lt;/span&gt;
+&lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;conflicts&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ga_code_search &amp;quot;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;quot;&amp;#39;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Find anything below your CWD.&lt;/span&gt;
+&lt;span class="c1"&gt;# You can now type `cs some_piece_of_code`&lt;/span&gt;
+&lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;cs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ga_code_search&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;My favorite by far is the first alias &lt;code&gt;todo&lt;/code&gt;. Here is some example output when running this command:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt; my_project &lt;span class="o"&gt;(&lt;/span&gt;master&lt;span class="o"&gt;)&lt;/span&gt;: todo
+ &lt;span class="m"&gt;1&lt;/span&gt;  app/models/strava.py:102: &lt;span class="c1"&gt;# TODO(ryan) probably should memoize this at some point so its faster.&lt;/span&gt;
+ &lt;span class="m"&gt;2&lt;/span&gt;  app/models/strava.py:148: &lt;span class="c1"&gt;# TODO(ryan) make this line prettier&lt;/span&gt;
+ &lt;span class="m"&gt;3&lt;/span&gt;  app/templates/strava/index.html:50: &amp;lt;!-- TODO&lt;span class="o"&gt;(&lt;/span&gt;ryan&lt;span class="o"&gt;)&lt;/span&gt; move this into its own template file at some point --&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Notice how there are numbers next to each result? That's because you can also open the file right to that todo item by typing &lt;code&gt;todo 1&lt;/code&gt;! As the function is written, it will open in emacs. If that's your editor of choice, you'll be set. I'm personally a fan of Sublime Text. There's a way to also open a file in Sublime Text to a specific line number. Simply change the text in red with that in green:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gd"&gt;- LINE=&amp;quot;$SEARCH | sed &amp;#39;$2q;d&amp;#39; | awk -F&amp;#39;:&amp;#39; &amp;#39;{print +\$2 \&amp;quot; \&amp;quot; \$1}&amp;#39; | awk -F&amp;#39; &amp;#39; &amp;#39;{print \$1 \&amp;quot; \&amp;quot; \$3}&amp;#39;&amp;quot;&lt;/span&gt;
+&lt;span class="gi"&gt;+ LINE=&amp;quot;$SEARCH | sed &amp;#39;$2q;d&amp;#39; | awk -F&amp;#39;:&amp;#39; &amp;#39;{print +\$2 \&amp;quot; \&amp;quot; \$1}&amp;#39; | awk -F&amp;#39; &amp;#39; &amp;#39;{print \$3 \&amp;quot;:\&amp;quot; \$1}&amp;#39;&amp;quot;&lt;/span&gt;
+
+&lt;span class="gd"&gt;- emacs \+`eval $LINE`&lt;/span&gt;
+&lt;span class="gi"&gt;+ subl `eval $LINE`&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I've only used the functions for a few days now, but it's greatly improved my workflow for getting old todo's done in code. If you'd like to download these scripts, &lt;a href="https://gist.github.com/2819e0576e9280a985ae"&gt;here&lt;/a&gt; is the Sublime Text version and the &lt;a href="https://gist.github.com/1351952bdc55d206d939"&gt;emacs&lt;/a&gt; version.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Mon, 11 Jan 2016 08:55:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2016-01-11:/2016/01/11/searching-todos-in-code</guid><category>Tech</category><category>automation</category><category>bash</category><category>sublimetext</category></item></channel></rss>

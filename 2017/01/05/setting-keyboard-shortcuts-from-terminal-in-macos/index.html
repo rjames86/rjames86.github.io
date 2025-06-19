@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Setting Keyboard Shortcuts from Terminal in macOS - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Setting Keyboard Shortcuts from Terminal in macOS</h1>
+    <div class="article-meta">
+        <time datetime="2017-01-05T08:54:00-08:00">2017-01-05</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>It's been a few months since my last post. I've spent a lot of time working on my blog, but all things behind the scenes that most people wouldn't even notice. </p>
+<p>Setting keyboard shortcuts on Mac is actually fairly easy, but it requires a lot of clicking around. Fortunately there's a way to do this from the terminal that's faster and easier.</p>
+
+
+<p>The <code>defaults</code> command in MacOS is nothing short of a mystery. It does some powerful things, but the documentation is sparse and half of the time I don't know what I'm doing. That being said, I've had a script written for a long time called <code>new_computer.sh</code> where I set all of my favorite global and application-specific shortcuts when getting a new computer.</p>
+<p>Let's take an example of a shortcut everyone should have: Print As PDF from within a print dialog. I've always set it to ⌘ ⇧ P. To do this within System Preferences, the steps are:</p>
+<ol>
+<li>Open the Keyboard preference Pane</li>
+<li>Click the Shortcuts tab</li>
+<li>Click App Shortcuts</li>
+<li>Click the + symbol</li>
+<li>Fill out the prompts<ul>
+<li>Leave All Applications Selected</li>
+<li>Menu Title is "Save as PDF…" (it's an elipsis, not three periods. Type <code>option ;</code> to get the symbol)</li>
+<li>Choose your shortcut</li>
+</ul>
+</li>
+</ol>
+<p>It's almost too many steps for one shortcut, let alone multiple. Let's try this in Terminal:</p>
+<div class="codehilite"><pre><span></span><code>defaults write -globalDomain NSUserKeyEquivalents  -dict-add <span class="s2">&quot;Save as PDF\\U2026&quot;</span> <span class="s2">&quot;@\$p&quot;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Easy, right? Sort of. The syntax for writing global shortcuts is fairly straight forward. If you're not creating a shortcut for a specific application, you can use the command above and simply change the title and shortcut. Here are how to represent all of the modifier keys:</p>
+<ul>
+<li>@ is command</li>
+<li>^ is control</li>
+<li>~ is option</li>
+<li>$ is shift</li>
+</ul>
+<p>So command-shift p becomes <code>"@\$p"</code>.</p>
+<p>The reason this came up was that Omnifocus recently added tabs. This is great except that there's no shortcut for cycling through the tabs. This makes the feature almost pointless for me. So to add shortcuts, I ended up using the command above, but I need to target Omnifocus only.</p>
+<div class="codehilite"><pre><span></span><code>defaults write com.omnigroup.OmniFocus2 NSUserKeyEquivalents -dict-add <span class="s2">&quot;Show Next Tab&quot;</span> <span class="s2">&quot;^\\U005D&quot;</span>
+defaults write com.omnigroup.OmniFocus2 NSUserKeyEquivalents -dict-add <span class="s2">&quot;Show Previous Tab&quot;</span> <span class="s2">&quot;^\\U005B&quot;</span>
+</code></pre></div>
+
+<p>Here I'm setting show next/previous tab to control [ and control ]. Once you've set your keyboard shortcuts, you'll need to quit and re-launch the application in order for the new preferences to be read.</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

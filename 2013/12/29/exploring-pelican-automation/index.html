@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Exploring Pelican: Automation Part 1 - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Exploring Pelican: Automation Part 1</h1>
+    <div class="article-meta">
+        <time datetime="2013-12-29T00:00:00-08:00">2013-12-29</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>It's been a few months now since I switched from <a href="http://mynt.mirroredwhite.com">Mynt</a> to <a href="http://blog.getpelican.com">Pelican</a> as my static blog generator and so far I've been very happy with the switch. It's been a learning process along the way, but I've come to the point where I'm comfortable enough with it and want to start customizing and automating.</p>
+<h2 id="customization">Customization</h2>
+<p>I haven't done much yet in terms of customization quite yet, but I'm adding little bits every day.  </p>
+<h3 id="original-files">Original Files</h3>
+<p>I recently updated Pelican to the newest version 3.3. The part that was new to me here was that you have the option to keep the original file in your output directory.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Set to True if you want to copy the articles and pages in their original format (e.g. Markdown or reStructuredText) to the specified OUTPUT_PATH.</span>
+<span class="n">OUTPUT_SOURCES</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+
+<p><strong>Update 2014-02-25:</strong> Turns out this was a bug. It's been since fixed. See the thread <a href="https://github.com/getpelican/pelican/pull/1183">here</a> on github. </p>
+<p>I'm not entirely sure if it's a bug or something I was doing wrong, but I noticed that instead of creating an index.txt for every index.md file, it would create a directory called index.txt and then place the original markdown file within it. I did some poking around in the source code and found a slight issue with the <code>copy</code> function within the util.py file. It was checking if any destination existed, and if not, it would create a new directory.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">destination_</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">destination_</span><span class="p">)</span>
+</code></pre></div>
+
+<p>I made a couple of changes to prevent this from happening. The first was that I added an additional argument to the function called <code>is_file</code> and then added this to the destination check</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">destination_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_file</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="o">...</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">destination_</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_file</span><span class="p">:</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">destination_</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Finally, in generators.py, I added the argument where the copy function is called in <code>_create_source</code> in the <code>SourceFileGenerator</code> class.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">source_path</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">is_file</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Now that the files are being generated correctly, I used the tip by Gabe Weatherhead over at <a href="http://www.macdrifter.com/tag/pelican.html">Macdrifter</a> to add a link to the original file for every post. You can see an example of this post at the bottom of the page.</p>
+<h3 id="automatic-posting-to-appnet">Automatic Posting to App.net</h3>
+<p>App.net's new Broadcast platform is pretty cool. I've subscribed to a few people already and I like the idea of having a way to broadcast each post that's made. Pelican doesn't have a great way to detect new posts, so I'm playing with my own solution by keeping track of every post and comparing.</p>
+<p>In my Fabric file, I created a function to check for new posts and then use the App.net Broadcast API to make a post</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">adn</span><span class="p">():</span>
+    <span class="n">current_posts</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">current_posts</span><span class="p">()</span>
+    <span class="n">post_history</span> <span class="o">=</span> <span class="n">pickler</span><span class="o">.</span><span class="n">load_old_results</span><span class="p">(</span><span class="s1">&#39;lib/posts.pkl&#39;</span><span class="p">)</span>
+    <span class="n">new_posts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">current_posts</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">post_history</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="n">new_posts</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="n">new_posts</span><span class="p">:</span>
+        <span class="n">get_adn</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">ADN</span><span class="p">(</span><span class="n">POST_PATH</span> <span class="o">+</span> <span class="n">post</span><span class="p">)</span>
+        <span class="n">get_adn</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+    <span class="n">pickler</span><span class="o">.</span><span class="n">store_results</span><span class="p">(</span><span class="s1">&#39;lib/posts.pkl&#39;</span><span class="p">,</span> <span class="n">current_posts</span><span class="p">)</span>
+</code></pre></div>
+
+<p>I get the current posts by simply listing the contents of the posts directory and then compare to what was previously stored the last time a new post was made. I keep this is a file called lib/util.py, which explains why I have to call <code>os.path.dirname</code> twice.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">current_posts</span><span class="p">():</span>
+    <span class="n">post_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))),</span> <span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="s1">&#39;posts&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">post_path</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)]</span>
+</code></pre></div>
+
+<p>This seems to be the most reliable solution since it won't send broadcasts if I edit a file. Finally, when the publish function is called from my fabfile, I call <code>adn()</code>.</p>
+<h2 id="automation">Automation</h2>
+<p>I'm traveling a lot these days, which means that sometimes I only have my iPad or iPhone with me. I'd still like to easily create posts without having to write up the post, log in via Prompt, commit and push. I went with a setup fairly similar to <a href="http://www.evanlovely.com/notes/about-this-jekyll-site/">Evan Lovely</a> and use Hazel to watch for new posts within a directory. </p>
+<p>My Hazel workflow relies on an additional piece of metadata in my posts instead of just the file itself. This prevents any accidental posts and also lets me put whatever file I want in the folder. The file needs to pass the following script:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">markdown</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">md</span> <span class="o">=</span> <span class="n">markdown</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">])</span>
+<span class="n">md</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">md</span><span class="o">.</span><span class="n">Meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hazel&#39;</span><span class="p">):</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+
+<p>As long as the piece of metadata "hazel" exists in any of my files, Hazel  moves the file into my Pelican project folder and my publish script takes over.</p>
+<p>That's it for now! I'll keep iterating on the process and make things better.</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Using Contacts.app with TextExpander v2: Objective-C and JavaScript - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Using Contacts.app with TextExpander v2: Objective-C and JavaScript</h1>
+    <div class="article-meta">
+        <time datetime="2015-10-24T02:12:00-07:00">2015-10-24</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    
+<p>I was generally happy with how I was using <a href="{static}../2015-08-23/2015-08-23_Using-Contacts.app-with-TextExpander.md">Contacts.app with TextExpander</a> to create snippets for my emails, phone numbers and addresses. However, as I eventually realized, I have to have Contacts.app running for it to work. When AppleScript and JavaScript talk to applications in OS X, they have to be running. That isn't the case for C and Objective-C libraries, so I decided to see how hard it was to use the Objective-C bindings for Javascript.</p>
+
+
+<p>The documentation is just as sparse in <a href="https://developer.apple.com/library/mac/releasenotes/InterapplicationCommunication/RN-JavaScriptForAutomation/Articles/OSX10-10.html#//apple_ref/doc/uid/TP40014508-CH109-SW1">the developer documentation</a>, however <a href="http://tylergaw.com/articles/building-osx-apps-with-js">this article</a> by Tyler Gaw helped get me started in understanding how to represent Objective-C methods in Javascript. It's probably easiest to just show the script and explain what's going on.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">ObjC</span><span class="p">.</span><span class="k">import</span><span class="p">(</span><span class="s2">&quot;AddressBook&quot;</span><span class="p">);</span>
+<span class="nx">sAB</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ABAddressBook</span><span class="p">.</span><span class="nx">sharedAddressBook</span>
+<span class="nx">meRecord</span> <span class="o">=</span> <span class="nx">sAB</span><span class="p">.</span><span class="nx">me</span>
+
+<span class="kd">var</span> <span class="nx">propertyToObjCType</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;email&#39;</span><span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">kABEmailProperty</span><span class="p">,</span>
+    <span class="s1">&#39;address&#39;</span><span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">kABAddressProperty</span><span class="p">,</span>
+    <span class="s1">&#39;phone&#39;</span><span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">kABPhoneProperty</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">labelToObjCType</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;work&#39;</span><span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">kABWorkLabel</span><span class="p">,</span>
+    <span class="s1">&#39;home&#39;</span><span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">kABHomeLabel</span><span class="p">,</span>
+    <span class="s1">&#39;iPhone&#39;</span><span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">kABPhoneiPhoneLabel</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">valueForProperty</span><span class="p">(</span><span class="nx">property</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">meRecord</span><span class="p">.</span><span class="nx">valueForProperty</span><span class="p">(</span><span class="nx">propertyToObjCType</span><span class="p">[</span><span class="nx">property</span><span class="p">])</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">getEmailByLabel</span><span class="p">(</span><span class="nx">inputLabel</span><span class="p">){</span>
+    <span class="nx">emails</span> <span class="o">=</span> <span class="nx">valueForProperty</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span>
+    <span class="nx">label</span> <span class="o">=</span> <span class="nx">labelToObjCType</span><span class="p">[</span><span class="nx">inputLabel</span><span class="p">]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mf">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">emails</span><span class="p">.</span><span class="nx">count</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">CFEqual</span><span class="p">(</span><span class="nx">emails</span><span class="p">.</span><span class="nx">labelAtIndex</span><span class="p">(</span><span class="nx">i</span><span class="p">),</span> <span class="nx">label</span><span class="p">)){</span>
+            <span class="k">return</span> <span class="nx">emails</span><span class="p">.</span><span class="nx">valueAtIndex</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">getAddressByLabel</span><span class="p">(</span><span class="nx">inputLabel</span><span class="p">){</span>
+    <span class="nx">addresses</span> <span class="o">=</span> <span class="nx">valueForProperty</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">)</span>
+    <span class="nx">label</span> <span class="o">=</span> <span class="nx">labelToObjCType</span><span class="p">[</span><span class="nx">inputLabel</span><span class="p">]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mf">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">addresses</span><span class="p">.</span><span class="nx">count</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">CFEqual</span><span class="p">(</span><span class="nx">addresses</span><span class="p">.</span><span class="nx">labelAtIndex</span><span class="p">(</span><span class="nx">i</span><span class="p">),</span> <span class="nx">label</span><span class="p">)){</span>
+            <span class="k">return</span> <span class="nx">sAB</span><span class="p">.</span><span class="nx">formattedAddressFromDictionary</span><span class="p">(</span><span class="nx">addresses</span><span class="p">.</span><span class="nx">valueAtIndex</span><span class="p">(</span><span class="nx">i</span><span class="p">)).</span><span class="nx">string</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">getPhoneByLabel</span><span class="p">(</span><span class="nx">inputLabel</span><span class="p">){</span>
+    <span class="nx">phone</span> <span class="o">=</span> <span class="nx">valueForProperty</span><span class="p">(</span><span class="s1">&#39;phone&#39;</span><span class="p">)</span>
+    <span class="nx">label</span> <span class="o">=</span> <span class="nx">labelToObjCType</span><span class="p">[</span><span class="nx">inputLabel</span><span class="p">]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mf">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">phone</span><span class="p">.</span><span class="nx">count</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">CFEqual</span><span class="p">(</span><span class="nx">phone</span><span class="p">.</span><span class="nx">labelAtIndex</span><span class="p">(</span><span class="nx">i</span><span class="p">),</span> <span class="nx">label</span><span class="p">)){</span>
+            <span class="k">return</span> <span class="nx">phone</span><span class="p">.</span><span class="nx">valueAtIndex</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The biggest thing to point out is that if you have a method called in Objective-C like <code>[ABAddressBook sharedAddressBook];</code>, this gets converted to dot notation <code>$.ABAddressBook.sharedAddressBook</code>. The Obj-C bridge is always called with either <code>ObjC.</code> or <code>$.</code> followed by the method.</p>
+<p>You can find a nice list of different properties and values for the address book <a href="http://www.macdevcenter.com/pub/a/mac/2002/08/27/cocoa.html?page=2">here</a>. For labels, the most common will be <code>$.kABHomeLabel</code> and <code>$.kABWorkLabel</code> for home and work respectively. If you've created a custom label (let's call it XXX), you can reference it by calling <code>$.kABXXXLabel</code>.</p>
+<p>As with any other JavaScript snippet in TextExpander, you can call any of these functions to expand the contact information that you'd like.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">getEmailByLabel</span><span class="p">(</span><span class="s1">&#39;home&#39;</span><span class="p">)</span>  <span class="c1">// returns your home phone number</span>
+
+<span class="nx">getAddressByLabel</span><span class="p">(</span><span class="s1">&#39;work&#39;</span><span class="p">)</span>  <span class="c1">// returns your work address</span>
+
+<span class="nx">getAddressByLabel</span><span class="p">(</span><span class="s1">&#39;iPhone&#39;</span><span class="p">)</span>  <span class="c1">// returns your phone number labeled iPhone</span>
+</code></pre></div>
+
+<p>For those of you who don't like copy/pasting the same code over and over, there's a nice little hack that you can do in TextExpander.</p>
+<p>First, create a new Plain Text snippet with the code from the top of the post. I called the snippet "getInfoFromContacts". Once that's done, you can create new snippets that take advantage of this code by creating new JavaScript snippets with the following:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">%</span><span class="nx">snippet</span><span class="o">:</span><span class="nx">getInfoFromContacts</span><span class="o">%</span>
+<span class="nx">getEmailByLabel</span><span class="p">(</span><span class="s1">&#39;home&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>This way, if you update something from the main part of the code, you don't have to update all of your TextExpanders.</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+    "author": {
+        "name": "Ryan M"
+    },
+    "favicon": "https://ryanmo.co/images/favicon.png",
+    "feed_url": "https://ryanmo.co/feeds/tag/launchcenterpro.json",
+    "home_page_url": "https://ryanmo.co",
+    "items": [
+        {
+            "id": "https://ryanmo.co/2014/09/28/back-up-your-contacts-with-pythonista",
+            "url": "https://ryanmo.co/2014/09/28/back-up-your-contacts-with-pythonista",
+            "title": "Back up Your Contacts with Pythonista",
+            "content_html": "<p>While it hasn't happened in a while, I have lost or had issues with contacts in iCloud. I haven't found a reliable way to automatically back up my contacts on my Mac, but Pythonista offers a simple way to back them up.</p>\n\n\n<p>Pythonista offers a great library which gives you access to your contacts on iOS. With a short script, I can back up my contacts to a folder in my Dropbox account. This will add a vCard file to my Dropbox account with the date the script was run.</p>\n<p><em>Note: You'll need the Dropbox login script for this to work. Visit <a href=\"https://gist.github.com/omz/4034526\">this</a> link to get it set up. I keep mine in a folder called \"lib\" in Pythonista.</em></p>\n<p>You can download my Contacts Back up script <a href=\"https://gist.github.com/rjames86/79f857f427599f6e145c\">here</a>.</p>\n<div class=\"codehilite\"><pre><span></span><code><span class=\"kn\">import</span> <span class=\"nn\">contacts</span>\n<span class=\"kn\">import</span> <span class=\"nn\">sys</span><span class=\"o\">,</span> <span class=\"nn\">os</span>\n<span class=\"kn\">import</span> <span class=\"nn\">console</span>\n<span class=\"n\">sys</span><span class=\"o\">.</span><span class=\"n\">path</span> <span class=\"o\">+=</span> <span class=\"p\">[</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">dirname</span><span class=\"p\">(</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">abspath</span><span class=\"p\">(</span><span class=\"vm\">__file__</span><span class=\"p\">)),</span> <span class=\"s1\">&#39;lib&#39;</span><span class=\"p\">)]</span>\n<span class=\"kn\">from</span> <span class=\"nn\">dropboxlogin</span> <span class=\"kn\">import</span> <span class=\"n\">get_client</span>\n<span class=\"kn\">from</span> <span class=\"nn\">datetime</span> <span class=\"kn\">import</span> <span class=\"n\">datetime</span>\n\n<span class=\"c1\"># Update this path here for the backup</span>\n<span class=\"c1\"># location in your Dropbox account.</span>\n<span class=\"n\">BACKUP_PATH</span> <span class=\"o\">=</span> <span class=\"s1\">&#39;/Backups/Contacts&#39;</span>\n\n<span class=\"n\">TODAY</span> <span class=\"o\">=</span> <span class=\"n\">datetime</span><span class=\"o\">.</span><span class=\"n\">today</span><span class=\"p\">()</span><span class=\"o\">.</span><span class=\"n\">strftime</span><span class=\"p\">(</span><span class=\"s1\">&#39;%Y-%m-</span><span class=\"si\">%d</span><span class=\"s1\">&#39;</span><span class=\"p\">)</span>\n\n<span class=\"n\">dropbox_client</span> <span class=\"o\">=</span> <span class=\"n\">get_client</span><span class=\"p\">()</span>\n\n<span class=\"n\">VCARD</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;&quot;</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">person</span><span class=\"o\">.</span><span class=\"n\">vcard</span> <span class=\"k\">for</span> <span class=\"n\">person</span> <span class=\"ow\">in</span> <span class=\"n\">contacts</span><span class=\"o\">.</span><span class=\"n\">get_all_people</span><span class=\"p\">())</span>\n\n<span class=\"n\">console</span><span class=\"o\">.</span><span class=\"n\">clear</span><span class=\"p\">()</span>\n<span class=\"n\">dropbox_client</span><span class=\"o\">.</span><span class=\"n\">put_file</span><span class=\"p\">(</span><span class=\"n\">BACKUP_PATH</span> <span class=\"o\">+</span> <span class=\"s1\">&#39;/contacts </span><span class=\"si\">{}</span><span class=\"s1\">.vcf&#39;</span><span class=\"o\">.</span><span class=\"n\">format</span><span class=\"p\">(</span><span class=\"n\">TODAY</span><span class=\"p\">),</span> <span class=\"n\">VCARD</span><span class=\"p\">)</span>\n<span class=\"nb\">print</span> <span class=\"s1\">&#39;Backup complete!&#39;</span>\n</code></pre></div>\n\n<p>If you're like me, you're going to forget to do this on a regular basis. I hadn't yet found a reason to use the IFTTT Launch Center Pro triggers, but this turned about to be a great reason to use it. I have a trigger that goes off on the first of every month that will launch the back up script.</p>\n<p>If you want to get reminders to back up your contacts using IFTTT, you can use the recipe below.</p>\n<p><a href=\"https://ifttt.com/view_embed_recipe/206885-backup-contacts-with-lcp\" target = \"_blank\" class=\"embed_recipe embed_recipe-l_24\" id= \"embed_recipe-206885\"><img src= 'https://ifttt.com/recipe_embed_img/206885' alt=\"IFTTT Recipe: Backup Contacts with LCP connects date-time to launch-center\" width=\"370px\" style=\"max-width:100%\"/></a><script async type=\"text/javascript\" src= \"//ifttt.com/assets/embed_recipe.js\"></script></p>",
+            "summary": "<p>While it hasn't happened in a while, I have lost or had issues with contacts in iCloud. I haven't found a reliable way to automatically back up my contacts on my Mac, but Pythonista offers a simple way to back them up.</p>\n",
+            "date_published": "2014-09-28T00:00:00-07:00",
+            "author": {
+                "name": "Ryan M",
+                "url": "https://ryanmo.co/author/ryan-m.html"
+            },
+            "tags": [
+                "automation",
+                "Dropbox",
+                "ifttt",
+                "launchcenterpro",
+                "ios",
+                "pythonista"
+            ]
+        },
+        {
+            "id": "https://ryanmo.co/2014/03/04/quick-sharing-with-launch-center-pro-and-dropbox",
+            "url": "https://ryanmo.co/2014/03/04/quick-sharing-with-launch-center-pro-and-dropbox",
+            "title": "Quick Sharing with Launch Center Pro and Dropbox",
+            "content_html": "<p>I've been finding more and more reasons to use Launch Center Pro recently. With the fairly recent addition of Dropbox actions, I've been finding new ways to share links quickly. </p>\n\n\n<p><img alt=\"Launch Center Pro and Dropbox\" src=\"https://ryanmo.co/2014/03/04/quick-sharing-with-launch-center-pro-and-dropbox/lcp_dropbox.png\" /></p>\n<p>I take a lot of quick photos that I never plan to keep around. In most cases, it's just to send to someone quickly. iMessage is easy, but the images aren't compressed nearly enough and can take a while to upload. I've now started uploading the images to Dropbox and sharing the link. The upload speed is reduced since Launch Center Pro will take care of reducing the quality before uploading. The message sends almost instantly because there isn't an attachment. Here are a few of workflows I use with Dropbox:</p>\n<h3 id=\"upload-last-photo-taken-and-get-the-link\">Upload last photo taken and get the link</h3>\n<p><em>This is if I simply need a quick link to share anywhere. The image uploads at 50% quality. I have a folder called Temp/_Destrctable Folder where I keep all my throwaway images. I'm using the TextExpander snippet ..ttimestamp to name the files like 14-03-08-19.42.45.jpg</em></p>\n<div class=\"codehilite\"><pre><span></span><code><span class=\"c\">launchpro-dropbox://addlastphoto?path=/Temp/_Destructable Folder&amp;name=&lt;..ttimestamp&gt;.jpg&amp;quality=50&amp;getlink=1</span>\n</code></pre></div>\n\n<h3 id=\"upload-last-photo-and-put-the-link-in-an-in-app-message-body\">Upload last photo and put the link in an in-app message body</h3>\n<p><em>Quick sharing with iMessage. Settings are the same as above.</em> </p>\n<div class=\"codehilite\"><pre><span></span><code><span class=\"c\">launch://x-callback-url/dropbox/addphoto?attach=photo&amp;path=/Temp/_Destructable Folder&amp;name=&lt;..ttimestamp&gt;.jpg&amp;quality=50&amp;getlink=1&amp;x-success=launch%3A//messaging%3Fbody%3D%5Bclipboard%5D</span>\n</code></pre></div>\n\n<h3 id=\"upload-from-any-source-to-dropbox\">Upload from any source to Dropbox</h3>\n<p><em>Nice if you haven't taken the photo yet</em></p>\n<div class=\"codehilite\"><pre><span></span><code><span class=\"c\">launch://dropbox/addphoto?attach=photo&amp;path=&amp;name=&amp;quality=&amp;getlink=1</span>\n</code></pre></div>",
+            "summary": "<p>I've been finding more and more reasons to use Launch Center Pro recently. With the fairly recent addition of Dropbox actions, I've been finding new ways to share links quickly. </p>\n",
+            "date_published": "2014-03-04T00:00:00-08:00",
+            "author": {
+                "name": "Ryan M",
+                "url": "https://ryanmo.co/author/ryan-m.html"
+            },
+            "tags": [
+                "ios",
+                "automation",
+                "Dropbox",
+                "launchcenterpro",
+                "photos"
+            ]
+        }
+    ],
+    "title": "ryanmo.co",
+    "version": "https://jsonfeed.org/version/1"
+}

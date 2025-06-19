@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - email</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Sun, 06 Sep 2015 06:45:00 -0700</lastBuildDate><item><title>Backup Your Email with Getmail</title><link>https://ryanmo.co/2015/09/06/backup-your-email-with-getmail</link><description>&lt;p&gt;It's always a good idea to keep backups of data you can't replace, including email. For the last few years, I've had a script that automatically backs up my Gmail account. Since switching to Fastmail, I figured I should continue doing the same thing. It turned out, it was pretty easy to set up another account.&lt;/p&gt;
+
+
+&lt;p&gt;I've been meaning to write about backing up email for a few months now. With Dr. Drang's &lt;a href="http://leancrew.com/all-this/2015/09/archiving-old-mail-with-formail/"&gt;recent post&lt;/a&gt; about archiving email using &lt;code&gt;formail&lt;/code&gt;, I figured this a good enough time as ever to post my solution.&lt;/p&gt;
+&lt;p&gt;To install &lt;code&gt;getmail&lt;/code&gt;, you can use Homebrew, or &lt;a href="http://pyropus.ca/software/getmail/documentation.html#installing"&gt;manually&lt;/a&gt; if you're in to that sort of thing.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;brew install getmail&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;For the configuration files, I first created a directory in my Home folder&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;mkdir .getmail&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The config files for both Fastmail and Gmail are similar, but I'll include both for completeness&lt;/p&gt;
+&lt;h4 id="gmail"&gt;Gmail&lt;/h4&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[retriever]&lt;/span&gt;
+&lt;span class="na"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;SimpleIMAPSSLRetriever&lt;/span&gt;
+&lt;span class="na"&gt;server&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;imap.gmail.com&lt;/span&gt;
+&lt;span class="na"&gt;username&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;lt;username&amp;gt;@gmail.com&lt;/span&gt;
+&lt;span class="na"&gt;mailboxes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;(&amp;quot;[Gmail]/All Mail&amp;quot;,) # To pull all emails&lt;/span&gt;
+&lt;span class="na"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;993&lt;/span&gt;
+
+&lt;span class="k"&gt;[destination]&lt;/span&gt;
+&lt;span class="na"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;Maildir&lt;/span&gt;
+&lt;span class="na"&gt;path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;~/gmail-archive/&lt;/span&gt;
+
+&lt;span class="k"&gt;[options]&lt;/span&gt;
+&lt;span class="c1"&gt;# print messages about each action (verbose = 2)&lt;/span&gt;
+&lt;span class="c1"&gt;# Other options:&lt;/span&gt;
+&lt;span class="c1"&gt;# 0 prints only warnings and errors&lt;/span&gt;
+&lt;span class="c1"&gt;# 1 prints messages about retrieving and deleting messages only&lt;/span&gt;
+&lt;span class="na"&gt;verbose&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;2&lt;/span&gt;
+&lt;span class="na"&gt;message_log&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;~/Dropbox/Scripts/logs/gmail.log&lt;/span&gt;
+&lt;span class="na"&gt;receieved&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
+&lt;span class="na"&gt;delivered_to&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
+&lt;span class="c1"&gt;# dont re-read messages its already pulled down&lt;/span&gt;
+&lt;span class="na"&gt;read_all&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h4 id="fastmail"&gt;Fastmail&lt;/h4&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[retriever]&lt;/span&gt;
+&lt;span class="na"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;SimpleIMAPSSLRetriever&lt;/span&gt;
+&lt;span class="na"&gt;server&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;mail.messagingengine.com&lt;/span&gt;
+&lt;span class="na"&gt;username&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;lt;username&amp;gt;@fastmail.com&lt;/span&gt;
+&lt;span class="na"&gt;mailboxes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;(&amp;quot;INBOX.Archive&amp;quot;,)&lt;/span&gt;
+
+&lt;span class="k"&gt;[destination]&lt;/span&gt;
+&lt;span class="na"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;Maildir&lt;/span&gt;
+&lt;span class="na"&gt;path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;~/fastmail-archive/&lt;/span&gt;
+
+&lt;span class="k"&gt;[options]&lt;/span&gt;
+&lt;span class="na"&gt;verbose&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;2&lt;/span&gt;
+&lt;span class="na"&gt;read_all&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
+&lt;span class="na"&gt;message_log&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;~/Dropbox/Scripts/logs/fastmail.log&lt;/span&gt;
+&lt;span class="na"&gt;delivered_to&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
+&lt;span class="na"&gt;received&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You'll notice that I don't include the password in either config. If password is omitted from a config on Mac OS, the first time you run &lt;code&gt;getmail&lt;/code&gt;, you'll be prompted to enter your password and it will then be stored securely in KeyChain. Since I'm using Maildir as my type, you'll need to create special folders, with 3 specific subfolders&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir ~/fastmail-archive
+mkdir !$/&lt;span class="o"&gt;{&lt;/span&gt;cur,tmp,new&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="c1"&gt;# creates 3 new folders in ~/fastmail-archive&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The same will need to be done for ~/gmail-archive.&lt;/p&gt;
+&lt;p&gt;Once this is set up, you'll need to run the script once to enter in your password&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;/usr/local/bin/getmail -q -r ~/.getmail/getmail.gmail&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If I ever need to view the emails, I do the same as Dr. Drang and use &lt;code&gt;mutt&lt;/code&gt;, which can also be installed with Homebrew.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;mutt -R -f ~/gmail-archive&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 06 Sep 2015 06:45:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2015-09-06:/2015/09/06/backup-your-email-with-getmail</guid><category>Tech</category><category>automation</category><category>email</category><category>backup</category></item></channel></rss>

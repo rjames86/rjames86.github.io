@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Create a Scratchpad with Alfred - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Create a Scratchpad with Alfred</h1>
+    <div class="article-meta">
+        <time datetime="2013-12-28T00:00:00-08:00">2013-12-28</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I always have an empty doc open on my computer as a place to quickly paste in some text. It's never something I need to save and I'll never miss it if I happen to lose it. The only problem is that it's slow recreating this scratchpad file or find it each time I need it. </p>
+<p>I created a very simple workflow that takes the contents of my clipboard and opens a file in a text editor of my choice. The Alfred workflow can be triggered in one of two ways. The first is with the keyboard shortcut "hyper"-s<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. The second way is simply typing "scratchpad" into Alfred. </p>
+<p><img alt="scratchpad_alfred" src="https://ryanmo.co/2013/12/28/create-a-scratchpad-with-alfred/scratchpad_alfred.jpg" /></p>
+<p>I have it set to save a file in my Home folder called ".scratchpad" and then open the file in Sublime Text. Right now, the workflow will check for Sublime Text version 3, then version 2 and if neither exist, it will open the scratchpad in Text Edit. </p>
+<p><img alt="scratchpad_example" src="https://ryanmo.co/2013/12/28/create-a-scratchpad-with-alfred/scratchpad_example.jpg" /></p>
+<p>You'll need the Alfred Powerpack to use this workflow. If you already have it, you can download it with the link below. </p>
+<p><a href="https://ryanmo.co/2013/12/28/create-a-scratchpad-with-alfred/Scratchpad.alfredworkflow"><img alt="image" src="https://ryanmo.co/images/alfred_extension.jpg" /></a>  </p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>command-option-control-shift mapped to my caps lock key. You can read more <a href="http://brettterpstra.com/2012/12/08/a-useful-caps-lock-key/">here</a> on how to make a hyper key&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Find images with No Exif Dates - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Find images with No Exif Dates</h1>
+    <div class="article-meta">
+        <time datetime="2014-08-01T00:00:00-07:00">2014-08-01</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>My Dropbox folder is full of images claiming to be "missing dates." <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> Some of these photos were thumbnails or images from DayOne that didn't necessarily need dates, but others were real photos that for whatever reason didn't have dates that Dropbox recognized.</p>
+
+
+<p><img alt="Carousel Missing Photos" src="https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates/carousel_missing.png" /></p>
+<p>I did some poking around, and found that there were a couple of different reasons why my photos in Dropbox weren't displaying dates:</p>
+<ul>
+<li>The DateTimeOriginal exif tag was missing entirely</li>
+<li>The DateTimeOriginal was set to 0000:00:00 00:00:00</li>
+</ul>
+<p>With the magic of <a href="http://www.sno.phy.queensu.ca/~phil/exiftool/">exiftool</a>, I found a way to find all the photos in my Dropbox folder that were missing dates and output the results to a CSV.</p>
+<div class="codehilite"><pre><span></span><code>exiftool -filename -r -if <span class="s1">&#39;(not $datetimeoriginal or ($datetimeoriginal eq &quot;0000:00:00 00:00:00&quot;)) and ($filetype eq &quot;JPEG&quot;)&#39;</span> -common -csv &gt; ~/Dropbox/nodates.csv
+</code></pre></div>
+
+<p>This will give you a CSV with all of the common file information for the images. </p>
+<p><img alt="CSV of Missing Photos" src="https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates/csv.png" /></p>
+<p>At this point, you'll need to decide how you'll want to fix these photos. From what I have seen so far, the best exif tag to go on is <code>-filemodifydate</code>, but you'll probably need to figure that out on your own. If you want to fix any photo that matches the above criteria, you can do something like this</p>
+<div class="codehilite"><pre><span></span><code>exiftool <span class="sb">`</span>-datetimeoriginal&lt;filemodifydate<span class="sb">`</span> -r -if <span class="s1">&#39;(not $datetimeoriginal or ($datetimeoriginal eq &quot;0000:00:00 00:00:00&quot;)) and ($filetype eq &quot;JPEG&quot;)&#39;</span> ~/Dropbox
+</code></pre></div>
+
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>2965 photos to be exact.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Download Pinboard Bookmarks with OS X Tags - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Download Pinboard Bookmarks with OS X Tags</h1>
+    <div class="article-meta">
+        <time datetime="2014-12-23T00:00:00-08:00">2014-12-23</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>For the last few years, I've been using Brett Terpstra's <a href="http://brettterpstra.com/2011/04/02/mirror-your-pinboard-bookmarks-with-openmeta-tags/">Pinboard to Openmeta</a> to save my Pinboard bookmarks locally. In the last few months, I've been spending more and more time trying to fix issues to get it to run reliably. Since this is something that I use often, I figured it was worth just re-writing it myself.</p>
+
+<p>The script is a slightly simpler version of the original, but the core functionality is the same. Each bookmark is saved as a webloc file and apply any OS X tags to the file. This can be paired with an <a href="https://ryanmo.co/downloads/pinboard-downloader/Bookmarks.alfredworkflow">Alfred workflow</a> to easily search by title or tag.</p>
+<p>You can download the download-pinboard project <a href="https://github.com/rjames86/download_pinboard/archive/master.zip">here</a>. Feel free to check out the Github project <a href="https://github.com/rjames86/download_pinboard">here</a>.</p>
+<h3 id="setup">Setup</h3>
+<p>Create a settings file</p>
+<div class="codehilite"><pre><span></span><code>cp settings.py<span class="o">{</span>.example,<span class="o">}</span>
+</code></pre></div>
+
+<p>with the following information</p>
+<div class="codehilite"><pre><span></span><code><span class="n">_PINBOARD_TOKEN</span> <span class="o">=</span> <span class="s1">&#39;YOUR TOKEN HERE&#39;</span>
+<span class="n">_SAVE_PATH</span> <span class="o">=</span> <span class="n">HOME</span> <span class="o">+</span> <span class="s1">&#39;/Bookmarks/&#39;</span>
+</code></pre></div>
+
+<p>In settings.py set your Pinboard token and the path where you want your bookmarks to be saved. Your token can be found at <a href="https://pinboard.in/settings/password">https://pinboard.in/settings/password</a>. The path must exist where you save your bookmarks and must end with a trailing /.</p>
+<h3 id="running-the-script">Running the Script</h3>
+<p>To start the script, you can simply do</p>
+<div class="codehilite"><pre><span></span><code><span class="err">python main.py</span>
+</code></pre></div>
+
+<h4 id="optional-arguments">Optional arguments</h4>
+<p><code>-v, --verbose</code> Shows output as stdout<br />
+<code>-t</code> Filters the bookmarks you want to download by tag. You can pass multiple -t tags, but no more than 3. Multiple tags are AND not OR<br />
+<code>--reset [optional num of days]</code> Resets your last updated time. If you don't specifiy a number, it will reset to 999 days.<br />
+<code>--skip-update</code> Lets you bypass the last downloaded time. Nice for redownloading everything.  </p>
+<h3 id="notes-and-todo">Notes and Todo</h3>
+<p>I have a very small number of bookmarks (~150) and so I don't know if there will be any issues with a really large library. If you have one, and run into problems, please let me know and I'll happily look into it.</p>
+<hr />
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

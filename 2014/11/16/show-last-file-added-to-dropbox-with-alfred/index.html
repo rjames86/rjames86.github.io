@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Show Last File Added to Dropbox with Alfred - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Show Last File Added to Dropbox with Alfred</h1>
+    <div class="article-meta">
+        <time datetime="2014-11-16T00:00:00-08:00">2014-11-16</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p><em>Update 2014-12-28</em></p>
+<p>I realize now that simply revealing the file isn't as useful as performing actions on the file. There are also occasions when I want to see the last 5 files added, not just the most recent. I've converted the workfow to now be a script filter.</p>
+<p><img alt="Show Recently Added in Dropbox" src="https://ryanmo.co/2014/11/16/show-last-file-added-to-dropbox-with-alfred/recentlyadded.png" /></p>
+<p>I've updated the download link below to be the latest Alfred workflow. The old version is still available with an empty keyword. </p>
+<p>Enjoy!</p>
+<hr />
+<p>To continue on <a href="{static}../2014-11-15/2014-11-15_A_better_downloads_folder.md">yesterday's post</a>, revealing files in the Finder can be very useful. One thing that I find myself doing daily is moving into a particular folder in my Dropbox account once I've used the Alfred "move" action or when a new file has been added to my account.</p>
+<p>How many times have you see this notification and wondered what file it was and where on earth it is in your Dropbox account?</p>
+<p><img alt="dropbox_notification" src="https://ryanmo.co/2014/11/16/show-last-file-added-to-dropbox-with-alfred/dropbox_notification.png" /></p>
+<p>Similar to revealing the last file added to my Dropbox folder, I can show the file last added in my Dropbox account. The only difference here is that my two Dropbox folders combined (work and personal) amount to about 150,000 files. Listing off all those files and sorting them by Date Added would take far too long. Instead, I can take advantage of <code>mdfind</code>, which is the command line version of Spotlight.</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">DROPBOX_WORK</span><span class="o">=</span><span class="k">$(</span>python -c <span class="s2">&quot;import json;f=open(&#39;</span><span class="nv">$HOME</span><span class="s2">/.dropbox/info.json&#39;, &#39;r&#39;).read();data=json.loads(f);print data.get(&#39;business&#39;, {}).get(&#39;path&#39;, &#39;&#39;)&quot;</span><span class="k">)</span>
+<span class="nv">DROPBOX_PERSONAL</span><span class="o">=</span><span class="k">$(</span>python -c <span class="s2">&quot;import json;f=open(&#39;</span><span class="nv">$HOME</span><span class="s2">/.dropbox/info.json&#39;, &#39;r&#39;).read();data=json.loads(f);print data.get(&#39;personal&#39;, {}).get(&#39;path&#39;, &#39;&#39;)&quot;</span><span class="k">)</span>
+<span class="nv">DROPBOX</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/Dropbox&quot;</span>
+
+<span class="nv">LAST_ADDED</span><span class="o">=</span><span class="k">$(</span>mdfind <span class="se">\</span>
+    -onlyin <span class="s2">&quot;</span><span class="nv">$DROPBOX_PERSONAL</span><span class="s2">&quot;</span> <span class="se">\</span>
+    -onlyin <span class="s2">&quot;</span><span class="nv">$DROPBOX_WORK</span><span class="s2">&quot;</span> <span class="se">\</span>
+    -onlyin <span class="s2">&quot;</span><span class="nv">$DROPBOX</span><span class="s2">&quot;</span> <span class="se">\</span>
+    <span class="s1">&#39;kMDItemDateAdded &gt;= $time.today(-1)&#39;</span> <span class="se">\</span>
+    -attr <span class="s1">&#39;kMDItemDateAdded&#39;</span> <span class="p">|</span> <span class="se">\</span>
+awk -F<span class="s2">&quot;kMDItemDateAdded =&quot;</span> <span class="s1">&#39;{print $2 &quot;|&quot; $1}&#39;</span> <span class="p">|</span>
+sort -r <span class="p">|</span> <span class="se">\</span>
+cut -d<span class="s1">&#39;|&#39;</span> -f2 <span class="p">|</span> <span class="se">\</span>
+head -n1 <span class="p">|</span> <span class="se">\</span>
+sed -e <span class="s1">&#39;s/^ *//&#39;</span> -e <span class="s1">&#39;s/ *$//&#39;</span><span class="k">)</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -z <span class="s2">&quot;</span><span class="nv">$LAST_ADDED</span><span class="s2">&quot;</span> <span class="o">]</span>
+<span class="k">then</span>
+  <span class="nb">echo</span> <span class="s2">&quot;</span><span class="nv">$LAST_ADDED</span><span class="s2">&quot;</span>
+  open -R <span class="s2">&quot;</span><span class="nv">$LAST_ADDED</span><span class="s2">&quot;</span>
+<span class="k">fi</span>
+</code></pre></div>
+
+<p>I include the paths to both the work and personal Dropbox folders if you have them (it doesn't matter if you don't) as well as the regularly named "Dropbox" folder. From there, it's a matter of getting the name and date last added for files that have been added within the last day. The result shows up almost instantly with having over 150,000 files in my Dropbox folders. </p>
+<p>You can download the workflow below. </p>
+<p><a href="https://ryanmo.co/2014/11/16/show-last-file-added-to-dropbox-with-alfred/Reveal last added in Dropbox.alfredworkflow"><img alt="image" src="https://ryanmo.co/images/alfred_extension.jpg" /></a>  </p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

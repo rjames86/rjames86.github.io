@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Your .bash_profile everywhere - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Your .bash_profile everywhere</h1>
+    <div class="article-meta">
+        <time datetime="2013-03-31T00:00:00-07:00">2013-03-31</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I have two computers, one for work and one for personal. I keep mostly everything separate, but one thing I want to always have with me is my terminal environment and aliases. With Dropbox, I can not only access, but edit my .bash_profile from anywhere <em>without</em> using symlinks.</p>
+
+
+<p>The first thing to do is figure out where you want to keep your .bash_profile in your Dropbox account. I keep mine in a folder called Sync that's shared between my work and personal Dropbox accounts. To move your .bash_profile, use the following command in Terminal:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">mv ~/.bash_profile ~/path/to/Dropbox/.bash_profile</span>
+</code></pre></div>
+
+<p>Once you've moved it here, create a new .bash_profile in your home directory and add the single line:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">source ~/that/path/to/.bash_profile</span>
+</code></pre></div>
+
+<p>Thats it! From now on, just point the local .bash_profile to the one location in your Dropbox folder.</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

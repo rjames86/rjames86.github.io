@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Internationalizing Your Contacts - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Internationalizing Your Contacts</h1>
+    <div class="article-meta">
+        <time datetime="2013-07-07T00:00:00-07:00">2013-07-07</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>Living in the U.S. we rarely call people outside of the country. Whenever we create new contacts in our address book, they'll typically start with the state's area code and omit the country code. </p>
+
+
+<p>Since moving to Ireland, my contacts wouldn't show up correctly since I hadn't prepended all of contacts with '+1'. I wasn't about to manually change all 700 contacts in my phone and fortunately came across a <a href="http://en.katzueno.com/2011/06/08/adding-1-to-us-tel-numbers-in-address-book-mac-os-x/">nice post</a> that had the following AppleScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">tell</span> <span class="nb">application</span> <span class="s2">&quot;Address Book&quot;</span>
+    <span class="k">repeat</span> <span class="nv">with</span> <span class="nv">eachPerson</span> <span class="k">in</span> <span class="nv">people</span>
+        <span class="k">repeat</span> <span class="nv">with</span> <span class="nv">eachNumber</span> <span class="k">in</span> <span class="nv">phones</span> <span class="k">of</span> <span class="nv">eachPerson</span>
+            <span class="k">set</span> <span class="nv">theNum</span> <span class="k">to</span> <span class="p">(</span><span class="k">get</span> <span class="nv">value</span> <span class="k">of</span> <span class="nv">eachNumber</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">theNum</span> <span class="ow">does</span> <span class="ow">not</span> <span class="ow">start with</span> <span class="s2">&quot;+&quot;</span> <span class="ow">and</span> <span class="nv">theNum</span> <span class="ow">does</span> <span class="ow">not</span> <span class="ow">start with</span> <span class="s2">&quot;1&quot;</span> <span class="ow">and</span> <span class="nv">theNum</span> <span class="ow">does</span> <span class="ow">not</span> <span class="ow">start with</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span> <span class="k">then</span>
+                <span class="k">set</span> <span class="nv">value</span> <span class="k">of</span> <span class="nv">eachNumber</span> <span class="k">to</span> <span class="s2">&quot;+1&quot;</span> <span class="o">&amp;</span> <span class="nv">theNum</span>
+            <span class="k">end</span> <span class="k">if</span>
+        <span class="k">end</span> <span class="k">repeat</span>
+    <span class="k">end</span> <span class="k">repeat</span>
+    <span class="nv">save</span>
+<span class="k">end</span> <span class="k">tell</span>
+</code></pre></div>
+
+<p>Before running this, I highly recommend backing up your contacts. This can be run easily by just launching AppleScript Editor and pasting in the code above. Enjoy!</p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

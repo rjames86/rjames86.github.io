@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - applescript</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Wed, 30 Aug 2017 11:22:00 -0700</lastBuildDate><item><title>Create Multiple Tasks in Omnifocus on iOS</title><link>https://ryanmo.co/2017/08/30/create-multiple-tasks-in-omnifocus-on-ios</link><description>&lt;p&gt;Throughout the day I think of things that I need to do after work or this coming weekend. The best way for me to not forget these is to quickly get them into Omnifocus. I've been using Drafts on my iPhone and Alfred on my Mac to quickly create tasks with the appropriate deferral and due dates. This has worked really well except for when I want to add more than one task at a time. &lt;/p&gt;
+&lt;p&gt;Not too long ago, Omnifocus added the ability to import tasks in Taskpaper format. The import initially seemed very basic and only allowed you to dump them into Omnifocus' Inbox for processing. Digging into the documentation shows that you can be more specific about what project you want those tasks to go into as well as context, defer and due dates.&lt;/p&gt;
+&lt;p&gt;Up until now, if I wanted to create multiple tasks for tonight, I would have to add each one individually in Drafts and use my "Due Tonight" action, return to Drafts and repeat. Using the Taskpaper syntax import, I can now add multiple lines as tasks in Drafts and import. Each line would look something like this:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;- Take out the garbage @flagged(true) @context(Admin &amp;amp; Routines) @defer(6pm) @due(8pm)
+- Finish blog post @flagged(true) @context(Admin &amp;amp; Routines) @defer(6pm) @due(8pm)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Since Drafts supports JavaScript, I can create a single script to support my tonight, weekend or today tasks.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nx"&gt;targetTask&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Todo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nx"&gt;defaultTaskString&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;@flagged(true) @context(Admin &amp;amp; Routines)&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nx"&gt;dueDateStrings&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;today&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;@defer(now) @due(5pm)&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;tonight&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;@defer(6pm) @due(8pm)&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;weekend&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;@defer(next saturday @ 10am) @due(next sunday @ 5pm)&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+
+&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;generateOmnifocusUrl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;params&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{}){&lt;/span&gt;
+    &lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nx"&gt;contentLines&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[],&lt;/span&gt; &lt;span class="nx"&gt;target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;targetTask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;dueTime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;dueDateStrings&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;today&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;params&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="nx"&gt;contentLines&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;forEach&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="nx"&gt;line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;index&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;theArray&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;=&amp;gt;&lt;/span&gt;
+        &lt;span class="nx"&gt;theArray&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;index&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sb"&gt;`- &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;line&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;dueTime&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;defaultTaskString&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+    &lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="nx"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;encodeURIComponent&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;contentLines&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;\n&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="sb"&gt;`omnifocus:///paste?target=/task/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;target&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;&amp;amp;content=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;content&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nx"&gt;params&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;contentLines&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;draft&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;content&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;\n&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="nx"&gt;dueTime&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;dueDateStrings&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;draft&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;getTag&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;taskWhen&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)],&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nx"&gt;draft&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;defineTag&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;OFTasks&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;generateOmnifocusUrl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;params&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The action will first prompt me asking whether these lines are for tonight, this weekend or today and will then create the TaskPaper lines and open Omnifocus.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="drafts-prompt" src="https://ryanmo.co/posts/Tech/2017-08-30/drafts-prompt.png" /&gt;&lt;/p&gt;
+&lt;p&gt;You can download the action for Drafts &lt;a href="https://drafts4-actions.agiletortoise.com/a/2Ex"&gt;here&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Wed, 30 Aug 2017 11:22:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2017-08-30:/2017/08/30/create-multiple-tasks-in-omnifocus-on-ios</guid><category>Tech</category><category>applescript</category><category>automation</category><category>ios</category><category>javascript</category><category>omnifocus</category></item><item><title>Syncing Photos from Dropbox to the Photos App on iPhone</title><link>https://ryanmo.co/2017/01/23/syncing-photos-from-dropbox-to-the-photos-app-on-iphone</link><description>&lt;p&gt;I've chosen to not use iCloud Photo Library for a few reasons. I have a decent system set up for storing my photos in Dropbox, but I've always wanted to have my photos local on my iPhone. Now that iOS 10 has some cool features like memories and image search, I've been looking for a way to have my photos on my iPhone and also in Dropbox.&lt;/p&gt;
+
+
+&lt;p&gt;The easy solution is to simply point iTunes to your photo library in Dropbox and sync your photos over. This has a few downsides:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;If your photo library is large, you can't sync everything over&lt;/li&gt;
+&lt;li&gt;iTunes doesn't let you sync multiple folders, so its all or nothing&lt;/li&gt;
+&lt;li&gt;iTunes creates a thumbnail cache in the folder of photos, which means you have a large folder constantly syncing to Dropbox, which isn't ideal&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I already use Hazel to sort and organize my photos, so I figured adding another workflow would be fairly easy. On the computer where I sync my iPhone to iTunes, I set up a workflow that looks like this&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1" src="https://ryanmo.co/posts/Tech/2017-01-23/1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Since my photo folder structure looks like [year]/[month]/[event], I need to look at each of the photos and then continue the workflow if it matches a matches a shell command&lt;/p&gt;
+&lt;p&gt;&lt;img alt="2" src="https://ryanmo.co/posts/Tech/2017-01-23/2.png" /&gt;&lt;/p&gt;
+&lt;p&gt;As long as what Hazel processes is a folder, and matches this regular expression, we can continue on to process the photos. This regular expression looks for a folder path that contains the the numbers 2015 through 2019&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. You can change the 5 to be whatever range you need, but I didn't need to go back to photos older than that.&lt;/p&gt;
+&lt;p&gt;The next step is creating a hard link to the photo to a new folder I keep in &lt;code&gt;~/Pictures&lt;/code&gt; called "Photos for iPhone."&lt;/p&gt;
+&lt;p&gt;&lt;img alt="3" src="https://ryanmo.co/posts/Tech/2017-01-23/3.png" /&gt;&lt;/p&gt;
+&lt;p&gt;A hard link is nice here since it simply references the original file and doesn't take up space on your hard drive.&lt;/p&gt;
+&lt;p&gt;Now I can point iTunes to my newly created folder. Each time a new photo gets added to my Dropbox photos folder, a new hard link is created and then synced to my iPhone the next time I plug it in.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;This will stop working after 2019, but by that point, I'd hope that syncing and viewing photos will be in a better place.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Mon, 23 Jan 2017 07:16:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2017-01-23:/2017/01/23/syncing-photos-from-dropbox-to-the-photos-app-on-iphone</guid><category>Tech</category><category>applescript</category><category>javascript</category><category>automation</category><category>hazel</category></item><item><title>Filling Forms with PDFPen and Javascript</title><link>https://ryanmo.co/2015/06/06/filling-forms-with-pdfpen-and-javascript</link><description>&lt;p&gt;My adventure with Mac Javascript Automation continues. Things still aren't easy and the documentation is poor, but I'm finding that it's still easier to write automation scripts in Javascript than it ever was with Applescript.&lt;/p&gt;
+
+&lt;p&gt;Every month I need to fill out four receipts in a PDF form that I made with PDFPenPro. I never liked doing it and I felt like there had to be a way to do this better. I did some searching, and of course came across an &lt;a href="http://leancrew.com/all-this/2012/02/automatic-w-9s-with-pdfpen"&gt;old post&lt;/a&gt; by Dr. Drang where he was adding rich text to PDFs. This was close to what I wanted, but since I had taken the time to create the form fields myself, I figured I should take advantage of them if I could.&lt;/p&gt;
+&lt;p&gt;After some painful reading of the PDFPen Javascript library and playing around, I found that I was able to set the values of form fields if they had assigned names. I first went through the process of naming all of my form fields.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="formnames" src="https://ryanmo.co/posts/Tech/2015-06-06/formnames.png" /&gt;&lt;/p&gt;
+&lt;p&gt;First we start with creating our app variable for PDFPen&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nx"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;Application&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;PdfPenPro&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;includeStandardAdditions&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;After that, I created a few functions to easily set the values for text fields and buttons&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;getFormField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;doc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;field&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;formField&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;doc&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;pages&lt;/span&gt;&lt;span class="p"&gt;()[&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt;&lt;span class="p"&gt;].&lt;/span&gt;&lt;span class="nx"&gt;imprints&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;whose&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="nx"&gt;fieldName&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;field&lt;/span&gt;&lt;span class="p"&gt;})()&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;formField&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;length&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;formField&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;setFormField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;doc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;field&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;theField&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;getFormField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;doc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;field&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;theField&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;button&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;theField&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;checked&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;theField&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I've found that with PDFPen (or maybe more generally), keeping track of windows in applications with Javascript can get tricky. The order in which they appear can change, and so I've written myself a few helper functions to keep track of documents as I work through scripts.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;getByName&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;fileName&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;documents&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;byName&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;fileName&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;getDocPage&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;fileName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;pageNum&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;getByName&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;fileName&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;pages&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;pageNum&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;1&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;These are helpful when I want to duplicate my template receipt that I've created and not run the risk of overwriting the original.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;createNewReceipt&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
+    &lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;        Opens the Receipt template&lt;/span&gt;
+&lt;span class="cm"&gt;        Creates a new document and duplicates&lt;/span&gt;
+&lt;span class="cm"&gt;        the template into the new doc&lt;/span&gt;
+&lt;span class="cm"&gt;    */&lt;/span&gt;
+    &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;templatePath&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;currentDoc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;windows&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt;&lt;span class="p"&gt;].&lt;/span&gt;&lt;span class="nb"&gt;document&lt;/span&gt;
+    &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;currentDocName&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;currentDoc&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;name&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="nx"&gt;doc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Document&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="nx"&gt;make&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;duplicate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;getDocPage&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;currentDocName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nx"&gt;to&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="nx"&gt;doc&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;doc&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;At this point, it's simply a matter of filling in the fields however&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt; I like. I chose to have a few input fields and optional lists. Here are examples of both of those and how they can be implemented in Javascript.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;    Creates a list to choose from where the options&lt;/span&gt;
+&lt;span class="cm"&gt;    are an array called dateOptions.&lt;/span&gt;
+&lt;span class="cm"&gt;    I always take the 0 element since I don&amp;#39;t allow&lt;/span&gt;
+&lt;span class="cm"&gt;    empty selections and multiples aren&amp;#39;t allowed&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+&lt;span class="nx"&gt;dateChoice&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;chooseFromList&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+                        &lt;span class="nx"&gt;dateOptions&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                        &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nx"&gt;withTitle&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Start Date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                        &lt;span class="nx"&gt;withPrompt&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Choose Start Date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+                        &lt;span class="nx"&gt;defaultItems&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;dateOptions&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mf"&gt;1&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+                        &lt;span class="nx"&gt;multipleSelectionsAllowed&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                        &lt;span class="nx"&gt;emptySelectionAllowed&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="cm"&gt;/* &lt;/span&gt;
+&lt;span class="cm"&gt;    Basic dialog box. &lt;/span&gt;
+&lt;span class="cm"&gt;    defaultAnswer has to exist, otherwise there&lt;/span&gt;
+&lt;span class="cm"&gt;    won&amp;#39;t be a text box to type into&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+&lt;span class="nx"&gt;receivedFrom&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;displayDialog&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Who sent the check?&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nx"&gt;defaultAnswer&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I then created an array of all the fields that I wanted to be filled.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nx"&gt;fieldsToFill&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;receivedFrom&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;textReturned&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;fieldName&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ReceivedFrom&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;paymentType&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Check&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;fieldName&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;CheckCheckBox&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The very last lines are where the magic happens and all the fields are filled out. It was pretty fun to watch the form fill almost instantly and then let me save it.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nx"&gt;newDoc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;createNewReceipt&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="nx"&gt;fieldsToFill&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;&lt;span class="nx"&gt;setFormField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;newDoc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;fieldName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)})&lt;/span&gt;
+
+&lt;span class="nx"&gt;saveLocation&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;chooseFileName&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="nx"&gt;defaultName&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;rentReceiptName&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;dateChoice&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nx"&gt;defaultLocation&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;savePath&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="nx"&gt;newDoc&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;save&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;saveLocation&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;That's it! This will take a lot of the slow process out of filling out my receipts each month. The next step will probably be generating the email and attaching the PDF. PDFPen already includes a script to do this very thing, so no more work needed for me. You can see the entire script &lt;a href="https://gist.github.com/rjames86/8ee61652087a2c44802f"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;I found &lt;a href="https://github.com/dtinth/JXA-Cookbook/wiki/User-Interactions"&gt;this resource&lt;/a&gt; helpful to get me started on user input interactions&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sat, 06 Jun 2015 04:15:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2015-06-06:/2015/06/06/filling-forms-with-pdfpen-and-javascript</guid><category>Tech</category><category>automation</category><category>javascript</category><category>applescript</category></item><item><title>Save First Page of PDF for Expenses with Hazel</title><link>https://ryanmo.co/2015/01/25/save-first-page-of-pdf-for-expenses-with-hazel</link><description>&lt;p&gt;Once a month I have to submit my Verizon bill as an expense. The process of getting the PDF of the bill and then modifying it turned out to be a big pain by first reminding my mom to send the bill&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;, saving the first page and then submitting it for reimbursement. Turns out that Hazel can take care of everything beyond the actual submission.&lt;/p&gt;
+
+&lt;p&gt;I'm fine with reminding my mom to put the PDF in Dropbox, but I then have to check back every-so-often to see if she's actually done it. I've created a rule now that will check for any files in our shared Verizon Bill folder and if Hazel hasn't seen it before, it will send me a push notification with Pushover.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="pushover_hazel_verizon" src="https://ryanmo.co/posts/Tech/2015-01-25/pushover_hazel_verizon.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I then wrote a handy little Applescript based on PDFPenPro's default script called Split PDFs that will take the first page of a PDF and save it to a new file. I differentiate the files by just adding "SINGLE PAGE" to the filename&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;basePath&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/path/to/verizon/folder&amp;quot;&lt;/span&gt;
+
+&lt;span class="k"&gt;tell&lt;/span&gt; &lt;span class="nb"&gt;application&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;PDFpenPro&amp;quot;&lt;/span&gt;
+    &lt;span class="nb"&gt;open&lt;/span&gt; &lt;span class="nv"&gt;theFile&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nv"&gt;alias&lt;/span&gt;
+    &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;originalDoc&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="na"&gt;document&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+    &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;originalDoc&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt; &lt;span class="ow"&gt;ends with&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.pdf&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;docNameLength&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;length&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;characters&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="nb"&gt;thru&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;docNameLength&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt; &lt;span class="k"&gt;as &lt;/span&gt;&lt;span class="nc"&gt;string&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;newDoc&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nb"&gt;make&lt;/span&gt; &lt;span class="nb"&gt;new&lt;/span&gt; &lt;span class="na"&gt;document&lt;/span&gt;
+    &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;savePath&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="nv"&gt;basePath&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="na"&gt;rich text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;docName&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot; SINGLE PAGE&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.pdf&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="nb"&gt;copy&lt;/span&gt; &lt;span class="nv"&gt;page&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;originalDoc&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;pages&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;newDoc&lt;/span&gt;
+
+    &lt;span class="nv"&gt;save&lt;/span&gt; &lt;span class="nv"&gt;newDoc&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nv"&gt;POSIX&lt;/span&gt; &lt;span class="nv"&gt;file&lt;/span&gt; &lt;span class="nv"&gt;savePath&lt;/span&gt;
+
+    &lt;span class="nb"&gt;quit&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;tell&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Finally, so that I don't forget to submit the expense, I have one final Applescript that creates a todo item in Omnifocus based on David Spark's post &lt;a href="http://macsparky.com/blog/2012/8/applescript-omnifocus-tasks"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theDate&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nb"&gt;current date&lt;/span&gt;
+&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;deferDate&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;current date&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;dueDate&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;current date&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nb"&gt;days&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theTask&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Expense Verizon Bill&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theNote&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nv"&gt;theFile&lt;/span&gt;
+
+&lt;span class="k"&gt;tell&lt;/span&gt; &lt;span class="nb"&gt;application&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;OmniFocus&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;tell&lt;/span&gt; &lt;span class="nb"&gt;front&lt;/span&gt; &lt;span class="na"&gt;document&lt;/span&gt;
+        &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theContext&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nb"&gt;first&lt;/span&gt; &lt;span class="nv"&gt;flattened&lt;/span&gt; &lt;span class="na"&gt;context&lt;/span&gt; &lt;span class="nb"&gt;where&lt;/span&gt; &lt;span class="k"&gt;its&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;A Context&amp;quot;&lt;/span&gt;
+        &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theProject&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nb"&gt;first&lt;/span&gt; &lt;span class="nv"&gt;flattened&lt;/span&gt; &lt;span class="nv"&gt;project&lt;/span&gt; &lt;span class="nb"&gt;where&lt;/span&gt; &lt;span class="k"&gt;its&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Expenses&amp;quot;&lt;/span&gt;
+        &lt;span class="k"&gt;tell&lt;/span&gt; &lt;span class="nv"&gt;theProject&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nb"&gt;make&lt;/span&gt; &lt;span class="nb"&gt;new&lt;/span&gt; &lt;span class="nv"&gt;task&lt;/span&gt; &lt;span class="nv"&gt;with&lt;/span&gt; &lt;span class="na"&gt;properties&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;theTask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;note&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;theNote&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;context&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;theContext&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;defer&lt;/span&gt; &lt;span class="nv"&gt;date&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;deferDate&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;due&lt;/span&gt; &lt;span class="nv"&gt;date&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;dueDate&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;tell&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;tell&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;We're on a family plan&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 25 Jan 2015 12:46:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2015-01-25:/2015/01/25/save-first-page-of-pdf-for-expenses-with-hazel</guid><category>Tech</category><category>hazel</category><category>applescript</category><category>automation</category></item><item><title>Backup Your Contacts v2 : Yosemite’s Javascript Automation</title><link>https://ryanmo.co/2014/12/14/backup-your-contacts-v2-yosemites-javascript-automation</link><description>&lt;p&gt;I recently read MacStories' &lt;a href="http://www.macstories.net/tutorials/getting-started-with-javascript-for-automation-on-yosemite/"&gt;article&lt;/a&gt; and was curious how easy this was to learn. Applescript never made sense to me and I spent more time trying to piece together examples than actually writing anything meaningful. I don't trust iCloud to keep my contacts safe, and I'm still using &lt;a href="{static}../2014-09-28/2014-09-25_backup_contacts_with_pythonista.md"&gt;my previous workflow&lt;/a&gt; with &lt;a href="http://contrast.co/launch-center-pro/"&gt;Launch Center Pro&lt;/a&gt; and &lt;a href="http://omz-software.com/pythonista/"&gt;Pythonista&lt;/a&gt; to back up my contacts.&lt;/p&gt;
+
+&lt;p&gt;My first attempt at the new JSX Automation was a script to back up my contacts, which would allow me to run this automatically on my Mac Mini server. Here is what the script looks like&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;Application&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;currentApplication&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;includeStandardAdditions&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;
+
+&lt;span class="nx"&gt;now&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="nx"&gt;nowString&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;getFullYear&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;getMonth&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mf"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;getDate&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Replace outputFile with this if you want to automatically set the path&lt;/span&gt;
+&lt;span class="c1"&gt;// var outputFile = Path(&amp;#39;pick your path&amp;#39;)  &lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;outputFile&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;chooseFileName&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="nx"&gt;withPrompt&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Pick where to save your vCard backup.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;defaultName&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;nowString&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;_backup.vcf&amp;quot;&lt;/span&gt;
+&lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;openForAccess&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;outputFile&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nx"&gt;writePermission&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="nx"&gt;Contacts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;Application&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/Applications/Contacts.app&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nx"&gt;contacts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;Contacts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;people&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="nx"&gt;outputString&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="nx"&gt;contacts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;length&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+  &lt;span class="nx"&gt;outputString&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="nx"&gt;contacts&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;].&lt;/span&gt;&lt;span class="nx"&gt;vcard&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;outputString&lt;/span&gt;&lt;span class="p"&gt;,{&lt;/span&gt;
+    &lt;span class="nx"&gt;to&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;startingAt&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;as&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;text&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;closeAccess&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;outputFile&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;displayNotification&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Backup finished!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,{&lt;/span&gt;
+    &lt;span class="nx"&gt;withTitle&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Backup Contacts&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;subtitle&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;contacts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;length&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot; contacts backed up.&amp;quot;&lt;/span&gt;
+&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The current script lets you choose the path to save the file. You can change this to have it be the same path every time if you want (see the instructions in the comments above).&lt;/p&gt;
+&lt;p&gt;You can download the script &lt;a href="https://ryanmo.co/2014/12/14/backup-your-contacts-v2-yosemites-javascript-automation/BackupContacts.zip"&gt;here&lt;/a&gt; to try it for yourself.&lt;/p&gt;
+&lt;p&gt;Big thank you to Alex Guyot at MacStories for his introduction to Javascript Automation.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 14 Dec 2014 00:00:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-12-14:/2014/12/14/backup-your-contacts-v2-yosemites-javascript-automation</guid><category>Tech</category><category>automation</category><category>applescript</category><category>javascript</category></item><item><title>Internationalizing Your Contacts</title><link>https://ryanmo.co/2013/07/07/i18n_contacts</link><description>&lt;p&gt;Living in the U.S. we rarely call people outside of the country. Whenever we create new contacts in our address book, they'll typically start with the state's area code and omit the country code. &lt;/p&gt;
+
+
+&lt;p&gt;Since moving to Ireland, my contacts wouldn't show up correctly since I hadn't prepended all of contacts with '+1'. I wasn't about to manually change all 700 contacts in my phone and fortunately came across a &lt;a href="http://en.katzueno.com/2011/06/08/adding-1-to-us-tel-numbers-in-address-book-mac-os-x/"&gt;nice post&lt;/a&gt; that had the following AppleScript:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;tell&lt;/span&gt; &lt;span class="nb"&gt;application&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Address Book&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;repeat&lt;/span&gt; &lt;span class="nv"&gt;with&lt;/span&gt; &lt;span class="nv"&gt;eachPerson&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nv"&gt;people&lt;/span&gt;
+        &lt;span class="k"&gt;repeat&lt;/span&gt; &lt;span class="nv"&gt;with&lt;/span&gt; &lt;span class="nv"&gt;eachNumber&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nv"&gt;phones&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;eachPerson&lt;/span&gt;
+            &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;theNum&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;get&lt;/span&gt; &lt;span class="nv"&gt;value&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;eachNumber&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;theNum&lt;/span&gt; &lt;span class="ow"&gt;does&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;start with&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;+&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="nv"&gt;theNum&lt;/span&gt; &lt;span class="ow"&gt;does&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;start with&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;1&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="nv"&gt;theNum&lt;/span&gt; &lt;span class="ow"&gt;does&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;start with&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;0&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+                &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;value&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nv"&gt;eachNumber&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;+1&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;theNum&lt;/span&gt;
+            &lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt;
+        &lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;repeat&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;repeat&lt;/span&gt;
+    &lt;span class="nv"&gt;save&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt; &lt;span class="k"&gt;tell&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Before running this, I highly recommend backing up your contacts. This can be run easily by just launching AppleScript Editor and pasting in the code above. Enjoy!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 07 Jul 2013 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2013-07-07:/2013/07/07/i18n_contacts</guid><category>Tech</category><category>automation</category><category>applescript</category></item></channel></rss>

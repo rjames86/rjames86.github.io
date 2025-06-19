@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - exiftool</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Sun, 28 Sep 2014 12:22:00 -0700</lastBuildDate><item><title>My Exiftool Cheatsheet</title><link>https://ryanmo.co/2014/09/28/exiftool-cheatsheet</link><description>&lt;p&gt;I've spent a lot of time organizing and &lt;a href="{static}../2014-03-01/2014-03-01%20Digitizing%20the%20Family%20Photos.md"&gt;digitizing&lt;/a&gt; old photos. Exiftool has been a great tool, but the learning curve is fairly steep and you can end up making a lot of bad mistakes&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. Here is my ongoing cheat sheet of exiftool commands.&lt;/p&gt;
+
+
+&lt;script src="https://gist.github.com/rjames86/33b9af12548adf091a26.js"&gt;&lt;/script&gt;
+
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;I still make a backup copy of my photos before ever making changes.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 28 Sep 2014 12:22:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-09-28:/2014/09/28/exiftool-cheatsheet</guid><category>Tech</category><category>exiftool</category><category>photos</category></item><item><title>Find images with No Exif Dates</title><link>https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates</link><description>&lt;p&gt;My Dropbox folder is full of images claiming to be "missing dates." &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt; Some of these photos were thumbnails or images from DayOne that didn't necessarily need dates, but others were real photos that for whatever reason didn't have dates that Dropbox recognized.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;img alt="Carousel Missing Photos" src="https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates/carousel_missing.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I did some poking around, and found that there were a couple of different reasons why my photos in Dropbox weren't displaying dates:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The DateTimeOriginal exif tag was missing entirely&lt;/li&gt;
+&lt;li&gt;The DateTimeOriginal was set to 0000:00:00 00:00:00&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;With the magic of &lt;a href="http://www.sno.phy.queensu.ca/~phil/exiftool/"&gt;exiftool&lt;/a&gt;, I found a way to find all the photos in my Dropbox folder that were missing dates and output the results to a CSV.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;exiftool -filename -r -if &lt;span class="s1"&gt;&amp;#39;(not $datetimeoriginal or ($datetimeoriginal eq &amp;quot;0000:00:00 00:00:00&amp;quot;)) and ($filetype eq &amp;quot;JPEG&amp;quot;)&amp;#39;&lt;/span&gt; -common -csv &amp;gt; ~/Dropbox/nodates.csv
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This will give you a CSV with all of the common file information for the images. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="CSV of Missing Photos" src="https://ryanmo.co/2014/08/01/find-images-with-no-exif-dates/csv.png" /&gt;&lt;/p&gt;
+&lt;p&gt;At this point, you'll need to decide how you'll want to fix these photos. From what I have seen so far, the best exif tag to go on is &lt;code&gt;-filemodifydate&lt;/code&gt;, but you'll probably need to figure that out on your own. If you want to fix any photo that matches the above criteria, you can do something like this&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;exiftool &lt;span class="sb"&gt;`&lt;/span&gt;-datetimeoriginal&amp;lt;filemodifydate&lt;span class="sb"&gt;`&lt;/span&gt; -r -if &lt;span class="s1"&gt;&amp;#39;(not $datetimeoriginal or ($datetimeoriginal eq &amp;quot;0000:00:00 00:00:00&amp;quot;)) and ($filetype eq &amp;quot;JPEG&amp;quot;)&amp;#39;&lt;/span&gt; ~/Dropbox
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;2965 photos to be exact.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Fri, 01 Aug 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-08-01:/2014/08/01/find-images-with-no-exif-dates</guid><category>Tech</category><category>bash</category><category>automation</category><category>exiftool</category><category>photos</category></item></channel></rss>

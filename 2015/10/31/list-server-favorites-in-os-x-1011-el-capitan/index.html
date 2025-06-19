@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>List Server Favorites in OS X 10.11 El Capitan - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>List Server Favorites in OS X 10.11 El Capitan</h1>
+    <div class="article-meta">
+        <time datetime="2015-10-31T02:11:00-07:00">2015-10-31</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I'm using Alfred a lot less these days. Many of my workflows have been easier to build in Keyboard Maestro. The remaining few that are left in Alfred are ones that I heavily depend on, one of which is accessing my Server Favorites in OS X. </p>
+<p>Up until OS X 10.11 El Capitan, Server Favorites were stored in a plist file called <code>com.apple.sidebarlists.plist</code>. I finally got around to upgrading my computers at home only to realize that my "server" workflow stopped working. After inspecting the plist file, I found that those favorites were gone and were hiding elsewhere. After a bunch of searching, and the help of Houdaspot, I found them in <code>~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.FavoriteServers.sfl</code>. What is this <code>sfl</code> extension? Still not really sure, but after some poking around, <a href="https://gist.github.com/pudquick/4776b4b2075bf9b7e512">this</a> was the only resource I could find that helped me get started. </p>
+<p>I don't necessarily like the CoreFoundation stuff in Python, and since I'm on a OS X JavaScript automation roll right now, I decided to give it a try. Turns out, it's really easy.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">items</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">NSKeyedUnarchiver</span><span class="p">.</span><span class="nx">unarchiveObjectWithFile</span><span class="p">(</span><span class="s1">&#39;/Users/username/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.FavoriteServers.sfl&#39;</span><span class="p">)</span>
+
+<span class="nx">items</span> <span class="o">=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">objectForKey</span><span class="p">(</span><span class="s1">&#39;items&#39;</span><span class="p">)</span>
+<span class="nx">itemsCount</span> <span class="o">=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">count</span>
+
+<span class="nx">to_ret</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">while</span> <span class="p">(</span><span class="nx">itemsCount</span><span class="o">--</span><span class="p">){</span>
+      <span class="nx">item</span> <span class="o">=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">objectAtIndex</span><span class="p">(</span><span class="nx">itemsCount</span><span class="p">)</span>
+    <span class="nx">to_ret</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> 
+            <span class="nx">url</span><span class="o">:</span> <span class="nx">item</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">absoluteString</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nx">to_ret</span>
+</code></pre></div>
+
+<p>This returns a nice object of the name and url for the servers in your favorites.</p>
+<p>You can download the workflow here.</p>
+<p><a href="https://ryanmo.co/downloads/VNC_Favorites.alfredworkflow"><img alt="image" src="https://ryanmo.co/images/alfred_extension.jpg" /></a>    </p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

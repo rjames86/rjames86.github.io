@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - ifttt</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Wed, 19 Nov 2014 00:00:00 -0800</lastBuildDate><item><title>Back up Your Contacts with Pythonista</title><link>https://ryanmo.co/2014/09/28/back-up-your-contacts-with-pythonista</link><description>&lt;p&gt;While it hasn't happened in a while, I have lost or had issues with contacts in iCloud. I haven't found a reliable way to automatically back up my contacts on my Mac, but Pythonista offers a simple way to back them up.&lt;/p&gt;
+
+
+&lt;p&gt;Pythonista offers a great library which gives you access to your contacts on iOS. With a short script, I can back up my contacts to a folder in my Dropbox account. This will add a vCard file to my Dropbox account with the date the script was run.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: You'll need the Dropbox login script for this to work. Visit &lt;a href="https://gist.github.com/omz/4034526"&gt;this&lt;/a&gt; link to get it set up. I keep mine in a folder called "lib" in Pythonista.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;You can download my Contacts Back up script &lt;a href="https://gist.github.com/rjames86/79f857f427599f6e145c"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;contacts&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;console&lt;/span&gt;
+&lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dirname&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;abspath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;__file__&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;lib&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;dropboxlogin&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;get_client&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;datetime&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Update this path here for the backup&lt;/span&gt;
+&lt;span class="c1"&gt;# location in your Dropbox account.&lt;/span&gt;
+&lt;span class="n"&gt;BACKUP_PATH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/Backups/Contacts&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;TODAY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;today&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strftime&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;%Y-%m-&lt;/span&gt;&lt;span class="si"&gt;%d&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;dropbox_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;get_client&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;VCARD&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;person&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vcard&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;person&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;contacts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_all_people&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+&lt;span class="n"&gt;console&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;clear&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;dropbox_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;put_file&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BACKUP_PATH&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/contacts &lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s1"&gt;.vcf&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TODAY&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;VCARD&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Backup complete!&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If you're like me, you're going to forget to do this on a regular basis. I hadn't yet found a reason to use the IFTTT Launch Center Pro triggers, but this turned about to be a great reason to use it. I have a trigger that goes off on the first of every month that will launch the back up script.&lt;/p&gt;
+&lt;p&gt;If you want to get reminders to back up your contacts using IFTTT, you can use the recipe below.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://ifttt.com/view_embed_recipe/206885-backup-contacts-with-lcp" target = "_blank" class="embed_recipe embed_recipe-l_24" id= "embed_recipe-206885"&gt;&lt;img src= 'https://ifttt.com/recipe_embed_img/206885' alt="IFTTT Recipe: Backup Contacts with LCP connects date-time to launch-center" width="370px" style="max-width:100%"/&gt;&lt;/a&gt;&lt;script async type="text/javascript" src= "//ifttt.com/assets/embed_recipe.js"&gt;&lt;/script&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 28 Sep 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-09-28:/2014/09/28/back-up-your-contacts-with-pythonista</guid><category>Tech</category><category>automation</category><category>Dropbox</category><category>ifttt</category><category>launchcenterpro</category><category>ios</category><category>pythonista</category></item><item><title>Log Foursquare Locations in Markdown</title><link>https://ryanmo.co/2014/07/06/log-foursquare-locations-in-markdown</link><description>&lt;p&gt;I've always used Foursquare as a way to remember the places I had visited while traveling. Foursquare isn't really meant to be used in this way, and as a result, they don't make it easy to answer the question, "what was that restaurant I went to last time I was here?" I'm now using IFTTT to log all my checkins to a text file in my Dropbox account.&lt;/p&gt;
+
+
+&lt;p&gt;I like MultiMarkdown tables. So that my Foursquare checkins looked nice, I first created a file in my Dropbox account with a heading&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;Date&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="nv"&gt;VenueName&lt;/span&gt;  &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;VenueUrl&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;Shout&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;MapURL&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="nv"&gt;City&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;State&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;Country&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="s s-Atom"&gt;--:&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In IFTTT, I then created a recipe which matches my table headers&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;a href="https://ifttt.com/view_embed_recipe/187719-share-foursquare-checkins-in-mamarkdown-table" target = "_blank" class="embed_recipe embed_recipe-l_45" id= "embed_recipe-187719"&gt;&lt;img src= 'https://ifttt.com/recipe_embed_img/187719' alt="IFTTT Recipe: Share Foursquare checkins in mamarkdown table connects foursquare to dropbox" width="370px" style="max-width:100%"/&gt;&lt;/a&gt;&lt;script async type="text/javascript" src= "//ifttt.com/assets/embed_recipe.js"&gt;&lt;/script&gt;&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IFTTT Content" src="https://ryanmo.co/2014/07/06/log-foursquare-locations-in-markdown/content.png" /&gt;&lt;/p&gt;
+&lt;p&gt;You may have noticed that I added an additional "Address" column that isn't getting filled out. IFTTT doesn't explicitly give the address of the venue you visited. However, the link to the Google Maps image contains GPS coordinates that I can use. Dr. Drang's &lt;a href="http://www.leancrew.com/all-this/2014/07/extracting-coordinates-from-apple-maps/" title="Extracting coordinates from Apple Maps - All this"&gt;post&lt;/a&gt; gave me the idea to parse out the coordinates and then use them how I'd like. This script, which I'm using with Hazel each time the file is updated, reverse geolocates the coordinates and returns the full address using OpenStreetMap. After that, it appends that address to each line in the markdown file.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="nv"&gt;FILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/Dropbox/IFTTT/foursquare/foursquare.txt&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;START&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$START&lt;/span&gt;
+&lt;span class="nv"&gt;IFS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;$&amp;#39;\n&amp;#39;&lt;/span&gt;     &lt;span class="c1"&gt;# new field separator, the end of line&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; line &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;cat &lt;span class="nv"&gt;$FILE&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="nv"&gt;mapsurl&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$line&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -n &lt;span class="s1"&gt;&amp;#39;s/.*(\(http.*\)).*/\1/p&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="nv"&gt;existingaddress&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$line&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep -E &lt;span class="s1"&gt;&amp;#39;^.*\(http.*\)(.*\|){2,}$&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; ! &lt;span class="nv"&gt;$mapsurl&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="nv"&gt;$existingaddress&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="o"&gt;((&lt;/span&gt; &lt;span class="nv"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; index + &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="o"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;continue&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;
+
+    &lt;span class="nv"&gt;coords&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$mapsurl&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -E &lt;span class="s1"&gt;&amp;#39;s/^.+\?center=([0-9.,-]+).+/\1/&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nv"&gt;lat&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$coords&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; cut -f1 -d,&lt;span class="k"&gt;)&lt;/span&gt;
+    &lt;span class="nv"&gt;long&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$coords&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; cut -f2 -d,&lt;span class="k"&gt;)&lt;/span&gt;
+
+    &lt;span class="nv"&gt;address&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl -s &lt;span class="s2"&gt;&amp;quot;http://nominatim.openstreetmap.org/reverse?format=json&amp;amp;lat=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;lat&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;lon=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;long&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;zoom=18&amp;amp;addressdetails=1&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+    &lt;span class="nv"&gt;country&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$address&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s/.*\(&amp;quot;country&amp;quot;:&amp;quot;.*&amp;quot;\),.*/\1/&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk -F&lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/country/ {print $4}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    &lt;span class="nv"&gt;city&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$address&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s/.*\(&amp;quot;city&amp;quot;:&amp;quot;.*&amp;quot;\),.*/\1/&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk -F&lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/city/ {print $4}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    &lt;span class="nv"&gt;state&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$address&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="s2"&gt;&amp;quot;\bstate\b&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s/.*\(&amp;quot;state&amp;quot;:&amp;quot;.*&amp;quot;\),.*/\1/&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk -F&lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/state/ {print $4}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# update the line of text&lt;/span&gt;
+    sed -i &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; -e &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;s/\(.*\)/\1 &lt;/span&gt;&lt;span class="nv"&gt;$city&lt;/span&gt;&lt;span class="s2"&gt; | &lt;/span&gt;&lt;span class="nv"&gt;$state&lt;/span&gt;&lt;span class="s2"&gt; | &lt;/span&gt;&lt;span class="nv"&gt;$country&lt;/span&gt;&lt;span class="s2"&gt; |/&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;((&lt;/span&gt; &lt;span class="nv"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; index + &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In the end, the table then ends up looking something like this:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align="center"&gt;Date&lt;/th&gt;
+&lt;th align="center"&gt;VenueName&lt;/th&gt;
+&lt;th align="center"&gt;VenueUrl&lt;/th&gt;
+&lt;th align="center"&gt;Shout&lt;/th&gt;
+&lt;th align="center"&gt;MapURL&lt;/th&gt;
+&lt;th align="center"&gt;City&lt;/th&gt;
+&lt;th align="center"&gt;State&lt;/th&gt;
+&lt;th align="center"&gt;Country&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align="center"&gt;July 06, 2014 at 07:07PM&lt;/td&gt;
+&lt;td align="center"&gt;Third Floor Espresso (3FE)&lt;/td&gt;
+&lt;td align="center"&gt;http://4sq.com/rtEJWP&lt;/td&gt;
+&lt;td align="center"&gt;&lt;/td&gt;
+&lt;td align="center"&gt;&lt;a href="http://maps.google.com/maps/api/staticmap?center=53.33998,-6.242084&amp;amp;zoom=16&amp;amp;size=710x440&amp;amp;maptype=roadmap&amp;amp;sensor=false&amp;amp;markers=color:red%7C53.33998,-6.242084"&gt;Map Link&lt;/a&gt;&lt;/td&gt;
+&lt;td align="center"&gt;Dublin&lt;/td&gt;
+&lt;td align="center"&gt;&lt;/td&gt;
+&lt;td align="center"&gt;Republic of Ireland&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="center"&gt;July 06, 2013 at 10:00AM&lt;/td&gt;
+&lt;td align="center"&gt;Wooly Pig Cafe&lt;/td&gt;
+&lt;td align="center"&gt;http://4sq.com/1n5Scct&lt;/td&gt;
+&lt;td align="center"&gt;&lt;/td&gt;
+&lt;td align="center"&gt;&lt;a href="http://maps.google.com/maps/api/staticmap?center=37.76522,-122.460266&amp;amp;zoom=16&amp;amp;size=710x440&amp;amp;maptype=roadmap&amp;amp;sensor=false&amp;amp;markers=color:red%7C53.33842395309077,-6.234097712535167"&gt;Map Link&lt;/a&gt;&lt;/td&gt;
+&lt;td align="center"&gt;San Francisco&lt;/td&gt;
+&lt;td align="center"&gt;California&lt;/td&gt;
+&lt;td align="center"&gt;United States of America&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 06 Jul 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-07-06:/2014/07/06/log-foursquare-locations-in-markdown</guid><category>Tech</category><category>markdown</category><category>automation</category><category>bash</category><category>ifttt</category></item><item><title>Instascriptogram. Post Instagram pics to Scriptogr.am</title><link>https://ryanmo.co/2013/09/05/instascriptogram</link><description>&lt;p&gt;&lt;strong&gt;[Update 2014-11-19]&lt;/strong&gt;
+I've since moved off of scriptogr.am. The service wasn't working for a long time and doesn't seem to be in active developement. I ended up moving that blog over to a static blog with Pelican similar to this one.&lt;/p&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;Since moving to Dublin, my girlfriend and I have wanted to keep our friends and family up-to-date on everything we've been doing. I recently bought the new Olympus E-P5 and have been taking a lot of pictures. So that everyone knows what we're doing, we decided to share a &lt;a href="http://www.scriptogr.am"&gt;Scriptogr.am&lt;/a&gt; blog and post pictures of our adventures. &lt;/p&gt;
+
+
+&lt;p&gt;Sometimes it's quick and easy to snap a picture on Instagram and share with all your friends, but my parents and family aren't on Instagram, but they know to follow my blog for updates. Instead of having to manually pull the pics down, write up a post and publish it, I used a combination of IFTTT, Dropbox and my server at Macminicolo.net to do all the work for me.&lt;/p&gt;
+&lt;p&gt;The magic starts at IFTTT. I have a &lt;a href="https://ifttt.com/recipes/115652"&gt;recipe&lt;/a&gt; that watched for a particular tag when I post to Instagram. If that tag exists, a text file is saved to my Dropbox account. I have a cron running once an hour&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt; to run the script and check for any new files.&lt;/p&gt;
+&lt;p&gt;One of the only complaints about Scriptogr.am has been that I have to manually hit a publish button before posts will go live. But with their API, the posts are immediate&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2"&gt;2&lt;/a&gt;&lt;/sup&gt;. Now, all of my Instagram adventures (and my girlfriend's) can be posted to our blog for friends and family to follow. Once the post is made, I get a Pushover notification letting me know that a post was made by either me or my girlfriend.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="pushover_instascriptogram" src="https://ryanmo.co/2013/09/05/instascriptogram/pushover_instascriptogram.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;If you're interested in the script, it can be found on Github &lt;a href="https://github.com/rjames86/instascriptogram"&gt;here&lt;/a&gt;. An example of the posts being made can be found at our travel blog &lt;a href="http://keephouseadventures.com/posts/2013/Sep/03_12_44/instagram-pic-for-tuesday-sep-03/"&gt;keephouseadventures.com&lt;/a&gt;&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;I tried using Hazel for this, but I kept getting errors since I wasn't actually processing the file. Any suggestions on this, please let me know!&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;Like what you get from apps like Byword&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Thu, 05 Sep 2013 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2013-09-05:/2013/09/05/instascriptogram</guid><category>Tech</category><category>dropbox</category><category>automation</category><category>ifttt</category><category>photos</category></item></channel></rss>

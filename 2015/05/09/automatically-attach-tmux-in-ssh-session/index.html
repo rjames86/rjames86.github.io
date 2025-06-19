@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Automatically Attach tmux in SSH Session - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Automatically Attach tmux in SSH Session</h1>
+    <div class="article-meta">
+        <time datetime="2015-05-09T09:47:00-07:00">2015-05-09</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I frequently work in ssh sessions and have found terminal multiplexers like <code>tmux</code> to be invaluable. The problem I was constantly facing was having to re-attach or create a new  session each time I would ssh into a machine. Sometimes I would accidentally create a new session when one already existed and would then have to find where I had been working previously.</p>
+
+
+<p>After searching around, I found a nice way to automatically create a  session each time I ssh into a machine, or re-attach if it already exists.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="o">[[</span> <span class="s2">&quot;</span><span class="nv">$TMUX</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span>
+        <span class="o">[[</span> <span class="s2">&quot;</span><span class="nv">$SSH_CONNECTION</span><span class="s2">&quot;</span> !<span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="c1"># Attempt to discover a detached session and attach</span>
+    <span class="c1"># it, else create a new session</span>
+    <span class="nv">WHOAMI</span><span class="o">=</span><span class="k">$(</span>whoami<span class="k">)</span>
+    <span class="k">if</span> tmux has-session -t <span class="nv">$WHOAMI</span> <span class="m">2</span>&gt;/dev/null<span class="p">;</span> <span class="k">then</span>
+    tmux -2 attach-session -t <span class="nv">$WHOAMI</span>
+    <span class="k">else</span>
+        tmux -2 new-session -s <span class="nv">$WHOAMI</span>
+    <span class="k">fi</span>
+<span class="k">fi</span>
+</code></pre></div>
+
+<p>I first check to be sure I'm not in a <code>screen</code> session and also that I'm using ssh and not local to my machine. After that, it's a simple check to see if a  session exists. If so, re-attach it, otherwise create a new one. This can be simple added to the bottom of your ~/.bashrc file. Now every time I ssh in to any machine, my previous session is sitting there waiting for me.</p>
+<p><img alt="tmux" src="https://ryanmo.co/posts/Tech/2015-05-09/tmux.gif" /></p>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

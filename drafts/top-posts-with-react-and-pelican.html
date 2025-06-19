@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Top Posts with React and Pelican - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Top Posts with React and Pelican</h1>
+    <div class="article-meta">
+        <time datetime="2015-08-04T09:55:00-07:00">2015-08-04</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>The majority of the traffic for this site comes via [this single post][sharedlinks]. I like to think that I have some other interesting things to say and thought about how I could suggest other articles to people visiting my site. My first attempt is by creating a "top posts this month" widget at the top of my blog using Pelican's plugin system, Piwik Analytics and React.</p>
+<!-- PELICAN_END_SUMMARY -->
+
+<p>I've used Piwik as my site analytics for a while now. It's decent, open-source, and allows me to have full control over the analytics. I started poking around their API documentation and found that it's possible to pull analytics data to put on your site, but requires that you have a publicly accessible account that anyone could visit. I'm not okay with that for a lot of reasons. I realized recently that you can create your own widgets and segments within Piwik that also gives you an export option.  This export is simply a RESTful url which I realized I could take advantage of. Instead of exposing this to the public, I could run a script locally that would generate the data I need to display on my site. More on the url and how I pull the data later.</p>
+<p><img alt="piwik page views" src="https://ryanmo.co/posts/Tech/2015-08-04/piwik_page_views.png" /></p>
+<p>There was one problem. The data returned from Piwik gives page views and urls, but no titles.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+    <span class="sa">u</span><span class="s1">&#39;avg_time_generation&#39;</span><span class="p">:</span> <span class="mf">0.39</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;avg_time_on_page&#39;</span><span class="p">:</span> <span class="mi">41</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;2013/11/03/dropboxsharedlinks/index&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;nb_hits&#39;</span><span class="p">:</span> <span class="mi">10000000000000</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;nb_visits&#39;</span><span class="p">:</span> <span class="mi">100000000000</span><span class="p">,</span>
+    <span class="o">...</span>
+    <span class="sa">u</span><span class="s1">&#39;segment&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;pageUrl==http%3A</span><span class="si">%2F%2F</span><span class="s1">ryanmo.co</span><span class="si">%2F</span><span class="s1">2013</span><span class="si">%2F</span><span class="s1">11</span><span class="si">%2F</span><span class="s1">03</span><span class="si">%2F</span><span class="s1">dropboxsharedlinks</span><span class="si">%2F</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="sa">u</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;http://ryanmo.co/2013/11/03/dropboxsharedlinks/&#39;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>This is where Pelican's plugins comes in handy. I wrote a quick plugin that would output all of my articles in this format.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+    <span class="s2">&quot;short_url&quot;</span><span class="p">:</span> <span class="s2">&quot;2015/06/06/filling-forms-with-pdfpen-and-javascript&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Filling Forms with PDFPen and Javascript&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;full_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ryanmo.co/2015/06/06/filling-forms-with-pdfpen-and-javascript/&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;slug&quot;</span><span class="p">:</span> <span class="s2">&quot;filling-forms-with-pdfpen-and-javascript&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Now it's just a matter of combining the two pieces of information and then sorting by the number of views.</p>
+<p>Pulling the information from my Piwik site was fairly straight forward</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+<span class="n">first_of_month</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># I use the previous month if it&#39;s before the 5th since there probably isn&#39;t enough traffic yet</span>
+<span class="k">if</span> <span class="n">today</span><span class="o">.</span><span class="n">day</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+    <span class="n">period</span> <span class="o">=</span> <span class="n">first_of_month</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">month</span><span class="o">=</span><span class="p">(</span><span class="n">first_of_month</span><span class="o">.</span><span class="n">month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">12</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">period</span> <span class="o">=</span> <span class="n">first_of_month</span>
+<span class="n">piwik_url</span> <span class="o">=</span> <span class="s1">&#39;https://ryanmo.co/url_to_analytics&#39;</span>
+
+<span class="c1"># This was from the export options on Piwik&#39;s site. </span>
+<span class="c1"># I just cleaned up the url into a nice payload</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="s1">&#39;API&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;Actions.getPageUrls&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;JSON&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;idSite&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">period</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;flat&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;segment&#39;</span><span class="p">:</span> <span class="s1">&#39;pageUrl!@.html&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;token_auth&#39;</span><span class="p">:</span> <span class="s1">&#39;auth_token_for_my_site&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;filter_limit&#39;</span><span class="p">:</span> <span class="s1">&#39;100&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">piwik_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+<span class="c1"># My segment didn&#39;t exclude the home page, so I exclude it</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;http://ryanmo.co/&#39;</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">remove_index</span><span class="p">(</span><span class="n">entry</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes /index from the end of the label key so that</span>
+<span class="sd">    the url matches the slug in all_articles.json</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;/index&#39;</span><span class="p">):</span>
+          <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;short_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/index&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">entry</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">remove_index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Generating a JSON file for all the articles on my site was easy to do in Pelican.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pelican</span> <span class="kn">import</span> <span class="n">signals</span>
+
+<span class="k">class</span> <span class="nc">ArticlesJson</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generators</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">articles</span> <span class="o">=</span> <span class="n">generators</span><span class="o">.</span><span class="n">articles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">generators</span><span class="o">.</span><span class="n">settings</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">contentpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PATH&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">siteurl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SITEURL&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contentpath</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_json</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;articles&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;/all_articles.json&#39;</span>
+
+    <span class="k">def</span> <span class="nf">write_json_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_path</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_ensure_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">article</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">articles</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">[</span><span class="s1">&#39;articles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">full_url</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">/&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">siteurl</span><span class="p">,</span> <span class="n">article</span><span class="o">.</span><span class="n">url</span><span class="p">),</span>
+                    <span class="n">short_url</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">article</span><span class="o">.</span><span class="n">url</span><span class="p">),</span>
+                    <span class="n">title</span><span class="o">=</span><span class="n">article</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">),</span>
+                    <span class="n">slug</span><span class="o">=</span><span class="n">article</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_json_to_file</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">get_generators</span><span class="p">(</span><span class="n">generators</span><span class="p">):</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">ArticlesJson</span><span class="p">(</span><span class="n">generators</span><span class="p">)</span>
+    <span class="n">output</span><span class="o">.</span><span class="n">generate_output</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">register</span><span class="p">():</span>
+    <span class="n">signals</span><span class="o">.</span><span class="n">article_generator_finalized</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">get_generators</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Now, let's combine the information from both of these pieces of data.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">blog_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">),</span>
+    <span class="s1">&#39;content&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">json_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">blog_path</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s1">&#39;all_articles.json&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">all_articles</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;articles&#39;</span><span class="p">)</span>
+
+<span class="n">all_articles_urls</span> <span class="o">=</span> <span class="p">[</span><span class="n">article</span><span class="p">[</span><span class="s1">&#39;short_url&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">article</span> <span class="ow">in</span> <span class="n">all_articles</span><span class="p">]</span>
+<span class="n">all_data_urls</span> <span class="o">=</span> <span class="p">[</span><span class="n">article</span><span class="p">[</span><span class="s1">&#39;short_url&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">article</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+
+<span class="c1"># The amount of data returned from Piwik doesn&#39;t always match the number</span>
+<span class="c1"># of articles on my blog. This reduces the posts to only those that were</span>
+<span class="c1"># returned from Piwik</span>
+<span class="n">url_intersection</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">all_data_urls</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">all_articles_urls</span><span class="p">))</span>
+
+<span class="n">common_articles</span> <span class="o">=</span> <span class="p">[</span><span class="n">article</span> <span class="k">for</span> <span class="n">article</span> <span class="ow">in</span> <span class="n">all_articles</span>
+                   <span class="k">if</span> <span class="n">article</span><span class="p">[</span><span class="s1">&#39;short_url&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">url_intersection</span><span class="p">]</span>
+
+<span class="n">sorting_key</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="s2">&quot;short_url&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="nb">sorted</span><span class="p">(</span><span class="n">common_articles</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sorting_key</span><span class="p">),</span>
+        <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sorting_key</span><span class="p">)):</span>
+    <span class="n">j</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+<span class="n">sort_by_hits</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">entry</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;nb_hits&#39;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">top_five_articles</span> <span class="o">=</span> <span class="n">sort_by_hits</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">get_article_info</span><span class="p">(</span><span class="n">article</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">article</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">article</span><span class="p">[</span><span class="s1">&#39;full_url&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="n">article</span><span class="p">[</span><span class="s1">&#39;slug&#39;</span><span class="p">],</span>
+    <span class="p">}</span>
+
+<span class="n">to_ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">period</span><span class="o">=</span><span class="n">period</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="n">articles</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">get_article_info</span><span class="p">,</span> <span class="n">top_five_articles</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s1">&#39;top_articles.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">to_ret</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+</code></pre></div>
+
+<p>To keep the analytics information from being exposed publicly, I run the script as a cron once a day to update the top posts to my site and save it to my site's static path.</p>
+<p>Now it's time to put it on the page. I've been enjoying learning React lately, so I took this as another opportunity to use React on my site to create a "Top Posts" widget on my site<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. </p>
+<div class="codehilite"><pre><span></span><code><span class="nv">d = </span><span class="nx">React</span><span class="p">.</span><span class="nx">DOM</span>
+
+<span class="nv">shuffle = </span><span class="nf">(source) -&gt;</span>
+  <span class="k">return</span> <span class="nx">source</span> <span class="k">unless</span> <span class="nx">source</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+
+  <span class="k">for</span> <span class="nx">index</span> <span class="k">in</span> <span class="p">[</span><span class="nx">source</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">..</span><span class="mi">1</span><span class="p">]</span>
+    <span class="nv">randomIndex = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="nx">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">[</span><span class="nx">source</span><span class="p">[</span><span class="nx">index</span><span class="p">],</span> <span class="nx">source</span><span class="p">[</span><span class="nx">randomIndex</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">source</span><span class="p">[</span><span class="nx">randomIndex</span><span class="p">],</span> <span class="nx">source</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span>
+  <span class="nx">source</span>
+
+<span class="nv">Post = </span><span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span>
+  <span class="nv">getInitialState: </span><span class="nf">-&gt;</span>
+    <span class="nv">trackingCampaign =</span>
+      <span class="nv">pk_campaign: </span><span class="s">&#39;Top-Posts&#39;</span>
+      <span class="nv">pk_kwd: </span><span class="nx">@props</span><span class="p">.</span><span class="nx">post</span><span class="p">.</span><span class="nx">title</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span>
+    <span class="nv">trackingCampaignParams: </span><span class="nx">@serialize</span> <span class="nx">trackingCampaign</span>
+
+  <span class="nv">serialize: </span><span class="nf">(obj) -&gt;</span>
+    <span class="nv">str = </span><span class="p">[]</span>
+    <span class="k">for</span> <span class="nx">p</span> <span class="k">of</span> <span class="nx">obj</span>
+      <span class="k">if</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+        <span class="nx">str</span><span class="p">.</span><span class="nx">push</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;=&#39;</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">p</span><span class="p">])</span>
+    <span class="nx">str</span><span class="p">.</span><span class="nx">join</span> <span class="s">&#39;&amp;&#39;</span>
+
+  <span class="nv">render: </span><span class="nf">-&gt;</span>
+    <span class="nx">d</span><span class="p">.</span><span class="nx">li</span> <span class="p">{},</span>
+      <span class="nx">d</span><span class="p">.</span><span class="nx">span</span> <span class="p">{},</span>
+        <span class="nx">d</span><span class="p">.</span><span class="nx">a</span> <span class="p">{</span>
+          <span class="nv">href: </span><span class="s">&quot;</span><span class="si">#{</span><span class="nx">@props</span><span class="p">.</span><span class="nx">post</span><span class="p">.</span><span class="nx">url</span><span class="si">}</span><span class="s">?</span><span class="si">#{</span><span class="nx">@state</span><span class="p">.</span><span class="nx">trackingCampaignParams</span><span class="si">}</span><span class="s">&quot;</span>
+        <span class="p">},</span> <span class="nx">@props</span><span class="p">.</span><span class="nx">post</span><span class="p">.</span><span class="nx">title</span>
+
+<span class="nv">Posts = </span><span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span>
+  <span class="nv">getInitialState: </span><span class="nf">-&gt;</span>
+    <span class="nv">dataUrl: </span><span class="s">&#39;/json/top_articles.json&#39;</span>
+    <span class="nv">articles: </span><span class="p">[]</span>
+
+  <span class="nv">componentDidMount: </span><span class="nf">-&gt;</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">get</span> <span class="nx">@state</span><span class="p">.</span><span class="nx">dataUrl</span><span class="p">,</span> <span class="nf">(result) =&gt;</span>
+      <span class="k">if</span> <span class="nx">@isMounted</span>
+        <span class="nx">@setState</span> <span class="nv">articles: </span><span class="nx">shuffle</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">articles</span><span class="p">)</span>
+
+  <span class="nv">render: </span><span class="nf">-&gt;</span>
+    <span class="nx">d</span><span class="p">.</span><span class="nx">div</span> <span class="p">{</span><span class="nv">id: </span><span class="s">&quot;container&quot;</span><span class="p">},</span>
+      <span class="nx">d</span><span class="p">.</span><span class="nx">header</span> <span class="p">{},</span> <span class="s">&quot;Popular Posts this Month&quot;</span>
+      <span class="nx">d</span><span class="p">.</span><span class="nx">ul</span> <span class="p">{},</span>
+        <span class="nx">@state</span><span class="p">.</span><span class="nx">articles</span><span class="p">.</span><span class="nx">map</span> <span class="nf">(article) -&gt;</span> <span class="nx">Post</span> <span class="nv">post: </span><span class="nx">article</span>
+
+<span class="nx">$</span> <span class="nf">-&gt;</span>
+    <span class="nv">top_posts = </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s">&#39;top-posts&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">pathname</span> <span class="o">==</span> <span class="s">&#39;/&#39;</span> <span class="o">and</span> <span class="nx">top_posts</span>
+      <span class="nx">React</span><span class="p">.</span><span class="nx">render</span> <span class="nx">Posts</span><span class="p">({}),</span> <span class="nx">top_posts</span>
+</code></pre></div>
+
+<p>sharedlinks: {static}/2013-11-03-dropboxsharedlinks.md</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>I realized later that it looks a like like Brett Terpstra's widget at brettterpstra.com&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

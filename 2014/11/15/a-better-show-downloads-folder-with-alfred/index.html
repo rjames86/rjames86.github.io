@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>A Better “Show Downloads Folder" with Alfred - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>A Better “Show Downloads Folder" with Alfred</h1>
+    <div class="article-meta">
+        <time datetime="2014-11-15T00:00:00-08:00">2014-11-15</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I've always used Alfred as a way to reveal my Downloads folder with the keyboard shortcut ⌘ ⌥ L, but that only gets me part of the way. I'm usually opening the downloads folder for a reason and so it would be handy if the file last added was already highlighted for me.</p>
+<p>My original workflow simply looked like this</p>
+<p><img alt="Show Downloads Folder in Alfred" src="https://ryanmo.co/2014/11/15/a-better-show-downloads-folder-with-alfred/show_downloads.png" title="Show Downloads Folder in Alfred" /></p>
+<p>Unfortunately, listing files or using the <code>find</code> command doesn't give you the file last added. You can get away with using ctime, but not in every case. Turns out Date Added is an attribute that Mac OS X adds to every file, which meant that I could use <code>mdfind</code> to get the file that was last added. All that's left to do is print out a list of file name and date last added, sort them, and get the most recently added file from the Downloads folder. From there, its just a matter of using the <code>open -R</code> command to reveal the file</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">DOWNLOADS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/Downloads&quot;</span>
+
+<span class="nv">RECENT</span><span class="o">=</span><span class="k">$(</span>mdls -name kMDItemFSName -name kMDItemDateAdded <span class="nv">$DOWNLOADS</span>/* <span class="p">|</span> <span class="se">\</span>
+sed <span class="s1">&#39;N;s/\n//&#39;</span> <span class="p">|</span> <span class="se">\</span>
+awk <span class="s1">&#39;{print $3 &quot; &quot; $4 &quot; &quot; substr($0,index($0,$7))}&#39;</span> <span class="p">|</span> <span class="se">\</span>
+sort -r <span class="p">|</span> <span class="se">\</span>
+cut -d<span class="s1">&#39;&quot;&#39;</span> -f2 <span class="p">|</span> <span class="se">\</span>
+head -n1<span class="k">)</span>
+
+open -R <span class="s2">&quot;</span><span class="nv">$DOWNLOADS</span><span class="s2">/</span><span class="nv">$RECENT</span><span class="s2">&quot;</span>
+</code></pre></div>
+
+<p><code>mdls -name kMDItemFSName -name kMDItemDateAdded ~/Downloads/*</code></p>
+<p>Lists the name and date added for all the files in the Downloads folder</p>
+<p><code>sed 'N;s/\n//'</code></p>
+<p>Looks at the next line and removes any newlines, which puts the name and date added all on one line<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></p>
+<p><code>awk '{print $3 " " $4 " " substr($0,index($0,$7))}'</code></p>
+<p>Returns the name and date added in a nice format like "2014-11-15 19:36:28 "Arq.zip""</p>
+<p><code>sort -r</code></p>
+<p>Sorts the lines</p>
+<p><code>cut -d'"' -f2</code></p>
+<p>Splits the lines on a quotation mark and returns the second result (the filename)</p>
+<p><code>head -n1</code></p>
+<p>Gives the top item in the list, which is the most recently added file</p>
+<p><code>open -R</code></p>
+<p>Reveals the file instead of opening it in OS X.</p>
+<p>You can download this workflow to reveal the last added file in your Downloads folder below.</p>
+<p><a href="https://ryanmo.co/downloads/OpenDownloadsFolder.alfredworkflow"><img alt="image" src="https://ryanmo.co/images/alfred_extension.jpg" /></a></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>You can read a nice explanation of how the N command works in sed <a href="http://stackoverflow.com/questions/6255796/how-the-n-command-works-in-sed">here</a>&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

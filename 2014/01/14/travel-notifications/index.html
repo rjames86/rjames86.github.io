@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ff6b00" media="(prefers-color-scheme: dark)">
+
+<link rel="me" href="https://mastodon.social/@rjames">
+<meta name="fediverse:creator" content="@rjames@mastodon.social">
+
+<meta name="author" content="Ryan M">
+<meta name="description" content="Posts and writings by Ryan M">
+    <link rel="alternate" title="ryanmo.co JSON Feed" type="application/json" href="feed.json" />
+    <link href="http://feedpress.me/ryanmoco" type="application/rss+xml" rel="alternate" title="ryanmo.co Full RSS Feed" />
+
+    <title>Travel Notifications with Launch Center Pro and Pythonista - ryanmo.co</title>
+    <link rel="stylesheet" href="https://ryanmo.co/theme/css/style.css">
+</head>
+<body>
+    <!-- Fixed navigation banner -->
+    <div class="nav-banner">
+        <div class="nav-container">
+            <h2 class="site-title"><a href="https://ryanmo.co/">ryanmo.co</a></h2>
+            <nav class="nav-links">
+                <a href="https://ryanmo.co/">Home</a>
+                <a href="https://ryanmo.co/about">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <header>
+    </header>
+
+    <main>
+<article>
+    <h1>Travel Notifications with Launch Center Pro and Pythonista</h1>
+    <div class="article-meta">
+        <time datetime="2014-01-14T00:00:00-08:00">2014-01-14</time>
+        by Ryan M
+        in <a href="https://ryanmo.co/category/tech">Tech</a>
+    </div>
+    <p>I've been doing a lot more traveling in the last year. Each time I take off or land, I found myself sending nearly the same text message to multiple people. After a while, it began to feel more like a chore than the kind gesture of letting others know I made it safely. For the repetitive messages, I found  way of automating nearly the entire process.</p>
+
+
+<p>Now that Launch Center Pro has the <code>launchpro-messaging://</code> action with x-callback-url support, I can chain SMS messages together. This is something I've been wanting for a long time for this specific use case. When I began writing the action, I found one hiccup in which is I would need to write the message to each individual person unless I wanted to first copy it to my clipboard before running the action. I didn't have luck with the <code>launchpro-clipboard://</code> action while calling the clipboard from the same action even though it is supposed to work in theory<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
+<p>I decided to venture out and use Pythonista to generate the url scheme for me and then pass it back into Launch Center Pro's in-app messaging. The nice thing here is that I can cleanly list out all of the contacts to whom I'd like to send the message from with in the script and change the action much more quickly.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">contacts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;friend1@dropbox.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mom@gmail.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;+1-555-867-5309&#39;</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<p>The script is written in such a way that I can put as many contacts in as I want and the url scheme will still get generated correctly with the url-escaping. </p>
+<p>Now, I have a nice list of message options in Launch Center Pro that will then send the same message to all of my contacts:</p>
+<p><img alt="Launch Center Pro notifications" src="https://ryanmo.co/2014/01/14/travel-notifications/lcp_notifications.png" /></p>
+<p>If the "Just Landed" option is chosen, a new prompt will be given to type in the place where I landed. Once I'm brought back into the app, I just need to hit send for each message.</p>
+<p><span style="text-align: center; display: block;"></p>
+<iframe src="//player.vimeo.com/video/84171813?title=0&amp;byline=0&amp;portrait=0" width="361" height="642" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<p></span></p>
+<p>You can download the Python script <a href="https://ryanmo.co/2014/01/14/travel-notifications/Travel_Notices.py">here</a> and the Launch Center Pro action can be found <a href="http://launchcenterpro.com/k0p747">here</a></p>
+<p>[Update] 2014-02-15  </p>
+<p>I made some updates to the script so that you can send custom notifications for each individual person. It also uses Pythonista's location services to automatically put in the city name to make it easier.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">contacts</span> <span class="o">=</span> <span class="p">[</span>
+     <span class="p">{</span>
+        <span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="s1">&#39;person1@gmail.com&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;landed&#39;</span><span class="p">:</span> <span class="s1">&#39;Hi, Mom. Just landed in &#39;</span><span class="p">,</span>
+        <span class="s1">&#39;boarding&#39;</span><span class="p">:</span> <span class="s1">&#39;Boarding now!&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;shuttingdown&#39;</span><span class="p">:</span> <span class="s1">&#39;Shutting down. I</span><span class="se">\&#39;</span><span class="s1">ll text when I land.&#39;</span>
+     <span class="p">},</span>
+     <span class="p">{</span>
+        <span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="s1">&#39;+1 555 867 5309&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;landed&#39;</span><span class="p">:</span> <span class="s1">&#39;Hi, John. Just landed in &#39;</span><span class="p">,</span>
+        <span class="s1">&#39;boarding&#39;</span><span class="p">:</span> <span class="s1">&#39;Boarding now.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;shuttingdown&#39;</span><span class="p">:</span> <span class="s1">&#39;Shutting down. See you soon!&#39;</span>
+     <span class="p">},</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<p><a href="https://ryanmo.co/2014/01/14/travel-notifications/Travel_Notices2.py">Here's</a> a link to the updated version.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>The developers mention a workaround <a href="http://help.contrast.co/hc/en-us/articles/200611883-x-callback-url-Support">here</a>, but I wasn't able to get it to work.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</article>
+    </main>
+
+    <footer>
+        <p>&copy;  Ryan M. Powered by <a href="https://getpelican.com">Pelican</a></p>
+    </footer>
+</body>
+</html>

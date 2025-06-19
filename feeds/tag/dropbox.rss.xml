@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>ryanmo.co - dropbox</title><link>https://ryanmo.co/</link><description></description><lastBuildDate>Tue, 16 May 2017 07:30:00 -0700</lastBuildDate><item><title>Create Dropbox Links from Alfred</title><link>https://ryanmo.co/2017/05/16/create-dropbox-links-from-alfred</link><description>&lt;p&gt;I've always treated Alfred as a Finder replacement. The speed at which I can find and take action on files is faster than Finder.app or Spotlight will ever be able to do. Because of this, I want to have a quick and easy way to share Dropbox files from within Alfred.&lt;/p&gt;
+
+
+&lt;p&gt;Over the years, I've built version of a workflow that lets me share files with Dropbox. They've always been very specific to me and never reliable or secure enough to share with others. The Dropbox API has come a long ways and now gives me the ability to share this workflow without exposing my app secret.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="File Search" src="https://ryanmo.co/posts/Tech/2017-05-16/file_search.png" /&gt;&lt;/p&gt;
+&lt;p&gt;This is my primary way of searching for files. I have Alfred configured so that I can hit the right arrow to take me to the actions menu.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="File Action" src="https://ryanmo.co/posts/Tech/2017-05-16/file_action.png" /&gt;&lt;/p&gt;
+&lt;p&gt;You'll see that I have two actions set up. One for simply creating a link and another for creating a link that expires in a week. The latter is only possible if you have a Dropbox Pro account.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Notification" src="https://ryanmo.co/posts/Tech/2017-05-16/notification.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Once you've selected one of the options, a notification will appear telling you that the link was created and the link will then be in your clipboard.&lt;/p&gt;
+&lt;p&gt;You can download the workflow by clicking the Alfred icon below. Instructions for setting up the workflow can be found by clicking on the [x] in the top-right of the workflow once it's installed. Alfred doesn't do a great job making it easy to find the set-up instructions.&lt;/p&gt;
+&lt;h3 id="features"&gt;Features&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Supports multiple accounts if you have a personal and business account&lt;/li&gt;
+&lt;li&gt;You can create any number of expiring links by creating another action and modifying the Alfred Workflow JSON &lt;code&gt;expires&lt;/code&gt; key to a number of days&lt;/li&gt;
+&lt;li&gt;Do to all of the different permissions that Dropbox offers for their business product, if a link already exists for the file you're trying to share with more restrictive permissions, a link won't be created. It's too difficult to expose what permissions that exist in a notification bubble. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://ryanmo.co/downloads/2017-05-16/DropboxSharedLinks.alfredworkflow"&gt;&lt;img alt="image" src="https://ryanmo.co/images/alfred_extension.jpg" /&gt;&lt;/a&gt;  &lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Tue, 16 May 2017 07:30:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2017-05-16:/2017/05/16/create-dropbox-links-from-alfred</guid><category>Tech</category><category>alfred</category><category>dropbox</category><category>automation</category><category>python</category></item><item><title>Publishing from Day One to Pelican with Hazel and Dropbox</title><link>https://ryanmo.co/2016/08/19/publishing-from-day-one-to-pelican-with-hazel-and-dropbox</link><description>&lt;p&gt;I'll be soon embarking on a long bike tour and was searching for a way to keep a journal of my trip but also post updates to a website. Day One was an obvious journaling choice, but with version 2, publishing isn't yet available. With a little poking around, it turned out to be fairly easy to export Day One entries and publish to Pelican (my static blog generator of choice).&lt;/p&gt;
+
+
+&lt;p&gt;I've not been a heavy user of Day One, and with the new version, I've stopped entirely until they provide end-to-end encryption with their proprietary sync service. Journaling my bike trip isn't anything I'm worried about being out in the open, and so I'll use it to keep a log of my days on the trip. At the same time, I want to keep my friends and family up-to-date on my trip. Since I use Pelican for this site, it seemed like a reasonable choice to use it for this trip and use Github Pages as an easy, free place to host it.&lt;/p&gt;
+&lt;p&gt;The first step was getting the Pelican site set up. I used the basic quickstart and put in a custom theme that I found online. The only modifications I made was using the &lt;a href="https://github.com/getpelican/pelican-plugins/tree/master/photos"&gt;photos plugin&lt;/a&gt; to make it easier to add galleries if I want in the future. Publishing to Github Pages is trivial. You can follow the steps &lt;a href="http://docs.getpelican.com/en/3.6.3/tips.html#publishing-to-github"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Now the fun part. Day One lets you export a journal entry as Markdown. When exported, it's compressed into a zip file which includes a folder of photos if you've included any in the journal entry. For each post, I use the export action and then upload to a folder I've created in Dropbox. I have Hazel watching this folder which will do the following:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Unarchive any file that appears&lt;/li&gt;
+&lt;li&gt;Move the unarchived contents into a new folder I unoriginally name "decompressed"&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img alt="unarchive" src="https://ryanmo.co/posts/Tech/2016-08-19/unarchive.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I then have a separate rule watching "decompressed" which will&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Move any image file type into my blog's images folder&lt;/li&gt;
+&lt;li&gt;Move any text file into the content folder&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img alt="move_text" src="https://ryanmo.co/posts/Tech/2016-08-19/move_text.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Step 2 here requires a little bit of extra work. Day One has some weird formatting issues and I also need to update the image urls in the entry to match what Pelican expects. The script isn't my finest, but it takes care of everything&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/usr/bin/python&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;codecs&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;datetime&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;
+
+&lt;span class="n"&gt;input_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;codecs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;input_file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="n"&gt;mode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;r&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="n"&gt;encoding&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;utf-8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Get rid of the tabs that DayOne inserts&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s1"&gt;Date:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Date:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s1"&gt;Weather:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Weather:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s1"&gt;Location:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Location:&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;# Replace default Markdown image syntax with Pelican&amp;#39;s syntax + photos plugin&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;![](photos/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;![](&lt;/span&gt;&lt;span class="si"&gt;{photo}&lt;/span&gt;&lt;span class="s1"&gt;/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;title_re&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;\n\n#\s+(.*)\n&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;title_search&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;title_re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;now_datestring&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;now&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strftime&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;%B &lt;/span&gt;&lt;span class="si"&gt;%d&lt;/span&gt;&lt;span class="s1"&gt;, %Y at %H:%M:%S %Z&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# We need a title: header for Pelican&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;title_search&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Title: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;title_search&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;title_re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Title: Update &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;now_datestring&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Date:&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Date: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;now_datestring&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+
+&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;codecs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;input_file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;w&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;encoding&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;utf-8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;new_file&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;new_file&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p&gt;Now the file is cleaned up and in the right place. We can now publish and push to Github.&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="nb"&gt;cd&lt;/span&gt; ~/Dropbox/blogs/biketour/pelican_site
+
+make publish
+
+git add ..
+
+git commit -am &lt;span class="s1"&gt;&amp;#39;update blog&amp;#39;&lt;/span&gt;
+
+/Users/rjames/dev/pelican/bin/ghp-import output
+
+git push git@github.com:rjames86/rjames86.github.io.git gh-pages:master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p&gt;That's it! You can see the posts and follow my bike tour at &lt;a href="http://rjames86.github.io"&gt;http://rjames86.github.io&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Fri, 19 Aug 2016 11:02:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2016-08-19:/2016/08/19/publishing-from-day-one-to-pelican-with-hazel-and-dropbox</guid><category>Tech</category><category>hazel</category><category>pelican</category><category>automation</category><category>dropbox</category></item><item><title>How I use my Mac Mini Server on Macminicolo</title><link>https://ryanmo.co/2015/02/09/how-i-use-my-mac-mini-server-on-macminicolo</link><description>&lt;p&gt;I frequently get asked why I use &lt;a href="http://www.macminicolo.net"&gt;Macminicolo&lt;/a&gt; and if it's worth it. It's a relatively expensive hobby, but it gives me so much benefit that at this point I couldn't live without it. Having an always-on Mac opens up a lot of opportunity and I'm always finding new things to use it for. &lt;/p&gt;
+
+
+&lt;p&gt;If you haven't already read it, Macminicolo has already posted their own [50 ways to use your server][50ways]. I thought it would be worth sharing some of the ways that I use my Mac Mini. Some of these things I've already shared in the past and I'll be sure to post more details on any of the other things in the future. &lt;/p&gt;
+&lt;h2 id="50ways-httpblogmacminicolonetpost4703882550250-ways-to-use-your-server"&gt;[50ways]: http://blog.macminicolo.net/post/47038825502/50-ways-to-use-your-server&lt;/h2&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#50ways-httpblogmacminicolonetpost4703882550250-ways-to-use-your-server"&gt;[50ways]: http://blog.macminicolo.net/post/47038825502/50-ways-to-use-your-server&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#syncing-and-backup"&gt;Syncing and Backup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#hazel"&gt;Hazel&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#web-server"&gt;Web Server&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#blogs"&gt;Blogs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#site-analytics"&gt;Site Analytics&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#url-shortening"&gt;URL Shortening&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#vpn"&gt;VPN&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#tapiriik"&gt;Tapiriik&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#webdav"&gt;WebDAV&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#automation-and-scripts"&gt;Automation and Scripts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#media"&gt;Media&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="syncing-and-backup"&gt;Syncing and Backup&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Dropbox&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;All of my Dropbox files are synced to this computer. My MacBook Air doesn't have enough space to store all my files and so the Mac Mini is the place where I store all my Dropbox files locally so that I can run workflows and have a local backup. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Off-site Backup&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Since I have so much space, I use it as an offsite backup for my laptop using Arq over sftp. Nothing too fancy or special here, but it's a nice alternative to Time Machine as an offsite backup. &lt;/p&gt;
+&lt;h2 id="hazel"&gt;Hazel&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://www.noodlesoft.com/hazel.php"&gt;Hazel&lt;/a&gt; may be my favorite reason for having an always-on Mac. Hazel watches multiple folders in my Dropbox folder and keeps my Dropbox much more organized than I ever would manually. Some of my favorites are&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Organizing my photos&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I've talked about this one a bit in the past. I love that Carousel will automatically upload my photos to Dropbox, but the Camera Uploads folder becomes a wasteland of files if you don't organize them on a regular basis. I move all of my photos into a photos folder organized by year. I've written about this in more detail &lt;a href="http://ryanmo.co/2014/01/11/my-photo-workflow/"&gt;here&lt;/a&gt;. If you use Carousel and have ever saved photos that someone else shared with you, you'll know that a completely different folder is created in Dropbox called Carousel. In this folder, more folders are created with the email address of the person who shared the photos with you. I want these photos in my normal photos folder and so I run the same set of rules as my Camera Uploads to reorganize these photos. The only exception is that I add a "carousel" tag to these photos so that I know they were added from Carousel. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="organize_photos" src="https://ryanmo.co/posts/Tech/2015-02-09/organize_photos.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I take a selfie every day (620 days and counting) and am far too lazy to move that photo to its own special photo every day. I've made sure to always use Camera+ to take these photos. Hazel looks at the metadata of the photos in Camera Uploads and if the photo was taken by the front camera and the app used to create the file was Camera+, it's moved to its own special folder and renamed to just YYYY-MM-DD. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Publishing my blog&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I use a static blog generator, &lt;a href="http://blog.getpelican.com"&gt;Pelican&lt;/a&gt;,  which means that I can store the entire project, including the Python code in my Dropbox account. While I'm on my Mac, it's easy to run a shell script to publish my blog. On iOS, it's not quite as easy and so I use Hazel to watch my blog folder for a file called 'publish.blog'. If that file exists, the shell script is run and the file is then deleted. Since my girlfriend runs her blog over at &lt;a href="http://www.keepitlit.co"&gt;keepitlit.co&lt;/a&gt; with the same static blog generator, it's much simpler for her to create a file just like this when she wants to publish her blog. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IFTTT → Dropbox → Flickr → AppleTV&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I have a rule set up in IFTTT that will append to a text file each time my girlfriend or I post a photo to Instagram. Each time this file runs, I have a script that uploads the photo to a private Flickr album. My AppleTV is then set to that album so that we have an updated list of photos as a screen saver. I realize I could do this directly in IFTTT, but I don't like that you can't make the album private. &lt;/p&gt;
+&lt;p&gt;Download the script &lt;a href="https://ryanmo.co/posts/Tech/2015-02-09/ifttt_to_flickr.py"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Time sensitive Dropbox shared links&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If you have a Dropbox Pro account,  this is now a feature built right in.  I have two folders named "One day" and "One week". Files that I want to share temporarily are copied to that folder. After the set amount of time, the files will be deleted and I'm sent a push notification. For the one week folder, I also get a notification the day before to remind me that it'll get deleted.&lt;/p&gt;
+&lt;p&gt;You can download the 1 Day rule &lt;a href="https://ryanmo.co/posts/Tech/2015-02-09/1 day.hazelrules"&gt;here&lt;/a&gt;. Be sure to add your own Pushover key and secret, or remove it if you don't need notifications.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1%20day" src="https://ryanmo.co/posts/Tech/2015-02-09/1 day.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Scanned files&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This folder is for files added from my Fujitsu ScanSnap or Scanbot for iOS. If the file hasn't been OCR'd already, a script will run to launch PDFPenPro and OCR the file. I then have a series of rules set up to move the files based on their names.&lt;/p&gt;
+&lt;p&gt;Work Receipts is my favorite. When I scan a receipt in Scanbot, I have a snippet "wwr" that expands to "Work receipt". Hazel watches for any new PDFs with that string in the filename. Files are then moved to my expenses folder, organized by date. It then creates a new task in Due.app with a due date of one week in the future so that I'll remember to do my expenses for the file. I no longer have to keep all my receipts and I'll never forget to actually do the expenses&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;Business cards obviously moves any business cards to a special folder. Hazel watches for a string match in the filename to know to file these as well. Finally, personal receipts moves the files to my own receipts folder for archiving.&lt;/p&gt;
+&lt;h2 id="web-server"&gt;Web Server&lt;/h2&gt;
+&lt;p&gt;I use this Mac Mini as a web server since it has more than enough bandwidth and speed. I had never set up an server before, and so this was a fun learning experience to do it all myself. I run a very basic Apache, MySQL, PHP stack for my web server. &lt;/p&gt;
+&lt;h3 id="blogs"&gt;Blogs&lt;/h3&gt;
+&lt;p&gt;I host this blog from my Mac Mini as well as a couple of others, most notably my girlfriend's. &lt;/p&gt;
+&lt;h3 id="site-analytics"&gt;Site Analytics&lt;/h3&gt;
+&lt;p&gt;I don't want to use Google Analytics. They know enough about me already and so I use an open source version called Piwik. I've been fairly happy with it so far. &lt;/p&gt;
+&lt;h3 id="url-shortening"&gt;URL Shortening&lt;/h3&gt;
+&lt;p&gt;I don't like long urls and will shorten them whenever I can. When I publish my blog, I always shorten the URL. I like having full control over that and so I'm using &lt;a href="http://yourls.org"&gt;yourls&lt;/a&gt; to shorten and track URLs. &lt;/p&gt;
+&lt;h3 id="vpn"&gt;VPN&lt;/h3&gt;
+&lt;p&gt;I was running OS X Server and used the Mac Mini as a VPN server. Since upgrading to Yosemite, I haven't gotten around to upgrading server, but it's on the todo list. Check out Macminicolo's blog for some great instructions on setting up a VPN &lt;a href="http://blog.macminicolo.net/post/102283942903/setup-a-vpn-with-yosemite-server-10-10"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id="tapiriik"&gt;Tapiriik&lt;/h3&gt;
+&lt;p&gt;When I'm out cycling, I use a Garmin GPS. Most of my friends use RunKeeper, and I prefer Strava over all of the services. &lt;a href="https://tapiriik.com"&gt;Tapiriik&lt;/a&gt; is a great service that lets you keep your fitness services all in sync, including syncing TCX files to your Dropbox account. It's open source, so you can run a local version on your own computer.&lt;/p&gt;
+&lt;h3 id="webdav"&gt;WebDAV&lt;/h3&gt;
+&lt;p&gt;When I was using Omnifocus, I didn't want to sync my database through their servers. I could be wrong, but I don't believe it's encrypted on their servers. I feel much better knowing that it's on my machine and I have completely control of it. I have set up my own WebDAV server so that I can sync my database. It's been extremely fast and reliable. &lt;/p&gt;
+&lt;h2 id="automation-and-scripts"&gt;Automation and Scripts&lt;/h2&gt;
+&lt;p&gt;I have crons running on an hourly, daily and weekly bases. I don't want to bore you with all of them, but here are a few of the better ones. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;getmail&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I use getmail  for archiving my Gmail daily (they've been known to lose data once in a while). I've never needed to use it, but if I ever decide to change providers or Gmail just hits the delete key someday, I'll have a complete backup of my email. A great introduction to getmail can be found &lt;a href="http://www.makethenmakeinstall.com/2013/02/script-gmail-backup-with-getmail-on-linux/"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Slogger&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I love Slogger and Day One. I've customized a lot of the current plugins and even wrote my own for Instagram. You can read more about it &lt;a href="http://ryanmo.co/2014/09/04/instagram-slogger/"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Download Pinboard&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;My updated version of Brett Terpstra's pinboard → webloc file script to have tagged webloc files locally. You can read more about this project &lt;a href="{static}../2014-12-23/2014-12-23_Download-Pinboard-as-Webloc-Files.md"&gt;here&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Face detection → Finder tags&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I don't want to use iPhoto, Aperture or Picasa as a photo management application. Instead, I use Picasa to harvest the facial recognition data, and then have a script that applies Finder tags of the person's name to the photo. I haven't shared this one, because it's not done yet, but it's functional. It's a lot of fun to be able to get all the photos of a person with a simple Spotlight search. Hopefully I can share this in the near future.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dropbox Deletions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I like to keep tabs on my shared folders and any scripts that might be running in my Dropbox account. I parse my Dropbox RSS feeds for deletions of more than 50 files and send myself a push notification with Pushover.&lt;/p&gt;
+&lt;p&gt;You can download the script &lt;a href="https://ryanmo.co/posts/Tech/2015-02-09/dropbox_events.py"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dropbox inbox&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Throughout the week, I'll add files to an "Inbox" in my Dropbox folder. On the weekends, I send myself a push notification if there have been any files added so that I can deal with them.&lt;/p&gt;
+&lt;h2 id="media"&gt;Media&lt;/h2&gt;
+&lt;p&gt;I don't have a lot of media. I've never been attached to the idea of owning my music or video and stream whatever I can. For any content that I've ripped over the years, I have &lt;a href="https://plex.tv"&gt;Plex&lt;/a&gt; running on my Mac Mini. Again, since the connection is so fast, there's little to no lag when streaming something from home or on my phone. &lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;I've recently switched from Omnifocus to Due2. It took me a bit to figure out how to programmatically create task items, especially if I want emojis in it. See &lt;a href="http://unduressing.com/post/108269360039/how-i-use-due-2-come-with-me-if-you-want-to-live"&gt;this&lt;/a&gt; post for a good reason to use emojis for tasks in Due. If you're interested, &lt;a href="https://ryanmo.co/posts/Tech/2015-02-09/due_hazel.scpt"&gt;here&lt;/a&gt; is the script I wrote to create tasks in Due for Mac within Hazel.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Mon, 09 Feb 2015 22:04:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2015-02-09:/2015/02/09/how-i-use-my-mac-mini-server-on-macminicolo</guid><category>Tech</category><category>Dropbox</category><category>automation</category><category>hazel</category><category>scripting</category></item><item><title>Back up Your Contacts with Pythonista</title><link>https://ryanmo.co/2014/09/28/back-up-your-contacts-with-pythonista</link><description>&lt;p&gt;While it hasn't happened in a while, I have lost or had issues with contacts in iCloud. I haven't found a reliable way to automatically back up my contacts on my Mac, but Pythonista offers a simple way to back them up.&lt;/p&gt;
+
+
+&lt;p&gt;Pythonista offers a great library which gives you access to your contacts on iOS. With a short script, I can back up my contacts to a folder in my Dropbox account. This will add a vCard file to my Dropbox account with the date the script was run.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: You'll need the Dropbox login script for this to work. Visit &lt;a href="https://gist.github.com/omz/4034526"&gt;this&lt;/a&gt; link to get it set up. I keep mine in a folder called "lib" in Pythonista.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;You can download my Contacts Back up script &lt;a href="https://gist.github.com/rjames86/79f857f427599f6e145c"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;contacts&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;console&lt;/span&gt;
+&lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dirname&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;abspath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;__file__&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;lib&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;dropboxlogin&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;get_client&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;datetime&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Update this path here for the backup&lt;/span&gt;
+&lt;span class="c1"&gt;# location in your Dropbox account.&lt;/span&gt;
+&lt;span class="n"&gt;BACKUP_PATH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/Backups/Contacts&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;TODAY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;today&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strftime&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;%Y-%m-&lt;/span&gt;&lt;span class="si"&gt;%d&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;dropbox_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;get_client&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;VCARD&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;person&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vcard&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;person&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;contacts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_all_people&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+&lt;span class="n"&gt;console&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;clear&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;dropbox_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;put_file&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BACKUP_PATH&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/contacts &lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s1"&gt;.vcf&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TODAY&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;VCARD&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Backup complete!&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If you're like me, you're going to forget to do this on a regular basis. I hadn't yet found a reason to use the IFTTT Launch Center Pro triggers, but this turned about to be a great reason to use it. I have a trigger that goes off on the first of every month that will launch the back up script.&lt;/p&gt;
+&lt;p&gt;If you want to get reminders to back up your contacts using IFTTT, you can use the recipe below.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://ifttt.com/view_embed_recipe/206885-backup-contacts-with-lcp" target = "_blank" class="embed_recipe embed_recipe-l_24" id= "embed_recipe-206885"&gt;&lt;img src= 'https://ifttt.com/recipe_embed_img/206885' alt="IFTTT Recipe: Backup Contacts with LCP connects date-time to launch-center" width="370px" style="max-width:100%"/&gt;&lt;/a&gt;&lt;script async type="text/javascript" src= "//ifttt.com/assets/embed_recipe.js"&gt;&lt;/script&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 28 Sep 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-09-28:/2014/09/28/back-up-your-contacts-with-pythonista</guid><category>Tech</category><category>automation</category><category>Dropbox</category><category>ifttt</category><category>launchcenterpro</category><category>ios</category><category>pythonista</category></item><item><title>Global Shell Variables for Dropbox Paths</title><link>https://ryanmo.co/2014/08/31/global-shell-variables-for-dropbox-paths</link><description>&lt;p&gt;I have multiple computers running Dropbox, all of which have different folder paths to where the Dropbox folder is located. I wanted to have a universal way to find and navigate to the folders regardless of what computer I was on.&lt;/p&gt;
+
+
+&lt;p&gt;In most cases, setting a variable to your Dropbox path is relatively easy. You could set your .bashrc to look something like this&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;DROPBOX_PERSONAL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/Dropbox
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;But this fails in a few situations, all of which apply to me on one or more of my computers&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Multiple Dropbox accounts on one computer (Personal and Business accounts)&lt;/li&gt;
+&lt;li&gt;Dropbox isn't located in my home folder&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you're running Dropbox version 2.8 or higher (you should be anyways), there's a json file that tells you where your Dropbox folders are located. The json looks like this:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;personal&amp;quot;&lt;/span&gt;: &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;path&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;/Users/username/Dropbox (Personal)&amp;quot;&lt;/span&gt;,
+        &lt;span class="s2"&gt;&amp;quot;host&amp;quot;&lt;/span&gt;: &lt;span class="m"&gt;1234&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;business&amp;quot;&lt;/span&gt;: &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;path&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;/Users/username/Dropbox (Business)&amp;quot;&lt;/span&gt;, 
+        &lt;span class="s2"&gt;&amp;quot;host&amp;quot;&lt;/span&gt;: &lt;span class="m"&gt;5678&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;What this means is that you can set global variables using this information in your .bashrc or .bash_profile so that you always know where your Dropbox folder is&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;DROPBOX_WORK&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;python -c &lt;span class="s2"&gt;&amp;quot;import json;f=open(&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/.dropbox/info.json&amp;#39;, &amp;#39;r&amp;#39;).read();data=json.loads(f);print data.get(&amp;#39;business&amp;#39;, {}).get(&amp;#39;path&amp;#39;, &amp;#39;&amp;#39;)&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;DROPBOX_PERSONAL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;python -c &lt;span class="s2"&gt;&amp;quot;import json;f=open(&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/.dropbox/info.json&amp;#39;, &amp;#39;r&amp;#39;).read();data=json.loads(f);print data.get(&amp;#39;personal&amp;#39;, {}).get(&amp;#39;path&amp;#39;, &amp;#39;&amp;#39;)&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now all you have to do is reference your Dropbox folders with &lt;code&gt;$DROPBOX_PERSONAL&lt;/code&gt; or &lt;code&gt;$DROPBOX_WORK&lt;/code&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 31 Aug 2014 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-08-31:/2014/08/31/global-shell-variables-for-dropbox-paths</guid><category>Tech</category><category>bash</category><category>automation</category><category>Dropbox</category></item><item><title>Quick Sharing with Launch Center Pro and Dropbox</title><link>https://ryanmo.co/2014/03/04/quick-sharing-with-launch-center-pro-and-dropbox</link><description>&lt;p&gt;I've been finding more and more reasons to use Launch Center Pro recently. With the fairly recent addition of Dropbox actions, I've been finding new ways to share links quickly. &lt;/p&gt;
+
+
+&lt;p&gt;&lt;img alt="Launch Center Pro and Dropbox" src="https://ryanmo.co/2014/03/04/quick-sharing-with-launch-center-pro-and-dropbox/lcp_dropbox.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I take a lot of quick photos that I never plan to keep around. In most cases, it's just to send to someone quickly. iMessage is easy, but the images aren't compressed nearly enough and can take a while to upload. I've now started uploading the images to Dropbox and sharing the link. The upload speed is reduced since Launch Center Pro will take care of reducing the quality before uploading. The message sends almost instantly because there isn't an attachment. Here are a few of workflows I use with Dropbox:&lt;/p&gt;
+&lt;h3 id="upload-last-photo-taken-and-get-the-link"&gt;Upload last photo taken and get the link&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;This is if I simply need a quick link to share anywhere. The image uploads at 50% quality. I have a folder called Temp/_Destrctable Folder where I keep all my throwaway images. I'm using the TextExpander snippet ..ttimestamp to name the files like 14-03-08-19.42.45.jpg&lt;/em&gt;&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;launchpro-dropbox://addlastphoto?path=/Temp/_Destructable Folder&amp;amp;name=&amp;lt;..ttimestamp&amp;gt;.jpg&amp;amp;quality=50&amp;amp;getlink=1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id="upload-last-photo-and-put-the-link-in-an-in-app-message-body"&gt;Upload last photo and put the link in an in-app message body&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;Quick sharing with iMessage. Settings are the same as above.&lt;/em&gt; &lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;launch://x-callback-url/dropbox/addphoto?attach=photo&amp;amp;path=/Temp/_Destructable Folder&amp;amp;name=&amp;lt;..ttimestamp&amp;gt;.jpg&amp;amp;quality=50&amp;amp;getlink=1&amp;amp;x-success=launch%3A//messaging%3Fbody%3D%5Bclipboard%5D&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id="upload-from-any-source-to-dropbox"&gt;Upload from any source to Dropbox&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;Nice if you haven't taken the photo yet&lt;/em&gt;&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;launch://dropbox/addphoto?attach=photo&amp;amp;path=&amp;amp;name=&amp;amp;quality=&amp;amp;getlink=1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Tue, 04 Mar 2014 00:00:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-03-04:/2014/03/04/quick-sharing-with-launch-center-pro-and-dropbox</guid><category>Tech</category><category>ios</category><category>automation</category><category>Dropbox</category><category>launchcenterpro</category><category>photos</category></item><item><title>Digitizing the Family Photos</title><link>https://ryanmo.co/2014/03/01/digitizing-the-family-photos</link><description>&lt;p&gt;I had this ongoing fear that all of our family photos would get lost or destroyed. I've always wanted to have a central place for all of my photos, both past and present. In early 2012, my mom and I started on a project to scan, crop and organize all of our old photos from negatives.&lt;/p&gt;
+
+
+&lt;h1 id="going-digital"&gt;Going Digital&lt;/h1&gt;
+&lt;p&gt;I was fortunate that when I decided to take on this project, my mom already had two large Epson flatbed scanners with transparency adapters. What was even better was that my mom was highly organized over the years and archived all of the negatives of every photo she had ever taken. This only left us with one thing to do: scan the photos.  Since I was living in California and my mom in Montana, the work of pulling the negatives and scanning them was going to be done by my mom. We also needed to have a way to transfer the files from her computer to mine. Dropbox was an obvious choice in this case, but there was one problem that would complicate everything: hard drive space. &lt;/p&gt;
+&lt;p&gt;My mom was still using her PowerMac G5 at the time and hard drive space was pretty limited. It wouldn't have taken long before she wouldn't have enough space to even scan the photos. As a simple solution, once the scans were uploaded and synced to my computer, I could have manually removed the files and place them on my own computer, but I was lazy and didn't want to check constantly whether new files had been added. At the time, I was just learning how to code and thought this would be good practice &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. I ended up writing a script that would mirror the folder structure for the scans in our Dropbox shared folder on my local Desktop and then remove the original file in Dropbox. The old folder structure was maintained so that if any new files were added to the same folder, my mom wouldn't have to recreate them. I then set this up as a cron job to run once a day and then send me an email digest of all the files that were transferred.&lt;/p&gt;
+&lt;p&gt;After a couple of weeks, I had nearly 15 years of photos in folders organized by year totaling around 85GB. Each Photoshop file was around 1.GB each and the photos were scanned at 300dpi. Now the hardest and longest part of the project was about to begin.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Folder Structure" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/folders.png" /&gt;&lt;/p&gt;
+&lt;h1 id="cropping-resizing-and-renaming"&gt;Cropping, Resizing, and Renaming&lt;/h1&gt;
+&lt;p&gt;I wasn't entirely sure how I was going to do this part efficiently. My mom hadn't laid out the photos in a symmetric grid and there wasn't a reliable way to detect photo borders. I also decided beforehand that I wanted to preserve the original files and so I would save an individual Photoshop file for each photo that was cropped. I then wanted to have a separate folder that was simply for viewing the files.&lt;/p&gt;
+&lt;p&gt;Starting off, I wanted to try manually doing everything and automate things over time. Cropping the files using the marquee tool was always going to be manual. I would select the file, copy it, create a new file with the dimensions from the clipboard and then paste the photo into the new file. After I had gone through the entire file, I would save all the files at once with random names (you'll see later why the naming here didn't matter). This part immediately became tedious. I did some research on how I could make this easier or faster and discovered Photoshop actions&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2"&gt;2&lt;/a&gt;&lt;/sup&gt;. What was great about this was I was able to record every step I was taking into one single keyboard shortcut. This broke down the process to simply selecting the photo and hitting shift-F1. This one keyboard shortcut took care of copying the file, creating a new file with the dimensions of the clipboard, pasting and then finally selecting the previous file. That last step was key. Instead of a final control-tab to move back to the original file, the action took care of it for me. You can download the Photoshop action &lt;a href="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/Scans.atn"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Actions Screenshot" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/actions_screenshot.png" /&gt;&lt;/p&gt;
+&lt;p&gt;At this point, I had an original Photoshop file and a folder called Cropped where all the new photos lived. I now needed a way to rename these files to something meaningful. Automator and Alfred made this simple. After I finished cropping, I would select all of the newly created files, run my Alfred extension "Rename Scans" which would trigger an automator script, prompt me to name the files, and then each file would be renamed from something like Untitled1.psd to November 1987_1.psd.&lt;/p&gt;
+&lt;p&gt;At this point, the final step for each of these files was to create a viewable JPG for every photo. Turns out, Photoshop has a great feature called Image Processor. After the files were neatly renamed, I would open up the Image Processor, select the folder, and hit go. My settings were always saved so there wasn't much else to be done each time I ran this. I would take the Photoshop files, create a new JPG at 5 quality in a new folder called Low Res Images with the same naming convention. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Image Processor" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/image_processor.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I was then able to share this folder back with my mom and the rest of my family. They enjoyed watching the photos get added over the last year or so as I casually worked on the files.&lt;/p&gt;
+&lt;p&gt;Once I had done all of the steps for each file, I would move the folder of PSD files into a folder called Done. This simply gave me a better idea of how many folders I had left to work on.&lt;/p&gt;
+&lt;h1 id="viewing"&gt;Viewing&lt;/h1&gt;
+&lt;p&gt;In late January 2014, I finally finished cropping all of the photos. I never intended on it taking quite this long, but it was never something that needed to have a deadline. It felt great to know that I was finally done and could just sit back and look at all of the old photos from what I was little. I was using &lt;a href="http://www.lynapp.com"&gt;Lyn&lt;/a&gt; to view all the photos and realized that something was a little off. All of the photos were out of order. All of the folders had been named as Month Year, and even if I was viewing all of the photos at the same time, they were sorted in the order that I had created the files, not the time they were actually taken. I couldn't sort them in a photo viewer, Dropbox's photo tab would sort them by file creation and not EXIF date taken, and using Spotlight search was more-or-less pointless. There was no way  that I was going to manually date 3,300 photos by hand. I had used the command line tool &lt;a href="http://www.sno.phy.queensu.ca/~phil/exiftool/"&gt;exiftools&lt;/a&gt; a few times, and I started looking into whether this would be a possibility for dating the files. It turned out that the command was really straightforward for naming a folder&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;exiftool&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-AllDates=1999:12:31 12:00:00&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;foldername&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Even though I could have done it by hand, I didn't really want to have to type this in for 80 or so folders of photos. I quickly wrote up a Python script that would parse out the date from the folder names and prompt me to confirm whether this was correct or not. I was fine hitting Enter 80 times. &lt;/p&gt;
+&lt;p&gt;Some of the folders were called things like January-March 1995. For these cases, I would just assume the first month for the date. I wasn't going for perfection, but rather a good estimate for the time the photos were taken.&lt;/p&gt;
+&lt;p&gt;You can take a look at the script &lt;a href="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/convert_exif_dates.py"&gt;here&lt;/a&gt;. Do note that the script is really specific to my folder structure so it might not work perfectly for you, but it'll be a good start if you need to do something like this.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Lyn App" src="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/lynapp.png" /&gt;&lt;/p&gt;
+&lt;h1 id="what-i-learned"&gt;What I Learned&lt;/h1&gt;
+&lt;p&gt;Epson now makes a &lt;a href="http://www.epson.com/cgi-bin/Store/jsp/Product.do?BV_UseBVCookie=yes&amp;amp;sku=B11B178061"&gt;scanner&lt;/a&gt; that eliminates a lot of the hard work around cropping the photos. It's expensive, but it would have saved me a lot of work.&lt;/p&gt;
+&lt;p&gt;I've made this comment before, but I still would love to have a way to embed facial recognition into the metadata of photos. My perfect world would be having the ability to do something like search for all of the photos of my brother before 1995.&lt;/p&gt;
+&lt;p&gt;Ultimately, this was a long, but satisfying project. I sleep better at night knowing that all of our family photos are backed up and not be lost forever if there were ever to be a disaster.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;For those who want to see the script, &lt;a href="https://ryanmo.co/2014/03/01/digitizing-the-family-photos/movescans.py"&gt;here&lt;/a&gt; it is. Please don't judge me. This was actually one of my first real scripts I had ever written. I know there are better ways to do a lot of it.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;I'm a total Photoshop newb&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sat, 01 Mar 2014 00:00:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-03-01:/2014/03/01/digitizing-the-family-photos</guid><category>Tech</category><category>python</category><category>alfred</category><category>hazel</category><category>dropbox</category><category>bash</category><category>photos</category></item><item><title>My Photo Workflow</title><link>https://ryanmo.co/2014/01/11/my-photo-workflow</link><description>&lt;p&gt;After listening to the Mac Power Users &lt;a href="http://www.macpowerusers.com/2014/01/05/mac-power-users-171-photo-management/"&gt;episode&lt;/a&gt; on photo management and reading the slew of follow up blog posts on other photo management workflows, I thought I would share mine as well.  While my workflow will be fairly similar to &lt;a href="http://www.macstories.net/tutorials/my-photo-management-workflow-early-2014/"&gt;Federico Viticci's&lt;/a&gt; with a few exceptions, I thought I would share the way that I take, organize, view and share my photos.&lt;/p&gt;
+
+
+&lt;h2 id="taking-photos"&gt;Taking Photos&lt;/h2&gt;
+&lt;p&gt;My iPhone is one of the main ways that I take photos. Since it's always in my pocket and takes great quality photos, it's by far the easiest way to take photos no matter where I am.  I've had a lot of fun with the iPhone 5S and the burst and slo-mo modes.&lt;/p&gt;
+&lt;p&gt;I've never considered myself a photographer. For a long time, I had my mom's hand-me-down Olympus E-500. It was a great camera, but I had no idea how to use it and it was bigger than I preferred. Before moving to Ireland, I decided that I wanted to learn the basics of photography and have a camera that would grow with me as I learned more. The Olympus PEN E-P5 had just started pre-order and I decided that this would be my first "real" camera. I only had a few requirements, and it fortunately satisfied both of them: GPS tagging and small/lightweight. I've now had this the E-P5 for a little over 6 months and couldn't be happier. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Olympus PEN E-P5" src="https://ryanmo.co/2014/01/11/my-photo-workflow/ep5.jpg" /&gt;&lt;/p&gt;
+&lt;h2 id="importing"&gt;Importing&lt;/h2&gt;
+&lt;p&gt;I only have one main way to upload my photos - Dropbox Camera Uploads. Whether I use the Dropbox app for iOS or the desktop application, my photos end up in the same place to get processed (more on that later in &lt;a href="#organization"&gt;Organization&lt;/a&gt;). &lt;/p&gt;
+&lt;p&gt;Any photos that are taken on my iPhone are quickly uploaded via the Dropbox app. When I use my E-P5, I will first turn on the built-in Wifi to sync GPS data from my phone to the camera&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. Once that is all taken care of, I plug the camera into my laptop and Dropbox grabs the new photos and imports them.&lt;/p&gt;
+&lt;h2 id="organization"&gt;Organization&lt;/h2&gt;
+&lt;p&gt;I'm still pretty new to Hazel, but dealing with my photos was the reason I decided to bite the bullet and buy it. My Dropbox Camera Uploads folder was nearing 900 photos and I hadn't taken the time to organize them in over a year. &lt;/p&gt;
+&lt;p&gt;Before Camera Uploads, I was suffering through iPhoto. It always bothered me that my photos were obfuscated from view. I always found myself wasting time trying to find the original or using the export option. When Camera Uploads was released, I searched for a way to cleanly export my photos into a Year-Month-Event folder structure. I discovered &lt;a href="https://github.com/BMorearty/exportiphoto"&gt;this script&lt;/a&gt; that gave me more than what I wanted and solved my problem perfectly. For anyone who wants to use this, the command I used was&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# -x deconflict export directories of same name&lt;/span&gt;
+&lt;span class="c1"&gt;# -d stop use date prefix in folder name&lt;/span&gt;
+&lt;span class="c1"&gt;# -y add year directory to output&lt;/span&gt;
+python exporti_photo.py -x -d -y
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I've been using the Year-Month-Event structure for a few years now and have starting running into a slight annoyance. I find myself constantly flipping between months trying to remember when a certain event happened. I finally came to the conclusion that the month directory was pretty unnecessary. What I decided on was the folder structure Year-MM.YY Event Name. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="New Photo Structure" src="https://ryanmo.co/2014/01/11/my-photo-workflow/photo_list.png" /&gt;&lt;/p&gt;
+&lt;p&gt;This gives me a much easier way to visualize my photos by event name rather than poking through folders by month.&lt;/p&gt;
+&lt;p&gt;My Hazel workflow is fairly simple, but takes care of everything in one rule. I've set up a few exceptions for photo types that don't need to be sorted, such as screenshots or other PNG files. I also have rules set up for fun projects like my &lt;a href="/2014/01/05/organizing-special-photos-with-hazel"&gt;"photo a day"&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Hazel Rule" src="https://ryanmo.co/2014/01/11/my-photo-workflow/photos_hazel.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Finally once photos are sorted, I will manually go in and individually name all of the events that were created. This makes it much easier to search for events in the future. The next step in my process here is to tag photos. The one feature I do miss about iPhoto was the facial recognition. Since I haven't found a way to do facial recognition outside of Aperture or iPhoto, I will manually go in and tag photos with the names of those in the photos. This has been very useful when I want to find photos of people in certain contexts. For example,  the tags &lt;code&gt;me&lt;/code&gt;, &lt;code&gt;office&lt;/code&gt;, &lt;code&gt;dublin&lt;/code&gt; will give me photos of myself in the Dublin office, but not San Francisco.&lt;/p&gt;
+&lt;h2 id="consumption-and-sharing"&gt;Consumption and Sharing&lt;/h2&gt;
+&lt;p&gt;In Mac OS X, I have three ways that I view my photos. The first, and most basic is Finder.  The Cover Flow view in Finder is actually a great way to quickly go through photos and get the ones that you want. When I'm wanting to share my photos with others, I use the &lt;a href="https://www.dropbox.com/photos"&gt;Dropbox Photos&lt;/a&gt; page. As a quick way to share a select number of photos quickly, I've still found this to be the best way. For general viewing and pruning of photos I don't want, I've been using a not so well known app called &lt;a href="http://www.lynapp.com"&gt;Lyn&lt;/a&gt;. It has some nice features for sharing to multiple services, but what I really like about it is that it'll just watch a folder and display the photos in that folder. Lyn will also let me see all of the metadata about the photos, including a map if there is GPS information. Lastly, on the rare occasion that I want to edit my photo, I will import the photo into Aperture. For the same reasons I dislike iPhoto, I dislike Aperture. I will typically import the photo, edit it, and then export back into Dropbox.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Lyn.app" src="https://ryanmo.co/2014/01/11/my-photo-workflow/lyn.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;On iOS, I have two primary apps that I use to view my photos. The first, unsurprisingly, is the Dropbox app. For quick viewing and sharing, I will use Dropbox since that's where all of my photos live. As a Photos app replacement, I use &lt;a href="http://unboundapp.com"&gt;Unbound&lt;/a&gt;. What's great about Unbound is that it treats folders in your Dropbox account like albums. Since my photos are organized this way anyways, I get perfectly created albums that I can view and even cache to my phone for offline viewing.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Dropbox and Unbound" src="https://ryanmo.co/2014/01/11/my-photo-workflow/unbound_dropbox.jpg" /&gt;&lt;/p&gt;
+&lt;h2 id="the-future"&gt;The Future&lt;/h2&gt;
+&lt;p&gt;Dropbox has been doing a great job improving the photo experience. Photo organization is a very personal thing and trying to solve this for the majority is not an easy task. Many companies are trying to do this, and so far there has been no clear winner. As much as I love my folder organization, I would really like to get to a point where I don't even have to worry about where my photos are. The metadata of the photos should be enough for an application or website to organize the photos for me.&lt;/p&gt;
+&lt;p&gt;I mentioned this earlier, but one other thing I would really like to see is a 3rd-party app that does facial recognition and applies tags or some other bit of metadata to the file. Tagging my photos with peoples' names is by far the most manual part of my photos workflow, but also one of the most important to me.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;The GPS data is stored on the SD card, but I haven't taken the time to see if I can add this metadata after importing from Dropbox&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sat, 11 Jan 2014 00:00:00 -0800</pubDate><guid isPermaLink="false">tag:ryanmo.co,2014-01-11:/2014/01/11/my-photo-workflow</guid><category>Tech</category><category>hazel</category><category>automation</category><category>dropbox</category><category>ios</category><category>photos</category></item><item><title>Using Dropbox to Host Images on your Website</title><link>https://ryanmo.co/2013/11/03/dropboxsharedlinks</link><description>&lt;p&gt;I notice a lot of people asking about why they can't get images to display on their website when using &lt;a href="https://www.dropbox.com/help/167"&gt;Dropbox shared links&lt;/a&gt;. Dropbox is a great way to post an image quickly on a forum or as free hosting for your low traffic website, but there are a few things to know.&lt;/p&gt;
+
+
+&lt;p&gt;In the early days, Dropbox offered a Public folder where you could easily serve webpages, images or anything else you want to share to the world. The risk there is that the links to the files were formulaic and anyone could crawl your Public folder looking for things they maybe shouldn't have. This formula looked like this:&lt;/p&gt;
+&lt;p&gt;www.dropbox.com/u/&amp;lt;number&gt;/&amp;lt;name of file&gt;&lt;/p&gt;
+&lt;p&gt;To add a level of security to the shared links, Dropbox now has a hashed value so that someone would then need to know the unique hash as well as the file name. The chances that someone is able to guess both of these within the next 10,000 years is pretty low. The second thing that was added was a preview to your shared links. If you have images, you see a nice gallery in your links and Office documents now have a preview. The downside here is that simple file hosting doesn't work by pasting in the link.&lt;/p&gt;
+&lt;p&gt;To solve this, you just need to change the actual shared link with the link to the file itself. To do this, you just need to replace &lt;code&gt;www.dropbox.com&lt;/code&gt; with &lt;code&gt;dl.dropboxusercontent.com&lt;/code&gt;. This will serve the true file instead of the file wrapped in a preview. For those of you using snippet software like TextExpander, you can make this a lot faster by making a shell script snippet with the following:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
+2
+3
+4
+5&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="nv"&gt;url&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; %clipboard &lt;span class="p"&gt;|&lt;/span&gt; sed &lt;span class="s1"&gt;&amp;#39;s/www.dropbox.com/dl.dropboxusercontent.com/g&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; tr -d &lt;span class="s1"&gt;&amp;#39;\n&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$url&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p&gt;Now an image like&lt;/p&gt;
+&lt;p&gt;https://www.dropbox.com/s/kyjm1pr79g2irfj/Guinness%20Storehouse%20top.jpg&lt;/p&gt;
+&lt;p&gt;turns into this:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="https://dl.dropboxusercontent.com/s/kyjm1pr79g2irfj/Guinness%20Storehouse%20top.jpg" src="https://dl.dropboxusercontent.com/s/kyjm1pr79g2irfj/Guinness%20Storehouse%20top.jpg" /&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 03 Nov 2013 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2013-11-03:/2013/11/03/dropboxsharedlinks</guid><category>Tech</category><category>dropbox</category><category>automation</category></item><item><title>Instascriptogram. Post Instagram pics to Scriptogr.am</title><link>https://ryanmo.co/2013/09/05/instascriptogram</link><description>&lt;p&gt;&lt;strong&gt;[Update 2014-11-19]&lt;/strong&gt;
+I've since moved off of scriptogr.am. The service wasn't working for a long time and doesn't seem to be in active developement. I ended up moving that blog over to a static blog with Pelican similar to this one.&lt;/p&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;Since moving to Dublin, my girlfriend and I have wanted to keep our friends and family up-to-date on everything we've been doing. I recently bought the new Olympus E-P5 and have been taking a lot of pictures. So that everyone knows what we're doing, we decided to share a &lt;a href="http://www.scriptogr.am"&gt;Scriptogr.am&lt;/a&gt; blog and post pictures of our adventures. &lt;/p&gt;
+
+
+&lt;p&gt;Sometimes it's quick and easy to snap a picture on Instagram and share with all your friends, but my parents and family aren't on Instagram, but they know to follow my blog for updates. Instead of having to manually pull the pics down, write up a post and publish it, I used a combination of IFTTT, Dropbox and my server at Macminicolo.net to do all the work for me.&lt;/p&gt;
+&lt;p&gt;The magic starts at IFTTT. I have a &lt;a href="https://ifttt.com/recipes/115652"&gt;recipe&lt;/a&gt; that watched for a particular tag when I post to Instagram. If that tag exists, a text file is saved to my Dropbox account. I have a cron running once an hour&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt; to run the script and check for any new files.&lt;/p&gt;
+&lt;p&gt;One of the only complaints about Scriptogr.am has been that I have to manually hit a publish button before posts will go live. But with their API, the posts are immediate&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2"&gt;2&lt;/a&gt;&lt;/sup&gt;. Now, all of my Instagram adventures (and my girlfriend's) can be posted to our blog for friends and family to follow. Once the post is made, I get a Pushover notification letting me know that a post was made by either me or my girlfriend.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="pushover_instascriptogram" src="https://ryanmo.co/2013/09/05/instascriptogram/pushover_instascriptogram.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;If you're interested in the script, it can be found on Github &lt;a href="https://github.com/rjames86/instascriptogram"&gt;here&lt;/a&gt;. An example of the posts being made can be found at our travel blog &lt;a href="http://keephouseadventures.com/posts/2013/Sep/03_12_44/instagram-pic-for-tuesday-sep-03/"&gt;keephouseadventures.com&lt;/a&gt;&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;I tried using Hazel for this, but I kept getting errors since I wasn't actually processing the file. Any suggestions on this, please let me know!&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;Like what you get from apps like Byword&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Thu, 05 Sep 2013 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2013-09-05:/2013/09/05/instascriptogram</guid><category>Tech</category><category>dropbox</category><category>automation</category><category>ifttt</category><category>photos</category></item><item><title>[Updated] Log Your Instagram Posts with Slogger</title><link>https://ryanmo.co/2013/05/08/instagram_and_slogger</link><description>&lt;hr /&gt;
+&lt;p&gt;&lt;strong&gt;Update 2016-06-23&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As of June 2016, Instagram has changed their API and no longer allows this script to work. Sorry :(&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Update 2014-09-04&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;I recently submitted a new plugin that now comes with Slogger which uses the Instagram API. You can check out my post with more information &lt;a href="{static}../2014-09-04/2014-09-04-instagram-slogger.md"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;I've received a few questions about &lt;a href="https://ifttt.com/recipes/62754"&gt;this&lt;/a&gt; IFTTT recipe which logs my Instagram posts to Day One. There are a few others floating out there, but there are a couple of things that I wanted to have:&lt;/p&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;The Day One entry date is the date the picture was taken&lt;/li&gt;
+&lt;li&gt;The caption is saved in the journal entry&lt;/li&gt;
+&lt;li&gt;Ignore duplicate posts if I also posted to Twitter&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The last point assumes that I'm also using the default Twitter logger. If you want to ignore all of your Instagram tweets, add the following to be on line 112 in the twitterlogger plugin:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;break&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;tweet_text&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;include?&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;instagram&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You can download the Instagram IFTTT Slogger extension &lt;a href="https://ryanmo.co/2013/05/08/instagram_and_slogger/instagram_ifttt.rb"&gt;here&lt;/a&gt;. Simply add it to your plugins directory and run the following once to set up the slogger_config file:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;./slogger -o instagram_ifttt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You'll need to set the location of your IFTTT slogger directory. The plugin will check for any text files and then automatically move them into a "logged" folder once they've been added to Day One. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="https://ryanmo.co/2013/05/08/instagram_and_slogger/dayone_instagram.jpg" /&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Wed, 08 May 2013 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2013-05-08:/2013/05/08/instagram_and_slogger</guid><category>Tech</category><category>slogger</category><category>dropbox</category><category>dayone</category><category>photos</category></item><item><title>Browse Files on Dropbox.com with Alfred 2</title><link>https://ryanmo.co/2013/04/14/browse_on_dropbox</link><description>&lt;p&gt;On a rare occasion, I need to view files in my Dropbox folder on my computer on the website. The most common use case is I want to see the entire structure of a directory. I &lt;a href="https://www.dropbox.com/help/175/"&gt;selectively unsync&lt;/a&gt; a lot of large directories since my MacBook Air has limited hard drive space. I want to quickly go to the Dropbox website and view this particular folder without having to re-navigate to it's location.&lt;/p&gt;
+
+
+&lt;p&gt;To use, navigate to any file/folder from within Alfred and trigger the Actions panel. I have a file filter set up to search specifically my Dropbox folder&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="https://ryanmo.co/2013/04/14/browse_on_dropbox/db_filter.jpg" /&gt; &lt;/p&gt;
+&lt;p&gt;and trigger Actions to browse on Dropbox&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="https://ryanmo.co/2013/04/14/browse_on_dropbox/browse_action.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Remember, you’ll need the &lt;a href="http://www.alfredapp.com/"&gt;Alfred&lt;/a&gt; &lt;a href="http://www.alfredapp.com/powerpack/"&gt;Powerpack&lt;/a&gt; for these extensions to work. Click the following icon to download the Alfred script to your computer:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://dl.dropbox.com/s/lh85xmki4lgeawk/Browse%20on%20Dropbox.alfredworkflow"&gt;&lt;img alt="image" src="https://ryanmo.co/images/alfred_extension.jpg" /&gt;&lt;/a&gt;  &lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 14 Apr 2013 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2013-04-14:/2013/04/14/browse_on_dropbox</guid><category>Tech</category><category>dropbox</category><category>alfred</category></item><item><title>Your .bash_profile everywhere</title><link>https://ryanmo.co/2013/03/31/bashprofile</link><description>&lt;p&gt;I have two computers, one for work and one for personal. I keep mostly everything separate, but one thing I want to always have with me is my terminal environment and aliases. With Dropbox, I can not only access, but edit my .bash_profile from anywhere &lt;em&gt;without&lt;/em&gt; using symlinks.&lt;/p&gt;
+
+
+&lt;p&gt;The first thing to do is figure out where you want to keep your .bash_profile in your Dropbox account. I keep mine in a folder called Sync that's shared between my work and personal Dropbox accounts. To move your .bash_profile, use the following command in Terminal:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;mv ~/.bash_profile ~/path/to/Dropbox/.bash_profile&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Once you've moved it here, create a new .bash_profile in your home directory and add the single line:&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;source ~/that/path/to/.bash_profile&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Thats it! From now on, just point the local .bash_profile to the one location in your Dropbox folder.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ryan M</dc:creator><pubDate>Sun, 31 Mar 2013 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:ryanmo.co,2013-03-31:/2013/03/31/bashprofile</guid><category>Tech</category><category>dropbox</category><category>automation</category><category>bash</category></item></channel></rss>
