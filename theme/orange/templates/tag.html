@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Tag: {{ tag }} - {{ SITENAME }}{% endblock %}
+
+{% block content %}
+<article>
+    <h1>Tag: {{ tag }}</h1>
+    <div class="tag-articles">
+        {% for article in articles %}
+        <div class="article-summary">
+            <h2><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></h2>
+            <div class="article-meta">
+                <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time>
+                {% if article.author %}
+                by {{ article.author }}
+                {% endif %}
+                {% if article.category %}
+                in <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
+                {% endif %}
+            </div>
+            {% if article.summary %}
+            <div class="article-summary-content">
+                {{ article.summary }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</article>
+{% endblock %}
