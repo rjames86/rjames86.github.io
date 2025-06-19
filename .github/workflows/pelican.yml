@@ -15,5 +15,3 @@ jobs:
     with:
       settings: "configs/publishconf.py"
       requirements: "requirements.txt"
-    secrets:
-      GH_PAGES_CNAME: ${{ secrets.DOMAIN_CNAME }}
