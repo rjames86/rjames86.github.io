@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 def set_default_settings(settings):
     settings.setdefault('TAG_CLOUD_STEPS', 4)
     settings.setdefault('TAG_CLOUD_MAX_ITEMS', 100)
-    settings.setdefault('TAG_CLOUD_SORTING', 'random')
+    settings.setdefault('TAG_CLOUD_SORTING', 'size-rev')
 
 def init_default_config(pelican):
     from pelican.settings import DEFAULT_CONFIG

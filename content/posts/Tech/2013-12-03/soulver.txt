@@ -1,2 +1,0 @@
-:::html
-soulver://new?text=x%20%3D%20[prompt-num:Text]%0Ax%20euro%20to%20usd%0Ax%20gbp%20to%20usd%0A----------------%0Ax%20usd%20to%20euro%0Ax%20usd%20to%20gbp%0A----------------&title=Currency%20Conversion

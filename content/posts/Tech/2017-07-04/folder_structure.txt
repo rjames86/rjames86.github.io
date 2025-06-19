@@ -1,6 +1,0 @@
-::plaintext
-2017-07-04/ # folder for post is the date
-├── exploring_pelican.md # this post
-├── code_snippet.txt # this folder structure example as a code snippet
-└── some_image.png
-

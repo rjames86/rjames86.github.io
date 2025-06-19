@@ -14,6 +14,39 @@
         in <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
         {% endif %}
     </div>
+    
+    {% if article.series %}
+    <div class="series-info">
+        <p>This post is part {{ article.series.index }} of the "{{ article.series.name }}" series:</p>
+        <ol class="series-parts">
+            {% for part_article in article.series.all %}
+                <li {% if part_article == article %}class="current"{% endif %}>
+                    <a href="{{ SITEURL }}/{{ part_article.url }}">{{ part_article.title }}</a>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+    {% else %}
+    <!-- Debug: No series found for this article -->
+    {% endif %}
+    
     {{ article.content }}
+    
+    {% if article.series %}
+    <div class="series-navigation">
+        {% if article.series.previous %}
+        <div class="series-prev">
+            <p>← Previous in series:</p>
+            <a href="{{ SITEURL }}/{{ article.series.previous.url }}">{{ article.series.previous.title }}</a>
+        </div>
+        {% endif %}
+        {% if article.series.next %}
+        <div class="series-next">
+            <p>Next in series: →</p>
+            <a href="{{ SITEURL }}/{{ article.series.next.url }}">{{ article.series.next.title }}</a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
 </article>
 {% endblock %}

@@ -52,6 +52,12 @@ MARKDOWN = {
         "markdown.extensions.footnotes",
         "markdown.extensions.toc",
     ],
+    "extension_configs": {
+        "markdown.extensions.codehilite": {
+            "linenums": False,
+            "css_class": "highlight",
+        },
+    },
     "output_format": "html5",
 }
 
@@ -61,17 +67,18 @@ PAGE_PATHS = ["pages"]
 OUTPUT_SOURCES = True
 OUTPUT_SOURCES_EXTENSION = ".txt"
 RELATIVE_URLS = True
-PLUGIN_PATHS = ["../plugins"]
+PLUGIN_PATHS = [os.path.join(BASE_BLOG_PATH, "plugins")]
 PLUGINS = [
     "code_replacement",
     "drafts_page",
     "json_feed",
+    "series",
     "summary",
     "tag_cloud",
 ]
 SITENAME = "ryanmo.co"
 SITEURL = "http://localhost:8000"
-STATIC_PATHS = ["downloads", "extra", "images", "posts"]
+STATIC_PATHS = ["downloads", "extra", "images", "assets"]
 TIMEZONE = "America/Los_Angeles"
 WITH_FUTURE_DATES = False
 CACHE_CONTENT = False
