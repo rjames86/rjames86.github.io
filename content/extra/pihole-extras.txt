@@ -2,5 +2,5 @@
 discovery.meethue.com
 us.lgtvsdp.com
 api.thetake.com
-us.rdx2.|gtvsdp.com
+us.rdx2.lgtvsdp.com
 www.ueiwsp.com
