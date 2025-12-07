@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} - {{ SITENAME }}{% endblock %}
+
+{% block content %}
+<article>
+    <header class="article-header">
+        <h1>{{ article.title }}</h1>
+        <div class="article-meta">
+            <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time>
+            {% if article.author %}
+            <span>by {{ article.author }}</span>
+            {% endif %}
+            {% if article.category %}
+            <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
+            {% endif %}
+        </div>
+    </header>
+
+    {% if article.series %}
+    <div class="series-info">
+        <div class="series-header">
+            <h3>Series: {{ article.series.name }}</h3>
+            <p>Part {{ article.series.index }} of {{ article.series.all|length }}</p>
+        </div>
+        <ol class="series-parts">
+            {% for part_article in article.series.all %}
+                <li {% if part_article == article %}class="current"{% endif %}>
+                    <a href="{{ SITEURL }}/{{ part_article.url }}">{{ part_article.title }}</a>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+    {% endif %}
+
+    <div class="article-content">
+        {{ article.content }}
+    </div>
+
+    {% if article.series %}
+    <nav class="series-navigation">
+        {% if article.series.previous %}
+        <div class="series-prev">
+            <span class="nav-label">← Previous in series</span>
+            <a href="{{ SITEURL }}/{{ article.series.previous.url }}" class="nav-title">{{ article.series.previous.title }}</a>
+        </div>
+        {% endif %}
+        {% if article.series.next %}
+        <div class="series-next">
+            <span class="nav-label">Next in series →</span>
+            <a href="{{ SITEURL }}/{{ article.series.next.url }}" class="nav-title">{{ article.series.next.title }}</a>
+        </div>
+        {% endif %}
+    </nav>
+    {% endif %}
+</article>
+{% endblock %}

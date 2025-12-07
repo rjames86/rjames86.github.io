@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for article in articles_page.object_list %}
+<article>
+    <header class="article-header">
+        <h2><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></h2>
+        <div class="article-meta">
+            <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time>
+            {% if article.author %}
+            <span>by {{ article.author }}</span>
+            {% endif %}
+            {% if article.category %}
+            <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
+            {% endif %}
+        </div>
+    </header>
+    {% if article.summary %}
+    <div class="summary">
+        {{ article.summary }}
+    </div>
+    {% endif %}
+</article>
+{% endfor %}
+
+{% if articles_page.has_other_pages() %}
+<div class="pagination">
+    {% if articles_page.has_previous() %}
+    <a href="{{ SITEURL }}/{{ articles_previous_page.url }}">&larr; Previous</a>
+    {% endif %}
+    {% if articles_page.has_next() %}
+    <a href="{{ SITEURL }}/{{ articles_next_page.url }}">Next &rarr;</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
