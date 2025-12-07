@@ -82,6 +82,26 @@ h2 a:hover {
     transition: all 0.2s ease;
 }
 
+/* Pagination button styles */
+.pagination-btn {
+    display: inline-block;
+    text-decoration: none;
+    background: var(--bg-color);
+    color: var(--accent-color) !important;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    border: 2px solid var(--accent-color);
+    transition: all 0.2s ease;
+    font-weight: 500;
+    margin: 0 0.5rem;
+}
+
+.pagination-btn:hover {
+    background: var(--accent-color);
+    color: white !important;
+    transform: translateY(-1px);
+}
+
 /* Navigation banner and links */
 .nav-banner {
     position: fixed;

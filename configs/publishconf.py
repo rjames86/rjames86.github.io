@@ -44,6 +44,8 @@ STATIC_PATHS.append("json")
 
 ARTICLE_URL = "{date:%Y}/{date:%m}/{date:%d}/{slug}"
 
+LOAD_CONTENT_CACHE = True
+
 # Theme
 
 TESTING = False
