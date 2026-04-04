@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connected — Episode 600 Clip Show</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+  :root {
+    --myke:    #a78bfa; --fed:     #fbbf24; --stephen: #60a5fa; --unk: #9ca3af;
+    --bg:      #0a0a0f; --surface: #13131a; --border:  #1e1e2e;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:#e2e8f0; font-family:'Inter',sans-serif; min-height:100vh; overflow-x:hidden; }
+
+  /* INTRO */
+  #intro {
+    position:fixed; inset:0; z-index:100; background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    transition:opacity .8s;
+  }
+  #intro.gone { opacity:0; pointer-events:none; }
+  .relay-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:6px; text-transform:uppercase; color:#2d2d40; margin-bottom:6px; }
+  .big-600 {
+    font-size:clamp(90px,19vw,190px); font-weight:900; line-height:1; letter-spacing:-5px;
+    background:linear-gradient(130deg,#a78bfa 0%,#60a5fa 45%,#fbbf24 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    animation:glow 3s ease-in-out infinite;
+  }
+  @keyframes glow {
+    0%,100% { filter:drop-shadow(0 0 30px rgba(167,139,250,.2)); }
+    50%      { filter:drop-shadow(0 0 60px rgba(167,139,250,.5)); }
+  }
+  .show-name { font-size:clamp(14px,2.5vw,24px); font-weight:300; letter-spacing:10px; text-transform:uppercase; color:#6b7280; }
+  .clip-show-tag { font-size:11px; font-weight:700; letter-spacing:8px; text-transform:uppercase; color:#fbbf24; }
+  .hosts-row { display:flex; gap:28px; margin-top:14px; }
+  .host-chip { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#374151; }
+  .host-pip { width:7px; height:7px; border-radius:50%; }
+  .start-btn {
+    margin-top:36px; padding:13px 42px; background:transparent;
+    border:1px solid #252535; border-radius:3px; color:#9ca3af;
+    font-family:'Inter',sans-serif; font-size:12px; font-weight:600;
+    letter-spacing:4px; text-transform:uppercase; cursor:pointer; transition:all .2s;
+  }
+  .start-btn:hover { border-color:#a78bfa; color:#a78bfa; box-shadow:0 0 24px rgba(167,139,250,.15); }
+
+  /* FLASH MONTAGE */
+  #montage {
+    position:fixed; inset:0; z-index:90; background:var(--bg);
+    display:none; align-items:center; justify-content:center;
+    flex-direction:column; gap:20px;
+  }
+  #montage.on { display:flex; }
+  .m-meta { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#2d2d40; opacity:0; transition:opacity .2s; }
+  .m-quote {
+    font-size:clamp(20px,3.8vw,46px); font-weight:700; text-align:center;
+    max-width:72vw; line-height:1.3;
+    opacity:0; transform:translateY(6px); transition:opacity .2s ease, transform .2s ease;
+  }
+  .m-speaker { font-size:11px; font-weight:700; letter-spacing:5px; text-transform:uppercase; opacity:0; transition:opacity .2s; }
+  .m-audio { opacity:0; transition:opacity .3s; margin-top:4px; }
+  .m-audio audio { height:28px; opacity:.55; filter:invert(1) hue-rotate(180deg); }
+  .m-quote.show,.m-speaker.show,.m-meta.show,.m-audio.show { opacity:1; transform:translateY(0); }
+  .m-bar { position:fixed; bottom:0; left:0; height:2px; background:#a78bfa; width:0%; transition:width linear; }
+  .m-close { position:fixed; top:22px; right:28px; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#252535; cursor:pointer; font-weight:600; background:none; border:none; font-family:'Inter',sans-serif; transition:color .2s; }
+  .m-close:hover { color:#6b7280; }
+  .m-hint { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#1f2937; pointer-events:none; white-space:nowrap; }
+  .m-pause-label { position:fixed; top:22px; left:28px; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#1f2937; font-weight:600; }
+  .m-counter { position:fixed; top:22px; left:50%; transform:translateX(-50%); font-family:'JetBrains Mono',monospace; font-size:10px; color:#1f2937; letter-spacing:2px; }
+
+  /* MAIN */
+  #main { opacity:0; transition:opacity .8s; padding-bottom:100px; }
+  #main.show { opacity:1; }
+  .topbar {
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 32px; background:rgba(10,10,15,.96); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-title { font-size:11px; font-weight:700; letter-spacing:5px; text-transform:uppercase; color:#374151; }
+  .topbar-title em { color:#a78bfa; font-style:normal; }
+  .btn-row { display:flex; gap:10px; }
+  .tbtn {
+    padding:7px 14px; background:transparent; border:1px solid var(--border);
+    border-radius:3px; color:#4b5563; font-family:'Inter',sans-serif;
+    font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+    cursor:pointer; transition:all .2s;
+  }
+  .tbtn:hover,.tbtn.on { border-color:#a78bfa; color:#a78bfa; background:rgba(167,139,250,.07); }
+
+  /* GRID */
+  .section-hdr { display:flex; align-items:center; gap:20px; padding:44px 32px 20px; }
+  .section-label { font-size:10px; font-weight:700; letter-spacing:6px; text-transform:uppercase; color:#374151; white-space:nowrap; }
+  .section-hr { flex:1; height:1px; background:var(--border); }
+  .grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+    gap:1px; margin:0 32px; border:1px solid var(--border); border-radius:8px; overflow:hidden;
+  }
+  .card {
+    background:var(--surface); padding:22px 26px;
+    display:flex; flex-direction:column; gap:12px; transition:background .2s;
+  }
+  .card:hover { background:#15151f; }
+  .card.opener { grid-column:1/-1; padding:34px; }
+  .card.opener .q-text { font-size:18px; font-weight:300; line-height:1.75; color:#e2e8f0; }
+  .card-top { display:flex; align-items:center; justify-content:space-between; }
+  .spk-badge { display:flex; align-items:center; gap:7px; font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; }
+  .spk-pip { width:6px; height:6px; border-radius:50%; }
+  .ep-num { font-family:'JetBrains Mono',monospace; font-size:9px; color:#2d2d40; letter-spacing:1px; }
+  .q-text { font-size:14px; line-height:1.65; color:#c4cad6; }
+  .q-text::before { content:"“"; color:#2d2d40; font-size:20px; line-height:0; vertical-align:-4px; margin-right:1px; }
+  .q-text::after  { content:"”"; color:#2d2d40; font-size:20px; line-height:0; vertical-align:-4px; margin-left:1px; }
+  .card-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--border); padding-top:10px; gap:12px; }
+  .ep-title { font-size:10px; color:#2d2d40; font-style:italic; font-family:'JetBrains Mono',monospace; flex:1; }
+  .play-btn {
+    flex-shrink:0; padding:4px 10px; background:transparent; border:1px solid #252535;
+    border-radius:2px; color:#374151; font-family:'Inter',sans-serif;
+    font-size:9px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+    cursor:pointer; transition:all .2s;
+  }
+  .play-btn:hover { border-color:#a78bfa; color:#a78bfa; background:rgba(167,139,250,.07); }
+  .play-btn.playing { border-color:#4ade80; color:#4ade80; background:rgba(74,222,128,.07); }
+
+  .myke     { color:var(--myke);    } .myke .spk-pip     { background:var(--myke);    }
+  .federico { color:var(--fed);     } .federico .spk-pip { background:var(--fed);     }
+  .stephen  { color:var(--stephen); } .stephen .spk-pip  { background:var(--stephen); }
+  .unknown  { color:var(--unk);     } .unknown .spk-pip  { background:var(--unk);     }
+
+  .site-footer { text-align:center; padding:60px 32px; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#1a1a2e; }
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="relay-label">Relay FM &middot; Est. 2014</div>
+  <div class="big-600">600</div>
+  <div class="show-name">Connected</div>
+  <div class="clip-show-tag">Clip Show</div>
+  <div class="hosts-row">
+    <div class="host-chip"><span class="host-pip" style="background:var(--myke)"></span>Myke</div>
+    <div class="host-chip"><span class="host-pip" style="background:var(--fed)"></span>Federico</div>
+    <div class="host-chip"><span class="host-pip" style="background:var(--stephen)"></span>Stephen</div>
+  </div>
+  <button class="start-btn" onclick="boot()">&#9654;&ensp;Play Clip Show</button>
+</div>
+
+<div id="montage">
+  <div class="m-meta"    id="mm"></div>
+  <div class="m-quote"   id="mq"></div>
+  <div class="m-speaker" id="ms"></div>
+  <div class="m-audio"   id="ma"></div>
+  <div class="m-bar"     id="mb"></div>
+  <button class="m-close" onclick="closeMontage()">ESC &middot; Close</button>
+  <div class="m-hint">Click &middot; Space to pause &middot; &larr;&rarr; navigate</div>
+  <div class="m-pause-label" id="mpause"></div>
+  <div class="m-counter"     id="mcounter"></div>
+</div>
+
+<div id="main">
+  <div class="topbar">
+    <div class="topbar-title">Connected &middot; <em>600</em> &middot; Clip Show</div>
+    <div class="btn-row">
+      <button class="tbtn" onclick="launchMontage()">&#9889; Flash Mode</button>
+      <button class="tbtn" id="shuf-btn" onclick="toggleShuffle()">Shuffle</button>
+    </div>
+  </div>
+  <div id="body"></div>
+  <div class="site-footer">Connected &middot; Relay FM &middot; A tribute to 600 episodes</div>
+</div>
+
+<script>
+const CLIPS = [
+  {
+    "episode": 4,
+    "title": "Stabbed by a Glass Corner",
+    "speaker": "Federico",
+    "text": "Ah, we did it. You can't do that to us, Mike. You have to do it. One at a time.",
+    "start": "00:00:41,000",
+    "end": "00:00:50,120",
+    "note": "Federico furious that Myke introduced both guests at once instead of one at a time",
+    "audio_file": "ep004_0.mp3"
+  },
+  {
+    "episode": 4,
+    "title": "Stabbed by a Glass Corner",
+    "speaker": "Myke",
+    "text": "They're also dropping the Nokia brand and they're gonna buy Minecraft. For two billion dollars. So maybe they're just gonna make the Windows interface look like Minecraft.",
+    "start": "00:01:37,180",
+    "end": "00:02:01,120",
+    "note": "Myke and Federico riffing on Microsoft's chaotic acquisition strategy",
+    "audio_file": "ep004_1.mp3"
+  },
+  {
+    "episode": 5,
+    "title": "Nothing Was Sacred",
+    "speaker": "Federico",
+    "text": "Our friend Mike is in Italy and he decided to not visit me. He's in my same country, but for some reason he doesn't want to see me. He's in a completely different part of Italy. Several hours apart. And I totally understand because the part he's in right now is much better than where I live.",
+    "start": "00:00:28,740",
+    "end": "00:00:58,980",
+    "note": "Federico guilt-tripping Myke for being in Italy without visiting, then undermining himself completely",
+    "audio_file": "ep005_2.mp3"
+  },
+  {
+    "episode": 6,
+    "title": "The Divine Comedy of Homescreens",
+    "speaker": "Federico",
+    "text": "I mean, if Dante were to write the Divine Comedy these days, I'm pretty sure the rearranging icons on the iOS home screen would be a circle of hell.",
+    "start": "00:00:00,320",
+    "end": "00:00:10,080",
+    "note": "Federico elevates iOS home screen icon rearrangement to a Dante-level circle of hell",
+    "audio_file": null
+  },
+  {
+    "episode": 8,
+    "title": "Squidges",
+    "speaker": "Myke",
+    "text": "It also does a one-handed keyboard where it kind of like squidges the keyboard into the bottom right. Squidges. I'm going with squidges. I can't think what else you'd say. Squishes? No. Squidges.",
+    "start": "00:16:00,680",
+    "end": "00:16:20,860",
+    "note": "The birth of the word 'squidges' \u2014 which became the episode title",
+    "audio_file": "ep008_4.mp3"
+  },
+  {
+    "episode": 10,
+    "title": "An Italian Stephen",
+    "speaker": "Federico",
+    "text": "So maybe, you know, I'm becoming in a way an Italian Stephen.",
+    "start": "00:00:07,600",
+    "end": "00:00:12,400",
+    "note": "Federico realising he's accumulating old hardware just like Stephen \u2014 the episode title moment",
+    "audio_file": null
+  },
+  {
+    "episode": 14,
+    "title": "The Old Mac Paladin",
+    "speaker": "Myke",
+    "text": "Force Touch and Digital Crown are the two worst names Apple has ever given anything.",
+    "start": "00:00:02,960",
+    "end": "00:00:08,560",
+    "note": "Myke's verdict on Apple's Apple Watch naming, delivered with complete certainty",
+    "audio_file": null
+  },
+  {
+    "episode": 17,
+    "title": "On Principle, I Shunned These Ideas",
+    "speaker": "Federico",
+    "text": "On principle, I would have shunned these ideas. Especially the blue line \u2014 I have no interest in you, leave me alone, never come back. It's just so dumb. What are you doing? Do you work for Twitter, by the way? I just want to double check. You don't work for them, right? Okay cool. I really don't.",
+    "start": "01:13:33,699",
+    "end": "01:13:58,219",
+    "note": "Federico's rant against Twitter features he despises \u2014 but has apparently been using anyway",
+    "audio_file": "ep017_7.mp3"
+  },
+  {
+    "episode": 18,
+    "title": "Conceptually Sad",
+    "speaker": "Federico",
+    "text": "About this \u2014 not physically sad, but just like conceptually sad. If that's a thing.",
+    "start": "00:00:00,240",
+    "end": "00:00:06,720",
+    "note": "Federico inventing a new emotional register: conceptually sad. The episode title.",
+    "audio_file": null
+  },
+  {
+    "episode": 19,
+    "title": "Click on the Blue E",
+    "speaker": "Myke",
+    "text": "Here's what you gotta do. Go down yonder to the fancy City Boy coffee shop. Ask the nice young man to show you the computer box in the back room. They call it Internet Cafe. Click on the blue E on the background. Now it's gonna make some noise like robots making love, but eventually you'll be able to type.",
+    "start": "00:07:00,180",
+    "end": "00:07:45,260",
+    "note": "Myke's fake-Southern tutorial on how to use Internet Explorer \u2014 the episode title",
+    "audio_file": "ep019_9.mp3"
+  },
+  {
+    "episode": 21,
+    "title": "50% My Duty",
+    "speaker": "Federico",
+    "text": "It's nineteen forty-five in Tennessee. Uh, in some ways that's not untrue.",
+    "start": "00:00:54,600",
+    "end": "00:01:09,160",
+    "note": "Myke roasting Stephen about Tennessee being stuck in the past; Stephen's response makes it",
+    "audio_file": "ep021_10.mp3"
+  },
+  {
+    "episode": 21,
+    "title": "50% My Duty",
+    "speaker": "Myke",
+    "text": "So what did you do at like, at midnight? Did you just stare at the OS X installer? Oh, I was in bed.",
+    "start": "00:01:25,860",
+    "end": "00:01:42,280",
+    "note": "Myke asking what Stephen did for New Year's Eve, assuming it involved a Mac",
+    "audio_file": "ep021_11.mp3"
+  },
+  {
+    "episode": 21,
+    "title": "50% My Duty",
+    "speaker": "Federico",
+    "text": "Yeah, Phil Schiller's just outside someone's house with a baseball bat waiting for them to come out.",
+    "start": "00:09:30,220",
+    "end": "00:09:56,500",
+    "note": "Federico's Godfather-style explanation of Apple's app rejection policy",
+    "audio_file": "ep021_12.mp3"
+  },
+  {
+    "episode": 34,
+    "title": "Crazy Uncle Figure",
+    "speaker": "Stephen",
+    "text": "I'm gonna write that down \u2014 that you apparently can buy old computers. And I'm gonna look into this for next week.",
+    "start": "00:01:32,500",
+    "end": "00:01:46,280",
+    "note": "Stephen sarcastically 'writing down' Myke's revelation that vintage Macs can be purchased",
+    "audio_file": "ep034_13.mp3"
+  },
+  {
+    "episode": 34,
+    "title": "Crazy Uncle Figure",
+    "speaker": "Stephen",
+    "text": "I do have an exterior garage workshop that I could turn into a museum. Or I could put the family out there and turn the house into a museum. Both really good ideas.",
+    "start": "00:02:17,280",
+    "end": "00:02:41,800",
+    "note": "Stephen seriously considering evicting his family to house his vintage Mac collection",
+    "audio_file": "ep034_14.mp3"
+  },
+  {
+    "episode": 37,
+    "title": "Artisanal Emoji",
+    "speaker": "Stephen",
+    "text": "If anybody is ever gonna make a Connected clip show, 'Everyone Needs a Hobby' is potentially my favorite clip of all time. That was the sickest of burns.",
+    "start": "00:35:25,780",
+    "end": "00:35:53,280",
+    "note": "Stephen predicts a clip show and names his favorite moment \u2014 almost too perfect as an opener",
+    "audio_file": "ep037_15.mp3"
+  },
+  {
+    "episode": 37,
+    "title": "Artisanal Emoji",
+    "speaker": "Federico",
+    "text": "I don't want these little shaking guys. I just want my traditional, classical, artisanal emoji.",
+    "start": "01:05:47,359",
+    "end": "01:05:52,640",
+    "note": "Federico coining 'artisanal emoji' \u2014 the phrase that named the episode",
+    "audio_file": "ep037_16.mp3"
+  },
+  {
+    "episode": 41,
+    "title": "Seven Minutes of Empty Exercise",
+    "speaker": "Federico",
+    "text": "So I set the watch to an outdoor walk workout and I walked alone on my balcony for seven minutes until I filled the green circle. So if you happen to be one of my neighbors from the other buildings and you were watching a person walking on the balcony very intensively for seven minutes \u2014 that was me. And I'm not crazy. I was just trying to fill my exercise rings.",
+    "start": "00:20:37,200",
+    "end": "00:21:04,960",
+    "note": "Federico doing laps on his balcony to close his Watch rings \u2014 the episode title",
+    "audio_file": "ep041_17.mp3"
+  },
+  {
+    "episode": 52,
+    "title": "Random Pressure Lottery",
+    "speaker": "Federico",
+    "text": "It's just that Steven has the voice of an adult, whereas you're more like... you know, when you watch a TV show and you can tell it's not an American TV show? That's kind of what you are.",
+    "start": "00:00:44,140",
+    "end": "00:01:15,880",
+    "note": "Federico's devastating comparison of Myke's voice to a British MTV show, delivered with love",
+    "audio_file": "ep052_18.mp3"
+  },
+  {
+    "episode": 54,
+    "title": "Tim is the New Cook",
+    "speaker": "Federico",
+    "text": "It was the summer of the selfie stick. Everybody \u2014 literally every group of friends had one. There were people taking selfies into the sea with a waterproof case. Groups of ten people. Couples at restaurants. At one point I saw someone using the selfie stick as a walking stick in Positano. That felt quite original as a use case.",
+    "start": "00:47:06,660",
+    "end": "00:48:09,540",
+    "note": "Federico's epic oral history of selfie sticks on Italian vacation",
+    "audio_file": "ep054_19.mp3"
+  },
+  {
+    "episode": 54,
+    "title": "Tim is the New Cook",
+    "speaker": "Federico",
+    "text": "What's even more ridiculous is that I forgot to bring my selfie stick.",
+    "start": "00:53:30,359",
+    "end": "00:54:04,160",
+    "note": "The perfect punchline: Federico observed the selfie stick phenomenon obsessively, then forgot his own",
+    "audio_file": "ep054_20.mp3"
+  },
+  {
+    "episode": 56,
+    "title": "My Feeling About This is That I'm Jealous",
+    "speaker": "Myke",
+    "text": "BlaBlaCar has just raised a hundred and sixty million dollars of funding and have a valuation at one point two billion dollars. Which puts them in a unique class of businesses, and one that I think quite frankly we can take all the credit for. The Connected episode where I described the BlaBlaCar service clearly pushed investors over the edge and convinced them to give BlaBlaCar money.",
+    "start": "00:02:20,480",
+    "end": "00:03:25,439",
+    "note": "Myke claiming full personal credit for BlaBlaCar's $1.2B valuation based on one podcast mention",
+    "audio_file": "ep056_21.mp3"
+  },
+  {
+    "episode": 58,
+    "title": "Wake up in a Gentle Mood",
+    "speaker": "Federico",
+    "text": "My girlfriend is a normal person and I'm lazy. I don't want to be woken up by an alarm, either from my phone or from my watch. I like to be woken up by my girlfriend with a smile and a cup of espresso. That's how I like to be working.",
+    "start": "00:02:15,140",
+    "end": "00:04:31,460",
+    "note": "Federico's fully automated girlfriend-as-wake-up-service system, explained with complete sincerity",
+    "audio_file": "ep058_22.mp3"
+  },
+  {
+    "episode": 60,
+    "title": "Driving on a Vespa in a Landscape of Pastel Colors",
+    "speaker": "Myke",
+    "text": "I could picture you driving on a Vespa in a landscape of pastel colors. It's a dream of mine, Federico. But you don't drive, so that's why it's all a dream.",
+    "start": "00:14:36,120",
+    "end": "00:14:54,780",
+    "note": "The image that became the episode title, immediately undercut by the fact Federico can't drive",
+    "audio_file": "ep060_23.mp3"
+  },
+  {
+    "episode": 62,
+    "title": "Siri Like the Butler",
+    "speaker": "Federico",
+    "text": "Kinda, basically, Siri like a butler, you know.",
+    "start": "00:00:00,240",
+    "end": "00:00:04,080",
+    "note": "Federico's vision for HomeKit: Siri as a formal butler managing the household",
+    "audio_file": null
+  },
+  {
+    "episode": 63,
+    "title": "The App Is Named App",
+    "speaker": "Stephen",
+    "text": "My app is named App.",
+    "start": "00:00:01,520",
+    "end": "00:00:03,120",
+    "note": "Stephen's app for managing his vintage Mac collection. Its name is App. The episode title.",
+    "audio_file": null
+  },
+  {
+    "episode": 67,
+    "title": "Being in Charge of a Space Rocket",
+    "speaker": "Federico",
+    "text": "Being in charge of a space rocket.",
+    "start": "00:00:00,240",
+    "end": "00:00:02,880",
+    "note": "Federico's description of managing his Workflow automation setup \u2014 gave the episode its title",
+    "audio_file": null
+  },
+  {
+    "episode": 69,
+    "title": "Snoozepocalypse",
+    "speaker": "Stephen",
+    "text": "They're all gone forever and they're not coming back. We can all look forward to Snoozepocalypse on February 26th.",
+    "start": "01:11:02,780",
+    "end": "01:11:15,700",
+    "note": "Stephen's apocalyptic farewell to the snooze button",
+    "audio_file": "ep069_27.mp3"
+  },
+  {
+    "episode": 73,
+    "title": "Capital D for the Big Smile",
+    "speaker": "Federico",
+    "text": "I only care about emotions, you know, like smiles and hearts and monkeys for some reason.",
+    "start": "00:00:02,960",
+    "end": "00:00:08,560",
+    "note": "Federico's complete emoji philosophy: smiles, hearts, and for reasons he cannot explain, monkeys",
+    "audio_file": null
+  },
+  {
+    "episode": 85,
+    "title": "Pok\u00e9dex of iMacs",
+    "speaker": "Federico",
+    "text": "No doubt there are people who are already writing emails to us saying this is ridiculous, just use a Mac \u2014 and I would tell you to stop writing that email.",
+    "start": "00:51:22,779",
+    "end": "00:51:31,339",
+    "note": "Federico preemptively dismisses all criticism of his iPad-only workflow with maximum confidence",
+    "audio_file": "ep085_29.mp3"
+  },
+  {
+    "episode": 98,
+    "title": "My Brain is Cruising eBay at Night",
+    "speaker": "Stephen",
+    "text": "My brain populated the shelves of this Dreamland Apple Museum with models and machines on my wish list. So basically my brain is cruising eBay at night, I guess, is what's happening now.",
+    "start": "00:00:00,640",
+    "end": "00:00:06,320",
+    "note": "Stephen reveals his subconscious is just eBay, browsing vintage Macs while he sleeps",
+    "audio_file": null
+  },
+  {
+    "episode": 103,
+    "title": "No Such Thing as a Sticker Emergency",
+    "speaker": "Federico",
+    "text": "There is no such thing as a sticker emergency.",
+    "start": "00:00:05,440",
+    "end": "00:00:07,680",
+    "note": "Federico delivers the episode title as a calm, authoritative fact \u2014 immediately contradicted by everything around it",
+    "audio_file": null
+  },
+  {
+    "episode": 107,
+    "title": "Bathtub Full of Espresso",
+    "speaker": "Federico",
+    "text": "I'm not in a bathtub full of espresso, but I feel like we're approaching that point quite quickly by now.",
+    "start": "00:00:22,920",
+    "end": "00:00:34,720",
+    "note": "Federico's opening check-in, said with complete sincerity \u2014 the episode title",
+    "audio_file": "ep107_32.mp3"
+  },
+  {
+    "episode": 168,
+    "title": "My Bedroom Has Become a Museum",
+    "speaker": "Stephen",
+    "text": "My bedroom has sort of become like a museum. There's like a guided tour, and whenever a friend comes over, it's like \u2014 go visit my nightstand.",
+    "start": "00:44:03,760",
+    "end": "00:44:15,000",
+    "note": "Stephen has turned his nightstand into a museum exhibit with guided tours \u2014 the episode title",
+    "audio_file": "ep168_33.mp3"
+  },
+  {
+    "episode": 190,
+    "title": "The Robot Should Keep Its Mouth Shut",
+    "speaker": "Myke",
+    "text": "Like the robot should keep its mouth shut in my opinion. Dumb robot. Who does he think he is? Also I don't want it to murder anybody.",
+    "start": "00:46:31,760",
+    "end": "00:46:45,740",
+    "note": "Myke's passionate argument that home security robots should be silent and not commit murder",
+    "audio_file": "ep190_34.mp3"
+  },
+  {
+    "episode": 212,
+    "title": "NanoHippo",
+    "speaker": "Federico",
+    "text": "I would like to exclude myself from this narrative that I've not wanted to be a part of since two years.",
+    "start": "00:02:38,160",
+    "end": "00:02:44,000",
+    "note": "Federico formally recusing himself from an ongoing bit with slightly broken English that makes it perfect",
+    "audio_file": "ep212_35.mp3"
+  },
+  {
+    "episode": 225,
+    "title": "The Bear Will Charge You",
+    "speaker": "Myke",
+    "text": "I feel like you need a timid animal \u2014 like, it's otterish or something. I'm otterish on Apple Stock.",
+    "start": "00:08:20,920",
+    "end": "00:08:40,000",
+    "note": "Myke invents 'otterish' as a new stock market position \u2014 the hosts don't understand bull vs bear but they're trying",
+    "audio_file": "ep225_36.mp3"
+  },
+  {
+    "episode": 253,
+    "title": "Jeff Would Absolutely Destroy Me",
+    "speaker": "Myke",
+    "text": "Jeff looks like he could throw down. Jeff would absolutely destroy me in a fight. He would. He really would.",
+    "start": "01:09:07,980",
+    "end": "01:09:20,120",
+    "note": "Myke's confident and completely unprompted assessment of his own physical inferiority to Jeff",
+    "audio_file": "ep253_37.mp3"
+  },
+  {
+    "episode": 284,
+    "title": "stevensmerch.com",
+    "speaker": "Federico",
+    "text": "Today it picked up out of nowhere a phone number and started calling it. I had to rush to the HomePod and touch the top to say stop because I panicked. And Sylvia started yelling as usual at the thing and she told me: you make a decision \u2014 either you disable Siri, or I will unplug them all and throw them in the trash.",
+    "start": "00:19:30,519",
+    "end": "00:20:09,659",
+    "note": "Federico's HomePod spontaneously starts calling random numbers; Sylvia issues a nuclear ultimatum",
+    "audio_file": "ep284_38.mp3"
+  },
+  {
+    "episode": 287,
+    "title": "Rub a Dub Dub, My Friend",
+    "speaker": "Stephen",
+    "text": "The heart wants what the heart wants, and the heart wanted a G4 Cube over the 13-inch MacBook Air.",
+    "start": "00:00:00,080",
+    "end": "00:00:05,600",
+    "note": "Stephen justifying an irrational vintage Mac purchase using the language of romantic desire",
+    "audio_file": null
+  },
+  {
+    "episode": 290,
+    "title": "You Strike Me as a Wheel Guy",
+    "speaker": "Myke",
+    "text": "Four wheels, so that's a hundred and seventy-five dollars a wheel. $700 for four wheels. They don't even have brakes. This just rolls away.",
+    "start": "01:01:55,660",
+    "end": "01:02:16,720",
+    "note": "Myke on Apple's $700 Mac Pro wheels that cannot stop rolling \u2014 the value proposition",
+    "audio_file": "ep290_40.mp3"
+  },
+  {
+    "episode": 291,
+    "title": "The Scrooge McDuck of Computers",
+    "speaker": "Myke",
+    "text": "There are over a hundred computers in Steven's house. For essentially you and your wife \u2014 because you have three kids, and your wife is likely only gonna use like a MacBook and an iPad \u2014 so you have a hundred and one computers for yourself.",
+    "start": "00:28:17,860",
+    "end": "00:29:08,280",
+    "note": "Myke methodically calculating that Stephen has ~101 computers allocated to himself personally",
+    "audio_file": "ep291_41.mp3"
+  },
+  {
+    "episode": 298,
+    "title": "You Bought a Monument",
+    "speaker": "Myke",
+    "text": "I'm a big mozzarella boy. That's what I am. I'm milky and white.",
+    "start": "00:01:23,220",
+    "end": "00:01:30,000",
+    "note": "Myke's self-portrait using Italian cheese \u2014 a description of his winter pallor that Federico started",
+    "audio_file": "ep298_42.mp3"
+  },
+  {
+    "episode": 298,
+    "title": "You Bought a Monument",
+    "speaker": "Myke",
+    "text": "You didn't buy a computer, you bought a monument.",
+    "start": "01:05:34,620",
+    "end": "01:05:52,559",
+    "note": "Myke's one-line verdict on Stephen's Mac Pro with stand purchase \u2014 perfect and devastating",
+    "audio_file": "ep298_43.mp3"
+  },
+  {
+    "episode": 300,
+    "title": "You Cannot Put a Price on Glory",
+    "speaker": "Myke",
+    "text": "The Rickies entail glory, and you cannot put a price on glory.",
+    "start": "00:00:07,120",
+    "end": "00:00:13,280",
+    "note": "Myke's solemn defense of the Connected awards on their 300th episode",
+    "audio_file": null
+  },
+  {
+    "episode": 317,
+    "title": "Captain Flip Flop",
+    "speaker": "Myke",
+    "text": "You flip flopped already. Captain Flip Flop. I am putting out a call to our listeners \u2014 somebody needs to make a timeline of Steven's flip-flopping here.",
+    "start": "00:13:58,860",
+    "end": "00:14:30,000",
+    "note": "Myke officially titles Stephen 'Captain Flip Flop' and calls for documentary evidence",
+    "audio_file": "ep317_45.mp3"
+  },
+  {
+    "episode": 370,
+    "title": "MacBook Venti",
+    "speaker": "Myke",
+    "text": "They should follow the Starbucks approach \u2014 they should make like a MacBook Venti, for example.",
+    "start": "00:52:59,160",
+    "end": "00:53:08,440",
+    "note": "Myke applies Starbucks sizing to the MacBook lineup \u2014 the episode title",
+    "audio_file": "ep370_46.mp3"
+  },
+  {
+    "episode": 385,
+    "title": "Federico Viticci and the Multiverse of Madness",
+    "speaker": "Myke",
+    "text": "I could usurp you. I could take my moment to usurp you, just to then introduce Federico. Instead of me introducing each of you, it's like an introduction chain.",
+    "start": "00:00:39,880",
+    "end": "00:00:55,000",
+    "note": "Myke plots a coup against the traditional intro format, live, in real time",
+    "audio_file": "ep385_47.mp3"
+  },
+  {
+    "episode": 388,
+    "title": "I'm a Creative Fountain",
+    "speaker": "Federico",
+    "text": "I'm a creative fountain today.",
+    "start": "00:40:02,320",
+    "end": "00:40:10,000",
+    "note": "Federico's self-assessment, delivered with absolute sincerity \u2014 became the episode title",
+    "audio_file": "ep388_48.mp3"
+  },
+  {
+    "episode": 414,
+    "title": "I Am Michael Jordan",
+    "speaker": "Federico",
+    "text": "For a bunch of reasons, one of them being that I'm Michael Jordan, sure.",
+    "start": "00:05:34,540",
+    "end": "00:05:45,000",
+    "note": "Federico casually accepts being called Michael Jordan as one of several valid reasons",
+    "audio_file": "ep414_49.mp3"
+  },
+  {
+    "episode": 437,
+    "title": "Mr. Nice Wrist Guy",
+    "speaker": "Myke",
+    "text": "That is could not be further away from extreme. You are walking very slowly on a treadmill underneath your desk while reading, I don't know, old Apple press releases or whatever. If I were you, Steven, I would feel like I'm letting Tim Cook down. Yeah, you are letting him down actually. You should feel that way, because you are. He built that so you could go faster.",
+    "start": "00:37:14,000",
+    "end": "00:37:43,000",
+    "note": "Myke and Federico inform Stephen that his leisurely treadmill desk pace is a personal betrayal of Tim Cook",
+    "audio_file": "ep437_50.mp3"
+  },
+  {
+    "episode": 451,
+    "title": "A Bath in the Genius Tub",
+    "speaker": "Myke",
+    "text": "You took a bath in the genius tub. If you were dealing with backups, it could have been a hot tub time machine.",
+    "start": "00:02:38,540",
+    "end": "00:02:50,000",
+    "note": "Stephen fixed his tech issue by getting in a hot tub; Myke coins 'genius tub' and immediately extends the bit",
+    "audio_file": "ep451_51.mp3"
+  },
+  {
+    "episode": 453,
+    "title": "By the Meat of Your Teeth",
+    "speaker": "Federico",
+    "text": "It's by the skin of your teeth, but I think you get it. It's by the meat of your teeth.",
+    "start": "00:46:35,000",
+    "end": "00:46:42,000",
+    "note": "Federico deliberately mangling the idiom \u2014 the episode title",
+    "audio_file": "ep453_52.mp3"
+  },
+  {
+    "episode": 475,
+    "title": "Roasting Our Past Selves",
+    "speaker": "Federico",
+    "text": "I put glow in the dark stickers on my Magic Keyboard and now I can see keycaps at night when I'm using it. How long does it last? Enough to fall asleep. Just imagine, Apple \u2014 if you're listening \u2014 this man put glow in the dark stickers on your keyboard because you won't make a backlit version. Just think about how that makes you feel, Apple. It doesn't feel good, does it? It doesn't feel good to us either.",
+    "start": "00:46:07,040",
+    "end": "00:46:42,000",
+    "note": "Federico applied glow-in-the-dark stickers to his keyboard; Myke addresses Apple directly about it",
+    "audio_file": "ep475_53.mp3"
+  },
+  {
+    "episode": 496,
+    "title": "I Tried to Put My Finger in Myke's Mouth",
+    "speaker": "Stephen",
+    "text": "I also tried to put my finger in Myke's mouth. Yes, that's the first thing you tried to do. Can I put my finger in your mouth? And I said you can try, and as soon as he did it, my head just disappeared.",
+    "start": "00:44:42,020",
+    "end": "00:44:55,000",
+    "note": "The Vision Pro testing process, described exactly as it sounds \u2014 Myke's head vanishes the moment Stephen tries",
+    "audio_file": "ep496_54.mp3"
+  },
+  {
+    "episode": 497,
+    "title": "Put 'em on a Fish",
+    "speaker": "Myke",
+    "text": "The guy who's holding the fish took his glasses off and put them on the fish. Blinding Nemo.",
+    "start": "00:40:41,140",
+    "end": "00:40:52,000",
+    "note": "Myke's solar eclipse report: a man sacrificed his vision to give a fish the full eclipse experience",
+    "audio_file": "ep497_55.mp3"
+  },
+  {
+    "episode": 525,
+    "title": "Daddy Come Back Please Daddy!",
+    "speaker": "Stephen",
+    "text": "Daddy, come back, Daddy. Daddy, please, Daddy, we missed you. Daddy, come back. He's never coming back.",
+    "start": "01:19:40,320",
+    "end": "01:20:02,320",
+    "note": "Stephen and Myke dramatically mourning someone's departure with increasing theatrical desperation",
+    "audio_file": "ep525_56.mp3"
+  },
+  {
+    "episode": 541,
+    "title": "The Suspicious Shape of Spaghetti",
+    "speaker": "Federico",
+    "text": "In the hero image, those are not spaghetti. I don't know if you guys are eating those as spaghetti in the US, but those are way too thick for being spaghetti. Noodles and spaghetti are two different things. Also, setting that aside, they said they use Barilla, which is okay. Could be better.",
+    "start": "00:44:15,559",
+    "end": "00:45:37,180",
+    "note": "Federico critiques Apple's official Newsroom pasta recipe \u2014 wrong pasta shape, suboptimal brand",
+    "audio_file": "ep541_57.mp3"
+  },
+  {
+    "episode": 560,
+    "title": "I Wanna Put the Beast on My Face",
+    "speaker": "Federico",
+    "text": "I really wanna put the beast on my face.",
+    "start": "00:27:04,740",
+    "end": "00:27:08,000",
+    "note": "Federico on the Vision Pro \u2014 the product is literally called The Beast \u2014 became the episode title",
+    "audio_file": "ep560_58.mp3"
+  },
+  {
+    "episode": 577,
+    "title": "Big Boy American Man",
+    "speaker": "Stephen",
+    "text": "I'm a big boy American man. You know me: Fourth of July, beer, gun rights, all the things. If I have to do a citizenship test, I'm ready.",
+    "start": "00:08:52,940",
+    "end": "00:09:10,000",
+    "note": "Stephen's earnest self-description as a stereotypical American \u2014 with full commitment to the bit",
+    "audio_file": "ep577_59.mp3"
+  },
+  {
+    "episode": 580,
+    "title": "Lick It Twice",
+    "speaker": "Myke",
+    "text": "I've told Altman that the design is right when you want to lick it or take a bite out of it. And with the current prototype, Altman got that feeling \u2014 like he wanted to take a bite out of it. I don't know why they're talking like this.",
+    "start": "00:04:54,760",
+    "end": "00:05:27,040",
+    "note": "A tech exec explains edible-sounding design language; the hosts have no idea why either",
+    "audio_file": "ep580_60.mp3"
+  },
+  {
+    "episode": 588,
+    "title": "DO NOT Put an AirTag on a Lobster",
+    "speaker": "Federico",
+    "text": "Look, do not put an AirTag on a lobster, okay? Don't do it. That's cruel. They'll cut it off. It's the claw cutting off the AirTag. It'll go right through a piece of fine woven. No problem.",
+    "start": "00:22:30,740",
+    "end": "00:23:00,000",
+    "note": "Federico's urgent public service announcement about lobster AirTag incompatibility",
+    "audio_file": "ep588_61.mp3"
+  },
+  {
+    "episode": 589,
+    "title": "We Are Men of Each Other",
+    "speaker": "Federico",
+    "text": "We are men of each other. That's what we're always saying.",
+    "start": "00:47:05,640",
+    "end": "00:47:15,000",
+    "note": "Federico's phrase for the hosts' deep bond \u2014 grammatically unusual, emotionally correct",
+    "audio_file": "ep589_62.mp3"
+  },
+  {
+    "episode": 55,
+    "title": "Whatever it's Called This Week",
+    "speaker": "Federico",
+    "text": "I'm like a robot and all I can do is type.",
+    "start": "00:00:02,160",
+    "end": "00:00:11,520",
+    "note": "Federico's bleak self-assessment of his iPad-only workflow",
+    "audio_file": null
+  },
+  {
+    "episode": 66,
+    "title": "I'm Holding a Billboard",
+    "speaker": "Federico",
+    "text": "Safari in portrait is just like \u2014 holy cow \u2014 this thing. I'm like holding a billboard.",
+    "start": "00:00:00,320",
+    "end": "00:00:03,040",
+    "note": "Federico's description of the iPad Pro's massive portrait screen \u2014 the episode title",
+    "audio_file": null
+  },
+  {
+    "episode": 72,
+    "title": "What's a Heart, Really",
+    "speaker": "Federico",
+    "text": "I don't understand, Steven, why you do anything that you do.",
+    "start": "00:00:02,720",
+    "end": "00:00:09,040",
+    "note": "Federico's existential exasperation at Stephen's choices",
+    "audio_file": null
+  },
+  {
+    "episode": 75,
+    "title": "Explosion of Glue and Colors",
+    "speaker": "Stephen",
+    "text": "It's like an explosion of glue and colours.",
+    "start": "00:00:03,520",
+    "end": "00:00:07,920",
+    "note": "Stephen's description of the iPhone 5C's color options \u2014 the episode title",
+    "audio_file": null
+  },
+  {
+    "episode": 80,
+    "title": "I'm Like a Butterfly",
+    "speaker": "Myke",
+    "text": "I'm like a butterfly.",
+    "start": "00:00:08,640",
+    "end": "00:00:09,440",
+    "note": "Zero context. No explanation. Just Myke, declaring himself a butterfly. Became the episode title.",
+    "audio_file": null
+  },
+  {
+    "episode": 82,
+    "title": "All Things Pizza",
+    "speaker": "Myke",
+    "text": "I'm really proud that the business that you and I have built is the preeminent podcast network for all things pizza.",
+    "start": "00:00:04,160",
+    "end": "00:00:14,000",
+    "note": "Myke fully leaning into the pizza tangent having taken over the episode",
+    "audio_file": null
+  }
+];
+
+const COLORS = { Myke:"#a78bfa", Federico:"#fbbf24", Stephen:"#60a5fa", Unknown:"#9ca3af" };
+function cls(s) { return (s||"unknown").toLowerCase(); }
+function col(s) { return COLORS[s] || COLORS.Unknown; }
+
+let activeAudio = null, activeBtn = null;
+
+function playClip(file, btn) {
+  if (activeAudio) {
+    activeAudio.pause();
+    if (activeBtn) { activeBtn.classList.remove("playing"); activeBtn.textContent = "▶ play"; }
+    if (activeBtn === btn) { activeAudio = null; activeBtn = null; return; }
+  }
+  const a = new Audio("audio/" + file);
+  a.play();
+  btn.classList.add("playing"); btn.textContent = "■ stop";
+  activeAudio = a; activeBtn = btn;
+  a.onended = () => { btn.classList.remove("playing"); btn.textContent = "▶ play"; activeAudio = null; activeBtn = null; };
+}
+
+function boot() {
+  document.getElementById("intro").classList.add("gone");
+  setTimeout(() => {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("main").classList.add("show");
+    render(CLIPS);
+  }, 800);
+}
+
+let isShuffled = false;
+function render(list) {
+  const body = document.getElementById("body");
+  body.innerHTML = "";
+  body.insertAdjacentHTML("beforeend",
+    `<div class="section-hdr"><div class="section-label">From the Archives</div><div class="section-hr"></div></div>`);
+  const grid = document.createElement("div");
+  grid.className = "grid";
+  list.forEach((c, i) => grid.insertAdjacentHTML("beforeend", buildCard(c, i === 0)));
+  body.appendChild(grid);
+}
+
+function buildCard(c, opener) {
+  const ep = "EP." + String(c.episode).padStart(3, "0");
+  const audioBtn = c.audio_file
+    ? `<button class="play-btn" onclick="playClip('${c.audio_file}',this)">▶ play</button>`
+    : "";
+  return `<div class="card ${opener ? "opener" : ""}">
+    <div class="card-top">
+      <div class="spk-badge ${cls(c.speaker)}"><span class="spk-pip"></span>${c.speaker}</div>
+      <div class="ep-num">${ep}</div>
+    </div>
+    <div class="q-text">${c.text}</div>
+    <div class="card-footer">
+      <div class="ep-title">${c.title}</div>
+      ${audioBtn}
+    </div>
+  </div>`;
+}
+
+function toggleShuffle() {
+  isShuffled = !isShuffled;
+  document.getElementById("shuf-btn").classList.toggle("on", isShuffled);
+  render(isShuffled ? [...CLIPS].sort(() => Math.random() - .5) : CLIPS);
+}
+
+// ── Flash montage ────────────────────────────────────────────────────────────
+const FLASH_MS = 5500;
+let mIdx = 0, mOrder = [], mTimer = null, mPaused = false, mActive = false;
+
+function launchMontage() {
+  mOrder = [...CLIPS].sort(() => Math.random() - .5);
+  mIdx = 0; mPaused = false; mActive = true;
+  if (activeAudio) { activeAudio.pause(); activeAudio = null; }
+  document.getElementById("montage").classList.add("on");
+  showSlide();
+}
+
+function showSlide() {
+  if (mIdx >= mOrder.length) { closeMontage(); return; }
+  const c = mOrder[mIdx];
+  const color = col(c.speaker);
+  ["mq","ms","mm","ma"].forEach(id => document.getElementById(id).classList.remove("show"));
+
+  setTimeout(() => {
+    document.getElementById("mq").textContent = "“" + c.text + "”";
+    document.getElementById("mq").style.color = color;
+    document.getElementById("ms").textContent = c.speaker;
+    document.getElementById("ms").style.color = color;
+    document.getElementById("mm").textContent = "EP." + String(c.episode).padStart(3,"0") + " · " + c.title;
+    document.getElementById("montage").style.background =
+      `radial-gradient(ellipse at 50% 55%, ${color}12 0%, #0a0a0f 65%)`;
+    document.getElementById("mcounter").textContent = (mIdx + 1) + " / " + mOrder.length;
+
+    const ma = document.getElementById("ma");
+    if (c.audio_file) {
+      ma.innerHTML = `<audio controls src="audio/${c.audio_file}" preload="none"></audio>`;
+      ma.classList.add("show");
+    } else {
+      ma.innerHTML = "";
+    }
+    ["mq","ms","mm"].forEach(id => document.getElementById(id).classList.add("show"));
+  }, 130);
+
+  const bar = document.getElementById("mb");
+  bar.style.transition = "none"; bar.style.width = "0%"; bar.style.background = color;
+  setTimeout(() => { bar.style.transition = `width ${FLASH_MS}ms linear`; bar.style.width = "100%"; }, 40);
+
+  if (!mPaused) {
+    clearTimeout(mTimer);
+    mTimer = setTimeout(() => { mIdx++; showSlide(); }, FLASH_MS);
+  }
+}
+
+function closeMontage() {
+  mActive = false; clearTimeout(mTimer);
+  document.getElementById("montage").classList.remove("on");
+  document.getElementById("ma").innerHTML = "";
+}
+
+document.addEventListener("keydown", e => {
+  if (!mActive) return;
+  if (e.code === "Escape")     closeMontage();
+  if (e.code === "Space")      { e.preventDefault(); togglePause(); }
+  if (e.code === "ArrowRight") { clearTimeout(mTimer); mIdx++;               showSlide(); }
+  if (e.code === "ArrowLeft")  { clearTimeout(mTimer); mIdx = Math.max(0, mIdx - 1); showSlide(); }
+});
+document.getElementById("montage").addEventListener("click", e => {
+  if (e.target.tagName === "BUTTON" || e.target.tagName === "AUDIO") return;
+  clearTimeout(mTimer); mIdx++; showSlide();
+});
+
+function togglePause() {
+  mPaused = !mPaused;
+  document.getElementById("mpause").textContent = mPaused ? "PAUSED" : "";
+  if (!mPaused) { clearTimeout(mTimer); mTimer = setTimeout(() => { mIdx++; showSlide(); }, 2000); }
+  else          { clearTimeout(mTimer); document.getElementById("mb").style.transition = "none"; }
+}
+</script>
+</body>
+</html>
