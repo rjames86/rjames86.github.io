@@ -31,8 +31,8 @@
     "title": "The Divine Comedy of Homescreens",
     "speaker": "Federico",
     "text": "I mean, if Dante were to write the Divine Comedy these days, I'm pretty sure the rearranging icons on the iOS home screen would be a circle of hell.",
-    "start": "00:00:00,320",
-    "end": "00:00:10,080",
+    "start": "01:16:16,619",
+    "end": "01:16:26,380",
     "note": "Federico elevates iOS home screen icon rearrangement to a Dante-level circle of hell"
   },
   {
@@ -49,8 +49,8 @@
     "title": "An Italian Stephen",
     "speaker": "Federico",
     "text": "So maybe, you know, I'm becoming in a way an Italian Stephen.",
-    "start": "00:00:07,600",
-    "end": "00:00:12,400",
+    "start": "00:58:10,300",
+    "end": "00:58:15,099",
     "note": "Federico realising he's accumulating old hardware just like Stephen — the episode title moment"
   },
   {
@@ -58,8 +58,8 @@
     "title": "The Old Mac Paladin",
     "speaker": "Myke",
     "text": "Force Touch and Digital Crown are the two worst names Apple has ever given anything.",
-    "start": "00:00:02,960",
-    "end": "00:00:08,560",
+    "start": "00:56:09,960",
+    "end": "00:56:15,560",
     "note": "Myke's verdict on Apple's Apple Watch naming, delivered with complete certainty"
   },
   {
@@ -76,8 +76,8 @@
     "title": "Conceptually Sad",
     "speaker": "Federico",
     "text": "About this — not physically sad, but just like conceptually sad. If that's a thing.",
-    "start": "00:00:00,240",
-    "end": "00:00:06,720",
+    "start": "00:38:53,040",
+    "end": "00:38:59,520",
     "note": "Federico inventing a new emotional register: conceptually sad. The episode title."
   },
   {
@@ -139,9 +139,10 @@
     "title": "Artisanal Emoji",
     "speaker": "Stephen",
     "text": "If anybody is ever gonna make a Connected clip show, 'Everyone Needs a Hobby' is potentially my favorite clip of all time. That was the sickest of burns.",
-    "start": "00:35:25,780",
-    "end": "00:35:53,280",
-    "note": "Stephen predicts a clip show and names his favorite moment — almost too perfect as an opener"
+    "start": "00:35:31,140",
+    "end": "00:35:42,420",
+    "note": "Stephen predicts a clip show and names his favorite moment — almost too perfect as an opener",
+    "pinned": true
   },
   {
     "episode": 37,
@@ -165,7 +166,7 @@
     "episode": 52,
     "title": "Random Pressure Lottery",
     "speaker": "Federico",
-    "text": "It's just that Steven has the voice of an adult, whereas you're more like... you know, when you watch a TV show and you can tell it's not an American TV show? That's kind of what you are.",
+    "text": "It's just that Stephen has the voice of an adult, whereas you're more like... you know, when you watch a TV show and you can tell it's not an American TV show? That's kind of what you are.",
     "start": "00:00:44,140",
     "end": "00:01:15,880",
     "note": "Federico's devastating comparison of Myke's voice to a British MTV show, delivered with love"
@@ -189,6 +190,15 @@
     "note": "The perfect punchline: Federico observed the selfie stick phenomenon obsessively, then forgot his own"
   },
   {
+    "episode": 55,
+    "title": "Whatever it's Called This Week",
+    "speaker": "Federico",
+    "text": "I'm like a robot and all I can do is type.",
+    "start": "00:03:01,360",
+    "end": "00:03:04,160",
+    "note": "Federico's bleak self-assessment of his iPad-only workflow"
+  },
+  {
     "episode": 56,
     "title": "My Feeling About This is That I'm Jealous",
     "speaker": "Myke",
@@ -202,8 +212,8 @@
     "title": "Wake up in a Gentle Mood",
     "speaker": "Federico",
     "text": "My girlfriend is a normal person and I'm lazy. I don't want to be woken up by an alarm, either from my phone or from my watch. I like to be woken up by my girlfriend with a smile and a cup of espresso. That's how I like to be working.",
-    "start": "00:02:15,140",
-    "end": "00:04:31,460",
+    "start": "00:03:48,940",
+    "end": "00:04:15,120",
     "note": "Federico's fully automated girlfriend-as-wake-up-service system, explained with complete sincerity"
   },
   {
@@ -220,8 +230,8 @@
     "title": "Siri Like the Butler",
     "speaker": "Federico",
     "text": "Kinda, basically, Siri like a butler, you know.",
-    "start": "00:00:00,240",
-    "end": "00:00:04,080",
+    "start": "01:08:32,040",
+    "end": "01:08:35,880",
     "note": "Federico's vision for HomeKit: Siri as a formal butler managing the household"
   },
   {
@@ -229,17 +239,26 @@
     "title": "The App Is Named App",
     "speaker": "Stephen",
     "text": "My app is named App.",
-    "start": "00:00:01,520",
-    "end": "00:00:03,120",
+    "start": "00:38:01,620",
+    "end": "00:38:03,220",
     "note": "Stephen's app for managing his vintage Mac collection. Its name is App. The episode title."
+  },
+  {
+    "episode": 66,
+    "title": "I'm Holding a Billboard",
+    "speaker": "Federico",
+    "text": "Safari in portrait is just like — holy cow — this thing. I'm like holding a billboard.",
+    "start": "00:00:00,320",
+    "end": "00:00:06,080",
+    "note": "Federico's description of the iPad Pro's massive portrait screen — the episode title"
   },
   {
     "episode": 67,
     "title": "Being in Charge of a Space Rocket",
     "speaker": "Federico",
     "text": "Being in charge of a space rocket.",
-    "start": "00:00:00,240",
-    "end": "00:00:02,880",
+    "start": "00:46:45,140",
+    "end": "00:46:47,779",
     "note": "Federico's description of managing his Workflow automation setup — gave the episode its title"
   },
   {
@@ -252,13 +271,49 @@
     "note": "Stephen's apocalyptic farewell to the snooze button"
   },
   {
+    "episode": 72,
+    "title": "What's a Heart, Really",
+    "speaker": "Federico",
+    "text": "I don't understand, Stephen, why you do anything that you do.",
+    "start": "00:14:29,100",
+    "end": "00:14:34,060",
+    "note": "Federico's existential exasperation at Stephen's choices"
+  },
+  {
     "episode": 73,
     "title": "Capital D for the Big Smile",
     "speaker": "Federico",
     "text": "I only care about emotions, you know, like smiles and hearts and monkeys for some reason.",
-    "start": "00:00:02,960",
-    "end": "00:00:08,560",
+    "start": "00:11:40,060",
+    "end": "00:11:45,660",
     "note": "Federico's complete emoji philosophy: smiles, hearts, and for reasons he cannot explain, monkeys"
+  },
+  {
+    "episode": 75,
+    "title": "Explosion of Glue and Colors",
+    "speaker": "Stephen",
+    "text": "It's like an explosion of glue and colours.",
+    "start": "00:13:55,959",
+    "end": "00:13:59,720",
+    "note": "Stephen's description of the iPhone 5C's color options — the episode title"
+  },
+  {
+    "episode": 80,
+    "title": "I'm Like a Butterfly",
+    "speaker": "Myke",
+    "text": "I'm like a butterfly.",
+    "start": "00:52:19,039",
+    "end": "00:52:20,720",
+    "note": "Zero context. No explanation. Just Myke, declaring himself a butterfly. Became the episode title."
+  },
+  {
+    "episode": 82,
+    "title": "All Things Pizza",
+    "speaker": "Myke",
+    "text": "I'm really proud that the business that you and I have built is the preeminent podcast network for all things pizza.",
+    "start": "00:12:07,440",
+    "end": "00:12:16,720",
+    "note": "Myke fully leaning into the pizza tangent having taken over the episode"
   },
   {
     "episode": 85,
@@ -274,8 +329,8 @@
     "title": "My Brain is Cruising eBay at Night",
     "speaker": "Stephen",
     "text": "My brain populated the shelves of this Dreamland Apple Museum with models and machines on my wish list. So basically my brain is cruising eBay at night, I guess, is what's happening now.",
-    "start": "00:00:00,640",
-    "end": "00:00:06,320",
+    "start": "00:02:12,140",
+    "end": "00:02:30,020",
     "note": "Stephen reveals his subconscious is just eBay, browsing vintage Macs while he sleeps"
   },
   {
@@ -283,8 +338,8 @@
     "title": "No Such Thing as a Sticker Emergency",
     "speaker": "Federico",
     "text": "There is no such thing as a sticker emergency.",
-    "start": "00:00:05,440",
-    "end": "00:00:07,680",
+    "start": "00:04:40,440",
+    "end": "00:04:42,680",
     "note": "Federico delivers the episode title as a calm, authoritative fact — immediately contradicted by everything around it"
   },
   {
@@ -355,8 +410,8 @@
     "title": "Rub a Dub Dub, My Friend",
     "speaker": "Stephen",
     "text": "The heart wants what the heart wants, and the heart wanted a G4 Cube over the 13-inch MacBook Air.",
-    "start": "00:00:00,080",
-    "end": "00:00:05,600",
+    "start": "00:16:55,180",
+    "end": "00:17:00,699",
     "note": "Stephen justifying an irrational vintage Mac purchase using the language of romantic desire"
   },
   {
@@ -372,7 +427,7 @@
     "episode": 291,
     "title": "The Scrooge McDuck of Computers",
     "speaker": "Myke",
-    "text": "There are over a hundred computers in Steven's house. For essentially you and your wife — because you have three kids, and your wife is likely only gonna use like a MacBook and an iPad — so you have a hundred and one computers for yourself.",
+    "text": "There are over a hundred computers in Stephen's house. For essentially you and your wife — because you have three kids, and your wife is likely only gonna use like a MacBook and an iPad — so you have a hundred and one computers for yourself.",
     "start": "00:28:17,860",
     "end": "00:29:08,280",
     "note": "Myke methodically calculating that Stephen has ~101 computers allocated to himself personally"
@@ -400,15 +455,15 @@
     "title": "You Cannot Put a Price on Glory",
     "speaker": "Myke",
     "text": "The Rickies entail glory, and you cannot put a price on glory.",
-    "start": "00:00:07,120",
-    "end": "00:00:13,280",
+    "start": "00:54:34,020",
+    "end": "00:54:40,180",
     "note": "Myke's solemn defense of the Connected awards on their 300th episode"
   },
   {
     "episode": 317,
     "title": "Captain Flip Flop",
     "speaker": "Myke",
-    "text": "You flip flopped already. Captain Flip Flop. I am putting out a call to our listeners — somebody needs to make a timeline of Steven's flip-flopping here.",
+    "text": "You flip flopped already. Captain Flip Flop. I am putting out a call to our listeners — somebody needs to make a timeline of Stephen's flip-flopping here.",
     "start": "00:13:58,860",
     "end": "00:14:30,000",
     "note": "Myke officially titles Stephen 'Captain Flip Flop' and calls for documentary evidence"
@@ -441,6 +496,60 @@
     "note": "Federico's self-assessment, delivered with absolute sincerity — became the episode title"
   },
   {
+    "episode": 391,
+    "title": "The Pleasure Stops Here",
+    "speaker": "Federico",
+    "text": "The pleasure stops here. That's what I have on my desk.",
+    "start": "00:00:38,100",
+    "end": "00:00:47,000",
+    "note": "The pleasure chain goes around the room until it reaches Federico, whose desk sign brings things to an abrupt halt"
+  },
+  {
+    "episode": 394,
+    "title": "At the Intersection of This and This",
+    "speaker": "Myke",
+    "text": "It upsets me so much that they came up with that intersection of something and something phrase. You don't have to say it, oh I'm at the intersection of this and this. What are you two at the intersection of? At the intersection of Pokemon and tattoos. Old computers and dad energy.",
+    "start": "00:09:48,220",
+    "end": "00:11:01,080",
+    "note": "Myke's rant about overuse of the 'intersection of X and Y' phrase immediately becomes the thing he just complained about"
+  },
+  {
+    "episode": 395,
+    "title": "The Sand Bucket Challenge",
+    "speaker": "Federico",
+    "text": "B Y O S. Bring your own sand.",
+    "start": "00:00:01,000",
+    "end": "00:00:02,000",
+    "note": "Federico coins BYOS for Apple's absurd repair kit that requires you to supply your own sand"
+  },
+  {
+    "episode": 395,
+    "title": "The Sand Bucket Challenge",
+    "speaker": "Stephen",
+    "text": "I have a sand guy, for real.",
+    "start": "00:00:01,000",
+    "end": "00:00:02,000",
+    "note": "Stephen casually reveals he knows a person who sells sand — the perfect capstone to the sand saga"
+  },
+  {
+    "episode": 406,
+    "title": "The iPhone is Touching You Back",
+    "speaker": "Federico",
+    "text": "It's like you're touching your iPhone to type and the iPhone is touching you back.",
+    "start": "00:00:04,320",
+    "end": "00:00:09,000",
+    "note": "Federico's oddly poetic explanation of haptic feedback — also the episode title"
+  },
+  {
+    "episode": 407,
+    "title": "A Computer Desk With a Bed on Top",
+    "speaker": "Stephen",
+    "text": "I had a computer desk with a bed on the top.",
+    "start": "00:34:43,040",
+    "end": "00:34:46,000",
+    "note": "Stephen's casual revelation of his bizarre childhood furniture — a bunk bed with a computer where the mattress should be"
+  },
+  {
     "episode": 414,
     "title": "I Am Michael Jordan",
     "speaker": "Federico",
@@ -450,13 +559,121 @@
     "note": "Federico casually accepts being called Michael Jordan as one of several valid reasons"
   },
   {
+    "episode": 419,
+    "title": "Federico Got So Upset He Quit The Show",
+    "speaker": "Federico",
+    "text": "She is not updated to Spark 3 yet because she's terrified now after my upset about it.",
+    "start": "00:20:06,200",
+    "end": "00:20:13,159",
+    "note": "Federico's wife is too scared to update her email app after witnessing how visibly upset he was about it"
+  },
+  {
+    "episode": 421,
+    "title": "The Shins (The Body Part)",
+    "speaker": "Myke",
+    "text": "Long shins are useless. What are you gonna do with long shins? Nothing. Nothing.",
+    "start": "00:48:36,660",
+    "end": "00:48:40,980",
+    "note": "Myke makes a deeply considered case for why long shins are entirely worthless"
+  },
+  {
+    "episode": 421,
+    "title": "The Shins (The Body Part)",
+    "speaker": "Federico",
+    "text": "But especially I would say the long thighs, I think. Because like an extra surface area for your lap. You can put pets on it. Kickstands, books. You could be like a really efficient Santa Claus.",
+    "start": "00:48:17,660",
+    "end": "00:48:58,900",
+    "note": "Federico makes an airtight case for long thighs: extra lap surface for pets, kickstands, books, and a highly efficient Santa Claus operation"
+  },
+  {
+    "episode": 423,
+    "title": "I Know What a Parrot Is",
+    "speaker": "Myke",
+    "text": "You know, the birds, like a — like the parrots, like the — the colored — Yeah no, no, no, I know what a parrot is.",
+    "start": "00:03:53,560",
+    "end": "00:04:00,920",
+    "note": "Federico stumbles explaining what a parrot is; Myke cuts him off with a perfect deadpan — the episode title"
+  },
+  {
+    "episode": 424,
+    "title": "The Clicky Click (Nibby Nib)",
+    "speaker": "Federico",
+    "text": "It had the clicky click, you know? It's like... it made you feel like you were working at a government office every time you picked up the mouse.",
+    "start": "00:25:23,600",
+    "end": "00:25:38,140",
+    "note": "Federico's weirdly specific association between an old Apple accessory's click and the drudgery of bureaucratic employment"
+  },
+  {
+    "episode": 427,
+    "title": "Therapy for an Apple Blogger",
+    "speaker": "Myke",
+    "text": "Sometimes I feel like — and this is like therapy for an Apple blogger.",
+    "start": "00:55:09,760",
+    "end": "00:55:26,400",
+    "note": "Myke self-diagnoses the show as group therapy for people with unhealthy Apple relationships"
+  },
+  {
+    "episode": 434,
+    "title": "You Won't Believe This New Scam",
+    "speaker": "Federico",
+    "text": "He sends me a TikTok video of an Italian, I guess, influencer. And the title of the video — and I'm translating — was: You Will Not Believe This New Scam from Apple.",
+    "start": "00:07:29,520",
+    "end": "00:07:56,300",
+    "note": "Federico's family member sends him an Italian clickbait TikTok about Apple — the episode title"
+  },
+  {
+    "episode": 435,
+    "title": "I'm So Fedi Sorry",
+    "speaker": "Myke",
+    "text": "Can I start using FEDI as like a prefix to just stuff that doesn't — is not related to Federation at all? Like Fedi follow-up.",
+    "start": "00:06:34,580",
+    "end": "00:06:53,860",
+    "note": "Myke proposes using 'Fedi' as a universal prefix for things that have nothing to do with the Fediverse"
+  },
+  {
     "episode": 437,
     "title": "Mr. Nice Wrist Guy",
     "speaker": "Myke",
-    "text": "That is could not be further away from extreme. You are walking very slowly on a treadmill underneath your desk while reading, I don't know, old Apple press releases or whatever. If I were you, Steven, I would feel like I'm letting Tim Cook down. Yeah, you are letting him down actually. You should feel that way, because you are. He built that so you could go faster.",
+    "text": "That is could not be further away from extreme. You are walking very slowly on a treadmill underneath your desk while reading, I don't know, old Apple press releases or whatever. If I were you, Stephen, I would feel like I'm letting Tim Cook down. Yeah, you are letting him down actually. You should feel that way, because you are. He built that so you could go faster.",
     "start": "00:37:14,000",
     "end": "00:37:43,000",
     "note": "Myke and Federico inform Stephen that his leisurely treadmill desk pace is a personal betrayal of Tim Cook"
+  },
+  {
+    "episode": 442,
+    "title": "They Want Azimuth",
+    "speaker": "Stephen",
+    "text": "Azimuth should be the opposite of Zanith, I think. You never heard about this? Zanith and Azimuth?",
+    "start": "00:09:11,339",
+    "end": "00:09:23,420",
+    "note": "Stephen invents the word 'Zanith' as the opposite of 'Azimuth' and presents it as established celestial science"
+  },
+  {
+    "episode": 444,
+    "title": "The World's Biggest AI Onion",
+    "speaker": "Stephen",
+    "text": "It can actually understand what you mean, and it's like the world's biggest AI onion, if you will. Like it goes layer after layer after layer to understand what you mean.",
+    "start": "00:52:23,660",
+    "end": "00:52:57,760",
+    "note": "Stephen explains neural networks using an onion metaphor he is clearly making up in real time"
+  },
+  {
+    "episode": 445,
+    "title": "Do You Have a Trumpet on the Floor",
+    "speaker": "Myke",
+    "text": "Do you have a trumpet on the floor? You should put one, if not.",
+    "start": "00:44:38,620",
+    "end": "00:44:42,940",
+    "note": "Myke's definitive solution to Stephen's messy office — adding a floor trumpet — became the episode title"
+  },
+  {
+    "episode": 448,
+    "title": "I'm in Figma",
+    "speaker": "Stephen",
+    "text": "Are you up to date on current design trends? Oh, I'm in Figma, you know. I'm so — I'm in Figma these days. Checking out Framer. Uh, don't know if you've heard of that.",
+    "start": "00:16:04,540",
+    "end": "00:16:21,320",
+    "note": "Stephen name-drops every design tool he's just learned about as if he's been in the scene for years"
   },
   {
     "episode": 451,
@@ -477,6 +694,105 @@
     "note": "Federico deliberately mangling the idiom — the episode title"
   },
   {
+    "episode": 455,
+    "title": "I've Been Banned from Aroma360",
+    "speaker": "Stephen",
+    "text": "I wish I could look at any of this, but I'm not allowed on the website. I have been banned from Aroma360.",
+    "start": "00:19:12,240",
+    "end": "00:19:18,140",
+    "note": "Stephen casually reveals he is permanently banned from a luxury home scent website — the episode title"
+  },
+  {
+    "episode": 458,
+    "title": "We Believe in You, Lil Widgie",
+    "speaker": "Myke",
+    "text": "We believe in you, Lil Widgie.",
+    "start": "00:18:34,900",
+    "end": "00:18:45,860",
+    "note": "Myke's heartfelt encouragement to a small widget — became the episode title"
+  },
+  {
+    "episode": 459,
+    "title": "A Train You're Never Getting Off",
+    "speaker": "Stephen",
+    "text": "But why would you stop listening to Connected? We keep you on your toes all the time. To be fair, yeah, if you've gotten on this train — you can't leave. Why would you?",
+    "start": "00:01:32,620",
+    "end": "00:01:40,119",
+    "note": "Stephen breaks the fourth wall to acknowledge that long-time listeners are truly trapped"
+  },
+  {
+    "episode": 460,
+    "title": "Never Skip Neck Day",
+    "speaker": "Stephen",
+    "text": "Maybe you want a strong neck. I don't know. Never skip neck day.",
+    "start": "01:03:57,440",
+    "end": "01:04:04,480",
+    "note": "Stephen advocates for neck strength as a key iPhone case selection criterion"
+  },
+  {
+    "episode": 461,
+    "title": "Strong Neck Era",
+    "speaker": "Federico",
+    "text": "2024 is like strong neck season. We're gonna be in our strong neck era.",
+    "start": "00:57:34,180",
+    "end": "00:57:40,560",
+    "note": "Federico declares the year of the strong neck — an era that became the episode title"
+  },
+  {
+    "episode": 462,
+    "title": "GET, OPEN, UPDATE",
+    "speaker": "Myke",
+    "text": "I don't like it because it's new. Right, like that's the issue. Like I opened the app store today and it says like get and like open and update. Like regular words. But now it looks wrong, so I don't like it. But realistically this is the way it should have always been.",
+    "start": "00:21:12,520",
+    "end": "00:21:38,580",
+    "note": "Myke is fully self-aware that the only reason he dislikes the App Store button case change is because it's different"
+  },
+  {
+    "episode": 464,
+    "title": "I Got Myself Some Thermal Paste",
+    "speaker": "Federico",
+    "text": "So I got myself some thermal paste, I opened the Surface. I got a one terabyte card, I opened the surface, applied some thermal paste to it.",
+    "start": "00:43:45,660",
+    "end": "00:44:07,000",
+    "note": "Federico casually mentions he got thermal paste and opened his Surface — presented as routine maintenance"
+  },
+  {
+    "episode": 468,
+    "title": "I Love Clock",
+    "speaker": "Federico",
+    "text": "Like I mean, for example, I love, you know, uh clock. Just this is just an example.",
+    "start": "00:55:10,400",
+    "end": "00:55:20,000",
+    "note": "Federico illustrates the scope of Apple's app ecosystem with one perfectly chosen example: Clock"
+  },
+  {
+    "episode": 470,
+    "title": "Senior Vice President of Worldwide Nibbing",
+    "speaker": "Federico",
+    "text": "The Senior Vice President of Worldwide Nibbing. Yes. That would be me, baby.",
+    "start": "00:07:47,860",
+    "end": "00:07:51,140",
+    "note": "Federico self-appoints himself a title that became the episode name"
+  },
+  {
+    "episode": 471,
+    "title": "Nightcore Titanium",
+    "speaker": "Federico",
+    "text": "I dropped a link in Discord to the Nightcore version of Titanium.",
+    "start": "00:32:53,899",
+    "end": "00:32:58,200",
+    "note": "Federico sends the group a sped-up anime remix of Sia's Titanium to celebrate the iPhone's titanium frame"
+  },
+  {
+    "episode": 474,
+    "title": "Redesigned Into a Butterfly",
+    "speaker": "Federico",
+    "text": "It's like how a caterpillar gets redesigned into a butterfly.",
+    "start": "00:23:14,740",
+    "end": "00:23:18,260",
+    "note": "Federico's biological metaphor for removing the Touch Bar — the episode title"
+  },
+  {
     "episode": 475,
     "title": "Roasting Our Past Selves",
     "speaker": "Federico",
@@ -484,6 +800,69 @@
     "start": "00:46:07,040",
     "end": "00:46:42,000",
     "note": "Federico applied glow-in-the-dark stickers to his keyboard; Myke addresses Apple directly about it"
+  },
+  {
+    "episode": 478,
+    "title": "Not So Bankrupt Anymore",
+    "speaker": "Federico",
+    "text": "I was very keen to try the new design of the not-so-bankrupt-anymore keyboard, which unfortunately I missed the delivery because I was at IKEA thirty minutes ago.",
+    "start": "00:12:03,740",
+    "end": "00:12:27,360",
+    "note": "Federico missed a keyboard delivery because he was at IKEA — the episode title was apparently already chosen"
+  },
+  {
+    "episode": 482,
+    "title": "Pivot to a Magician",
+    "speaker": "Federico",
+    "text": "I'm just gonna pivot to being a magician.",
+    "start": "00:00:11,120",
+    "end": "00:00:12,360",
+    "note": "Federico announces his career change to stage magic — cold open, no context"
+  },
+  {
+    "episode": 486,
+    "title": "Elden Widge",
+    "speaker": "Federico",
+    "text": "The Elden Widge.",
+    "start": "00:00:03,920",
+    "end": "00:00:05,440",
+    "note": "Federico's portmanteau of Elden Ring and Widgetsmith — the episode title — delivered without elaboration"
+  },
+  {
+    "episode": 487,
+    "title": "Mr. Fake John Voorhees Goes to Europe",
+    "speaker": "Federico",
+    "text": "Mr. Fake John goes to Europe. That that would be my scenario. Well, it's fake OTJ. It's not OTJ, you know? The one false John.",
+    "start": "00:32:39,799",
+    "end": "00:32:57,560",
+    "note": "Federico's solution for accessing EU sideloading: create a fake European Apple ID as 'The One False John'"
+  },
+  {
+    "episode": 488,
+    "title": "hot guy, incredible actor, hot dude",
+    "speaker": "Federico",
+    "text": "Incredible actor, uh, very hot, and that's all you need to do.",
+    "start": "00:00:00,160",
+    "end": "00:00:04,560",
+    "note": "Federico's complete review of Pedro Pascal — the episode title"
+  },
+  {
+    "episode": 489,
+    "title": "Shower Speakers",
+    "speaker": "Stephen",
+    "text": "Everyone has a waterproof Bluetooth speaker in their shower, right?",
+    "start": "00:29:21,580",
+    "end": "00:29:31,800",
+    "note": "Stephen's confident universal assumption met with immediate silence"
+  },
+  {
+    "episode": 490,
+    "title": "Ivy League Ferret",
+    "speaker": "Myke",
+    "text": "Ivy League Ferret.",
+    "start": "00:00:10,160",
+    "end": "00:00:11,200",
+    "note": "Myke's nickname for Apple's Ferret AI model from Cornell — he delivers it like it's obvious"
   },
   {
     "episode": 496,
@@ -504,6 +883,60 @@
     "note": "Myke's solar eclipse report: a man sacrificed his vision to give a fish the full eclipse experience"
   },
   {
+    "episode": 501,
+    "title": "My Heart Skipped a Beat",
+    "speaker": "Myke",
+    "text": "At the end of the keynote, my heart skipped a beat, cause friend of the show, John Turnus, appeared on stage.",
+    "start": "00:07:43,000",
+    "end": "00:07:55,000",
+    "note": "Myke's heart skips an actual beat when John Ternus appears at an Apple event — the title of this episode"
+  },
+  {
+    "episode": 504,
+    "title": "17,000,000 SF Symbols",
+    "speaker": "Myke",
+    "text": "By the end of this episode, there will be 17 million SF symbols.",
+    "start": "00:48:14,420",
+    "end": "00:48:29,119",
+    "note": "Myke commits to the bit: Apple keeps adding SF Symbols faster than they can discuss them"
+  },
+  {
+    "episode": 506,
+    "title": "The Sun Did Not Shine in Favor of Me",
+    "speaker": "Stephen",
+    "text": "No press invite for me, which was a bummer. I got 'em since 2019, but not not this time. The sun did not shine in favor upon me.",
+    "start": "00:13:32,940",
+    "end": "00:13:44,000",
+    "note": "Stephen's dramatic account of not receiving an Apple event press invite — his Shakespearean response to a sun that would not cooperate"
+  },
+  {
+    "episode": 512,
+    "title": "The Simple Solution to Traffic",
+    "speaker": "Stephen",
+    "text": "If I was gonna do it for the clicks, I would have made a much better video.",
+    "start": "00:10:34,400",
+    "end": "00:10:39,200",
+    "note": "Stephen defends his viral gate video by noting that his real viral content would be far superior"
+  },
+  {
+    "episode": 521,
+    "title": "macOS Dog",
+    "speaker": "Stephen",
+    "text": "I absolutely have not internalized the macOS name. Sequoia. The two S's, I think.",
+    "start": "00:03:35,520",
+    "end": "00:03:40,880",
+    "note": "Stephen cannot remember the macOS version he is running — and his guess has one S, not two"
+  },
+  {
+    "episode": 524,
+    "title": "An Absolute Madlad Power User",
+    "speaker": "Federico",
+    "text": "Tim Cook is an absolute madlad power user. I'm still thinking about those two MacBooks plus an iMac plus an iPad Pro.",
+    "start": "00:50:17,620",
+    "end": "00:50:28,599",
+    "note": "Federico bestows Tim Cook the highest honour: absolute madlad power user"
+  },
+  {
     "episode": 525,
     "title": "Daddy Come Back Please Daddy!",
     "speaker": "Stephen",
@@ -511,6 +944,60 @@
     "start": "01:19:40,320",
     "end": "01:20:02,320",
     "note": "Stephen and Myke dramatically mourning someone's departure with increasing theatrical desperation"
+  },
+  {
+    "episode": 526,
+    "title": "At Least Mine Has Four Legs",
+    "speaker": "Myke",
+    "text": "I can use my long dog. Really long dog. At least mine has four legs.",
+    "start": "00:52:48,020",
+    "end": "00:53:07,700",
+    "note": "Myke wins a product comparison by pointing out his dog has more legs than the alternative — the episode title"
+  },
+  {
+    "episode": 527,
+    "title": "myke why did you say that",
+    "speaker": "Myke",
+    "text": "I don't know why I said it and I regret it. The things that I say are recorded and everyone's like, Myke, why did you say that? And I'm like, I don't know, man.",
+    "start": "01:17:20,860",
+    "end": "01:17:32,480",
+    "note": "Myke narrates the exact moment that became the episode title in real time"
+  },
+  {
+    "episode": 528,
+    "title": "Subpoenaerabable",
+    "speaker": "Stephen",
+    "text": "The reason they were doing it is they didn't want it to be subpoena-b — subpoena-rubble-bubble.",
+    "start": "00:00:00,160",
+    "end": "00:00:04,320",
+    "note": "Stephen tries to say 'subpoenarable' and it cascades into gibberish — became the episode title"
+  },
+  {
+    "episode": 531,
+    "title": "Gill Sands",
+    "speaker": "Myke",
+    "text": "Definitely something that me and Federico remember happened and didn't have to be reminded before the start of the show this week that we do that.",
+    "start": "00:01:05,580",
+    "end": "00:01:12,140",
+    "note": "Myke absolutely had to be reminded about the segment they do every year — delivers the denial perfectly straight"
+  },
+  {
+    "episode": 533,
+    "title": "Somehow, AirPort Returned",
+    "speaker": "James Thompson",
+    "text": "My pick is that Apple gets into the Wi-Fi router business again. Somehow Airport return.",
+    "start": "00:39:33,660",
+    "end": "00:39:43,680",
+    "note": "James Thompson delivers his Rickies pick with appropriate Palpatine energy — and was right"
+  },
+  {
+    "episode": 536,
+    "title": "Dad Draws a Bath and Plays Mario Kart",
+    "speaker": "Stephen",
+    "text": "Dad draws a bath and plays Mario Kart. No, I was kidding. Not in the bathroom.",
+    "start": "00:05:03,320",
+    "end": "00:05:09,060",
+    "note": "Stephen floats (then immediately retracts) his ideal Switch 2 use case"
   },
   {
     "episode": 541,
@@ -522,6 +1009,87 @@
     "note": "Federico critiques Apple's official Newsroom pasta recipe — wrong pasta shape, suboptimal brand"
   },
   {
+    "episode": 542,
+    "title": "face with tired",
+    "speaker": "Stephen",
+    "text": "Face with tired would have been face with tired.",
+    "start": "00:47:02,720",
+    "end": "00:47:07,300",
+    "note": "Stephen riffs on Apple's emoji naming convention and accidentally makes a perfect episode title"
+  },
+  {
+    "episode": 544,
+    "title": "Myke's Nightmares",
+    "speaker": "Federico",
+    "text": "But what if I told you that your home is not a home — your home is a wireless charger for all of your devices, and each of them goes to sleep on a separate floor.",
+    "start": "00:00:00,240",
+    "end": "00:00:06,480",
+    "note": "Federico opens with a dystopian smart home vision that is apparently supposed to be exciting"
+  },
+  {
+    "episode": 546,
+    "title": "Letting the Literal Light In",
+    "speaker": "Stephen",
+    "text": "Turns out there's something called Snell's Law. It's named after me.",
+    "start": "00:05:24,180",
+    "end": "00:05:31,700",
+    "note": "Stephen casually claims the physics law of refraction as a personal honor"
+  },
+  {
+    "episode": 549,
+    "title": "Lost Daddy Exclusivity",
+    "speaker": "Myke",
+    "text": "Stephen, you lost your daddy exclusivity. I'm sorry.",
+    "start": "00:02:39,900",
+    "end": "00:02:43,340",
+    "note": "Myke formally notifies Stephen that his exclusive 'Daddy' title is no longer his alone"
+  },
+  {
+    "episode": 550,
+    "title": "Baby Jason Snell From 1886",
+    "speaker": "Stephen",
+    "text": "Baby Jason Snell in a Macworld magazine from 1886.",
+    "start": "00:31:57,440",
+    "end": "00:32:08,799",
+    "note": "Stephen references a photo of Jason Snell from a Macworld issue that would predate Macworld by about 100 years"
+  },
+  {
+    "episode": 552,
+    "title": "Stage Manager Could Never",
+    "speaker": "Federico",
+    "text": "Oh, that's a nice desktop mod. Yeah. Stage manager could never.",
+    "start": "00:50:45,920",
+    "end": "00:50:52,099",
+    "note": "Federico delivers his final verdict on Stage Manager in three words — then goes silent"
+  },
+  {
+    "episode": 553,
+    "title": "We Have Jony Ive at Home",
+    "speaker": "Myke",
+    "text": "That's like, Mom, we have Jony Ive at home.",
+    "start": "00:29:33,780",
+    "end": "00:29:36,179",
+    "note": "Myke's perfect one-liner roasting the Humane AI Pin by comparing it to a knockoff Jony Ive product — the episode title"
+  },
+  {
+    "episode": 554,
+    "title": "It Was Felty",
+    "speaker": "Myke",
+    "text": "It was Felty. It was Felty for for at least one iteration in its life. And then it was bubbly.",
+    "start": "00:59:05,780",
+    "end": "00:59:23,000",
+    "note": "Myke and Stephen trace Game Center's aesthetic journey: from felt casino tables, to iOS 7 bubbles, to wherever it landed"
+  },
+  {
+    "episode": 556,
+    "title": "The Last Thing You Touch",
+    "speaker": "Myke",
+    "text": "Liquid glass, dangerous, right? Because that's like molten. That would hurt. That would be the last thing you touch.",
+    "start": "00:22:04,360",
+    "end": "00:22:12,280",
+    "note": "Myke takes Apple's 'Liquid Glass' design language to its literal, fatal conclusion"
+  },
+  {
     "episode": 560,
     "title": "I Wanna Put the Beast on My Face",
     "speaker": "Federico",
@@ -529,6 +1097,42 @@
     "start": "00:27:04,740",
     "end": "00:27:08,000",
     "note": "Federico on the Vision Pro — the product is literally called The Beast — became the episode title"
+  },
+  {
+    "episode": 561,
+    "title": "The Stephenlympics",
+    "speaker": "Myke",
+    "text": "Quinn Nelson is such a fan of the quizzes that he asked me to host a quiz show about Stephen.",
+    "start": "00:00:00,080",
+    "end": "00:00:06,300",
+    "note": "The hosts run a full Rickies-style competition where all questions are about Stephen's absurd technology decisions"
+  },
+  {
+    "episode": 564,
+    "title": "Would Snell as Sweet",
+    "speaker": "Stephen",
+    "text": "A rose by any other name would smell as sweet, but would Snell as sweet?",
+    "start": "00:00:00,001",
+    "end": "00:00:05,000",
+    "note": "A Shakespeare pun on Jason Snell's last name — the episode title"
+  },
+  {
+    "episode": 573,
+    "title": "Grand Central Dispatch for the Planet",
+    "speaker": "Myke",
+    "text": "Well we're just Grand Central Dispatch, but for the planet. I wouldn't mind bug fixes and performance updates. We update the world frequently so you get the best experience.",
+    "start": "00:02:04,380",
+    "end": "00:02:22,000",
+    "note": "Myke and Federico speculate what a 'bug fix year' would look like if Apple ran the world's operating system"
+  },
+  {
+    "episode": 574,
+    "title": "A Saucepan Full of Questions",
+    "speaker": "Federico",
+    "text": "Each GPU core has inside it, like a kangaroo and its little pocket — it has a neural accelerator in there.",
+    "start": "00:44:28,859",
+    "end": "00:44:37,339",
+    "note": "Federico explains M-series GPU architecture using kangaroo pouches as the primary metaphor"
   },
   {
     "episode": 577,
@@ -540,6 +1144,15 @@
     "note": "Stephen's earnest self-description as a stereotypical American — with full commitment to the bit"
   },
   {
+    "episode": 579,
+    "title": "Put a Snack in There",
+    "speaker": "Myke",
+    "text": "After five hundred and seventy-eight professional introductions, we've made the turn.",
+    "start": "00:01:04,120",
+    "end": "00:01:06,280",
+    "note": "Myke marks episode 579 as the moment the podcast finally nailed its intro format"
+  },
+  {
     "episode": 580,
     "title": "Lick It Twice",
     "speaker": "Myke",
@@ -547,6 +1160,33 @@
     "start": "00:04:54,760",
     "end": "00:05:27,040",
     "note": "A tech exec explains edible-sounding design language; the hosts have no idea why either"
+  },
+  {
+    "episode": 582,
+    "title": "My Guys",
+    "speaker": "Federico",
+    "text": "They're paying them the biggest chunk of the smallest chunk.",
+    "start": "00:18:34,460",
+    "end": "00:18:39,900",
+    "note": "Federico's accidentally brilliant phrase for an unfair revenue split"
+  },
+  {
+    "episode": 584,
+    "title": "Musical Deck Chairs",
+    "speaker": "Jason Snell",
+    "text": "That's nothing bad can happen if you rearrange the deck chairs, right? The musical deck chairs are white.",
+    "start": "00:10:03,680",
+    "end": "00:10:11,920",
+    "note": "Jason Snell's unflinching assessment of Apple's executive shuffle — a Titanic metaphor in six words"
+  },
+  {
+    "episode": 586,
+    "title": "Dashboard Confessions",
+    "speaker": "Myke",
+    "text": "I am the impossible meat inside of this chairman sandwich.",
+    "start": "00:00:57,160",
+    "end": "00:01:01,000",
+    "note": "Myke extends a sandwich metaphor into deeply specific impossible-meat territory"
   },
   {
     "episode": 588,
@@ -567,57 +1207,12 @@
     "note": "Federico's phrase for the hosts' deep bond — grammatically unusual, emotionally correct"
   },
   {
-    "episode": 55,
-    "title": "Whatever it's Called This Week",
-    "speaker": "Federico",
-    "text": "I'm like a robot and all I can do is type.",
-    "start": "00:00:02,160",
-    "end": "00:00:11,520",
-    "note": "Federico's bleak self-assessment of his iPad-only workflow"
-  },
-  {
-    "episode": 66,
-    "title": "I'm Holding a Billboard",
-    "speaker": "Federico",
-    "text": "Safari in portrait is just like — holy cow — this thing. I'm like holding a billboard.",
-    "start": "00:00:00,320",
-    "end": "00:00:03,040",
-    "note": "Federico's description of the iPad Pro's massive portrait screen — the episode title"
-  },
-  {
-    "episode": 72,
-    "title": "What's a Heart, Really",
-    "speaker": "Federico",
-    "text": "I don't understand, Steven, why you do anything that you do.",
-    "start": "00:00:02,720",
-    "end": "00:00:09,040",
-    "note": "Federico's existential exasperation at Stephen's choices"
-  },
-  {
-    "episode": 75,
-    "title": "Explosion of Glue and Colors",
-    "speaker": "Stephen",
-    "text": "It's like an explosion of glue and colours.",
-    "start": "00:00:03,520",
-    "end": "00:00:07,920",
-    "note": "Stephen's description of the iPhone 5C's color options — the episode title"
-  },
-  {
-    "episode": 80,
-    "title": "I'm Like a Butterfly",
+    "episode": 590,
+    "title": "Nooooo (Marked as Resolved)",
     "speaker": "Myke",
-    "text": "I'm like a butterfly.",
-    "start": "00:00:08,640",
-    "end": "00:00:09,440",
-    "note": "Zero context. No explanation. Just Myke, declaring himself a butterfly. Became the episode title."
-  },
-  {
-    "episode": 82,
-    "title": "All Things Pizza",
-    "speaker": "Myke",
-    "text": "I'm really proud that the business that you and I have built is the preeminent podcast network for all things pizza.",
-    "start": "00:00:04,160",
-    "end": "00:00:14,000",
-    "note": "Myke fully leaning into the pizza tangent having taken over the episode"
+    "text": "He wanted another viral hit. Or as we call him: a viral sensation.",
+    "start": "00:02:36,260",
+    "end": "00:02:42,900",
+    "note": "Myke accuses Stephen of manufacturing iPhone issues just to recapture his brief viral fame"
   }
 ]
