@@ -48,25 +48,48 @@
   #montage {
     position:fixed; inset:0; z-index:90; background:var(--bg);
     display:none; align-items:center; justify-content:center;
-    flex-direction:column; gap:20px;
+    flex-direction:column; gap:20px; cursor:pointer;
+    transition:background .4s ease;
   }
   #montage.on { display:flex; }
-  .m-meta { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#6b7280; opacity:0; transition:opacity .2s; }
-  .m-quote {
-    font-size:clamp(20px,3.8vw,46px); font-weight:700; text-align:center;
-    max-width:72vw; line-height:1.3;
-    opacity:0; transform:translateY(6px); transition:opacity .2s ease, transform .2s ease;
+  .m-card {
+    display:flex; flex-direction:column; gap:16px; align-items:center;
+    max-width:72vw; padding:40px 48px; border-radius:12px;
+    background:rgba(255,255,255,.035);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    border:1px solid rgba(255,255,255,.06);
+    pointer-events:none;
   }
-  .m-speaker { font-size:11px; font-weight:700; letter-spacing:5px; text-transform:uppercase; opacity:0; transition:opacity .2s; }
-  .m-audio { opacity:0; transition:opacity .3s; margin-top:4px; }
+  .m-meta { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#6b7280; opacity:0; transition:opacity .25s; }
+  .m-quote {
+    font-size:clamp(18px,3.5vw,44px); font-weight:700; text-align:center;
+    line-height:1.4;
+    opacity:0; transform:translateY(8px); transition:opacity .25s ease, transform .25s ease;
+  }
+  .m-speaker { font-size:11px; font-weight:700; letter-spacing:5px; text-transform:uppercase; opacity:0; transition:opacity .25s; }
+  .m-audio { opacity:0; transition:opacity .3s; margin-top:4px; pointer-events:auto; }
   .m-audio audio { height:28px; opacity:.55; filter:invert(1) hue-rotate(180deg); }
   .m-quote.show,.m-speaker.show,.m-meta.show,.m-audio.show { opacity:1; transform:translateY(0); }
-  .m-bar { position:fixed; bottom:0; left:0; height:2px; background:#a78bfa; width:0%; transition:width linear; }
-  .m-close { position:fixed; top:22px; right:28px; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#374151; cursor:pointer; font-weight:600; background:none; border:none; font-family:'Inter',sans-serif; transition:color .2s; }
+  .m-close {
+    position:fixed; top:0; right:0; padding:24px 28px;
+    font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#374151;
+    cursor:pointer; font-weight:600; background:none; border:none;
+    font-family:'Inter',sans-serif; transition:color .2s;
+  }
   .m-close:hover { color:#9ca3af; }
   .m-hint { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#2d3748; pointer-events:none; white-space:nowrap; }
-  .m-pause-label { position:fixed; top:22px; left:28px; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#374151; font-weight:600; }
-  .m-counter { position:fixed; top:22px; left:50%; transform:translateX(-50%); font-family:'JetBrains Mono',monospace; font-size:10px; color:#374151; letter-spacing:2px; }
+  .m-counter { position:fixed; top:22px; left:28px; font-family:'JetBrains Mono',monospace; font-size:10px; color:#374151; letter-spacing:2px; }
+  .m-nav-hint {
+    position:fixed; bottom:40px; left:50%; transform:translateX(-50%);
+    display:flex; gap:8px; align-items:center; opacity:0;
+    transition:opacity .4s; pointer-events:none;
+  }
+  .m-nav-hint.show { opacity:1; }
+  .m-nav-arrow {
+    width:36px; height:36px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center;
+    font-size:14px; color:#4b5563;
+  }
 
   /* MAIN */
   #main { opacity:0; transition:opacity .8s; padding-bottom:100px; }
@@ -154,15 +177,19 @@
 </div>
 
 <div id="montage">
-  <div class="m-meta"    id="mm"></div>
-  <div class="m-quote"   id="mq"></div>
-  <div class="m-speaker" id="ms"></div>
-  <div class="m-audio"   id="ma"></div>
-  <div class="m-bar"     id="mb"></div>
+  <div class="m-card">
+    <div class="m-meta"    id="mm"></div>
+    <div class="m-quote"   id="mq"></div>
+    <div class="m-speaker" id="ms"></div>
+    <div class="m-audio"   id="ma"></div>
+  </div>
   <button class="m-close" onclick="closeMontage()">ESC &middot; Close</button>
-  <div class="m-hint">Click &middot; Space to pause &middot; &larr;&rarr; navigate</div>
-  <div class="m-pause-label" id="mpause"></div>
-  <div class="m-counter"     id="mcounter"></div>
+  <div class="m-counter" id="mcounter"></div>
+  <div class="m-nav-hint" id="mnavhint">
+    <div class="m-nav-arrow">&larr;</div>
+    <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#374151;font-family:'Inter',sans-serif">tap or swipe</span>
+    <div class="m-nav-arrow">&rarr;</div>
+  </div>
 </div>
 
 <div id="main">
@@ -174,7 +201,7 @@
     </div>
   </div>
   <div id="body"></div>
-  <div class="site-footer">Connected &middot; Relay FM &middot; 135 clips &middot; 123 with audio</div>
+  <div class="site-footer">Connected &middot; Relay FM &middot; 136 clips &middot; 124 with audio</div>
 </div>
 
 <script>
@@ -188,7 +215,7 @@ const CLIPS = [
     "end": "00:35:42,420",
     "note": "Stephen predicts a clip show and names his favorite moment \u2014 almost too perfect as an opener",
     "pinned": true,
-    "audio_file": "ep037_15.mp3"
+    "audio_file": "ep037_2131140_2142420.mp3"
   },
   {
     "episode": 4,
@@ -198,7 +225,7 @@ const CLIPS = [
     "start": "00:00:41,000",
     "end": "00:00:50,120",
     "note": "Federico furious that Myke introduced both guests at once instead of one at a time",
-    "audio_file": "ep004_0.mp3"
+    "audio_file": "ep004_41000_50120.mp3"
   },
   {
     "episode": 4,
@@ -208,7 +235,7 @@ const CLIPS = [
     "start": "00:01:37,180",
     "end": "00:02:01,120",
     "note": "Myke and Federico riffing on Microsoft's chaotic acquisition strategy",
-    "audio_file": "ep004_1.mp3"
+    "audio_file": "ep004_97180_121120.mp3"
   },
   {
     "episode": 5,
@@ -218,7 +245,7 @@ const CLIPS = [
     "start": "00:00:28,740",
     "end": "00:00:58,980",
     "note": "Federico guilt-tripping Myke for being in Italy without visiting, then undermining himself completely",
-    "audio_file": "ep005_2.mp3"
+    "audio_file": "ep005_28740_58980.mp3"
   },
   {
     "episode": 6,
@@ -228,7 +255,7 @@ const CLIPS = [
     "start": "01:16:16,619",
     "end": "01:16:26,380",
     "note": "Federico elevates iOS home screen icon rearrangement to a Dante-level circle of hell",
-    "audio_file": "ep006_3.mp3"
+    "audio_file": "ep006_4576619_4586380.mp3"
   },
   {
     "episode": 8,
@@ -238,7 +265,7 @@ const CLIPS = [
     "start": "00:16:00,680",
     "end": "00:16:20,860",
     "note": "The birth of the word 'squidges' \u2014 which became the episode title",
-    "audio_file": "ep008_4.mp3"
+    "audio_file": "ep008_960680_980860.mp3"
   },
   {
     "episode": 10,
@@ -248,7 +275,7 @@ const CLIPS = [
     "start": "00:58:10,300",
     "end": "00:58:15,099",
     "note": "Federico realising he's accumulating old hardware just like Stephen \u2014 the episode title moment",
-    "audio_file": "ep010_5.mp3"
+    "audio_file": "ep010_3490300_3495099.mp3"
   },
   {
     "episode": 14,
@@ -258,7 +285,7 @@ const CLIPS = [
     "start": "00:56:09,960",
     "end": "00:56:15,560",
     "note": "Myke's verdict on Apple's Apple Watch naming, delivered with complete certainty",
-    "audio_file": "ep014_6.mp3"
+    "audio_file": "ep014_3369960_3375560.mp3"
   },
   {
     "episode": 17,
@@ -268,7 +295,7 @@ const CLIPS = [
     "start": "01:13:33,699",
     "end": "01:13:58,219",
     "note": "Federico's rant against Twitter features he despises \u2014 but has apparently been using anyway",
-    "audio_file": "ep017_7.mp3"
+    "audio_file": "ep017_4413699_4438219.mp3"
   },
   {
     "episode": 18,
@@ -278,7 +305,7 @@ const CLIPS = [
     "start": "00:38:53,040",
     "end": "00:38:59,520",
     "note": "Federico inventing a new emotional register: conceptually sad. The episode title.",
-    "audio_file": "ep018_8.mp3"
+    "audio_file": "ep018_2333040_2339520.mp3"
   },
   {
     "episode": 19,
@@ -288,7 +315,7 @@ const CLIPS = [
     "start": "00:07:00,180",
     "end": "00:07:45,260",
     "note": "Myke's fake-Southern tutorial on how to use Internet Explorer \u2014 the episode title",
-    "audio_file": "ep019_9.mp3"
+    "audio_file": "ep019_420180_465260.mp3"
   },
   {
     "episode": 21,
@@ -298,7 +325,7 @@ const CLIPS = [
     "start": "00:00:54,600",
     "end": "00:01:09,160",
     "note": "Myke roasting Stephen about Tennessee being stuck in the past; Stephen's response makes it",
-    "audio_file": "ep021_10.mp3"
+    "audio_file": "ep021_54600_69160.mp3"
   },
   {
     "episode": 21,
@@ -308,7 +335,7 @@ const CLIPS = [
     "start": "00:01:25,860",
     "end": "00:01:42,280",
     "note": "Myke asking what Stephen did for New Year's Eve, assuming it involved a Mac",
-    "audio_file": "ep021_11.mp3"
+    "audio_file": "ep021_85860_102280.mp3"
   },
   {
     "episode": 21,
@@ -318,7 +345,7 @@ const CLIPS = [
     "start": "00:09:30,220",
     "end": "00:09:56,500",
     "note": "Federico's Godfather-style explanation of Apple's app rejection policy",
-    "audio_file": "ep021_12.mp3"
+    "audio_file": "ep021_570220_596500.mp3"
   },
   {
     "episode": 34,
@@ -328,7 +355,7 @@ const CLIPS = [
     "start": "00:01:32,500",
     "end": "00:01:46,280",
     "note": "Stephen sarcastically 'writing down' Myke's revelation that vintage Macs can be purchased",
-    "audio_file": "ep034_13.mp3"
+    "audio_file": "ep034_92500_106280.mp3"
   },
   {
     "episode": 34,
@@ -338,7 +365,7 @@ const CLIPS = [
     "start": "00:02:17,280",
     "end": "00:02:41,800",
     "note": "Stephen seriously considering evicting his family to house his vintage Mac collection",
-    "audio_file": "ep034_14.mp3"
+    "audio_file": "ep034_137280_161800.mp3"
   },
   {
     "episode": 37,
@@ -348,7 +375,17 @@ const CLIPS = [
     "start": "01:05:47,359",
     "end": "01:05:52,640",
     "note": "Federico coining 'artisanal emoji' \u2014 the phrase that named the episode",
-    "audio_file": "ep037_16.mp3"
+    "audio_file": "ep037_3947359_3952640.mp3"
+  },
+  {
+    "episode": 37,
+    "title": "Artisanal Emoji",
+    "speaker": "Federico",
+    "text": "But maybe other people feel like they wanna be analysts and they want to kinda tell Apple what to do. And that's also fine because everybody has a hobby.",
+    "start": "00:34:38,080",
+    "end": "00:34:50,000",
+    "note": "Federico's devastating dismissal of iPad critics \u2014 the burn that Stephen immediately declares his favorite clip of all time",
+    "audio_file": "ep037_2078080_2090000.mp3"
   },
   {
     "episode": 41,
@@ -358,7 +395,7 @@ const CLIPS = [
     "start": "00:20:37,200",
     "end": "00:21:04,960",
     "note": "Federico doing laps on his balcony to close his Watch rings \u2014 the episode title",
-    "audio_file": "ep041_17.mp3"
+    "audio_file": "ep041_1237200_1264960.mp3"
   },
   {
     "episode": 52,
@@ -368,7 +405,7 @@ const CLIPS = [
     "start": "00:00:44,140",
     "end": "00:01:15,880",
     "note": "Federico's devastating comparison of Myke's voice to a British MTV show, delivered with love",
-    "audio_file": "ep052_18.mp3"
+    "audio_file": "ep052_44140_75880.mp3"
   },
   {
     "episode": 54,
@@ -378,7 +415,7 @@ const CLIPS = [
     "start": "00:47:06,660",
     "end": "00:48:09,540",
     "note": "Federico's epic oral history of selfie sticks on Italian vacation",
-    "audio_file": "ep054_19.mp3"
+    "audio_file": "ep054_2826660_2889540.mp3"
   },
   {
     "episode": 54,
@@ -388,7 +425,7 @@ const CLIPS = [
     "start": "00:53:30,359",
     "end": "00:54:04,160",
     "note": "The perfect punchline: Federico observed the selfie stick phenomenon obsessively, then forgot his own",
-    "audio_file": "ep054_20.mp3"
+    "audio_file": "ep054_3210359_3244160.mp3"
   },
   {
     "episode": 55,
@@ -398,7 +435,7 @@ const CLIPS = [
     "start": "00:03:01,360",
     "end": "00:03:04,160",
     "note": "Federico's bleak self-assessment of his iPad-only workflow",
-    "audio_file": "ep055_21.mp3"
+    "audio_file": "ep055_181360_184160.mp3"
   },
   {
     "episode": 56,
@@ -408,7 +445,7 @@ const CLIPS = [
     "start": "00:02:20,480",
     "end": "00:03:25,439",
     "note": "Myke claiming full personal credit for BlaBlaCar's $1.2B valuation based on one podcast mention",
-    "audio_file": "ep056_22.mp3"
+    "audio_file": "ep056_140480_205439.mp3"
   },
   {
     "episode": 58,
@@ -418,7 +455,7 @@ const CLIPS = [
     "start": "00:03:48,940",
     "end": "00:04:15,120",
     "note": "Federico's fully automated girlfriend-as-wake-up-service system, explained with complete sincerity",
-    "audio_file": "ep058_23.mp3"
+    "audio_file": "ep058_228940_255120.mp3"
   },
   {
     "episode": 60,
@@ -428,7 +465,7 @@ const CLIPS = [
     "start": "00:14:36,120",
     "end": "00:14:54,780",
     "note": "The image that became the episode title, immediately undercut by the fact Federico can't drive",
-    "audio_file": "ep060_24.mp3"
+    "audio_file": "ep060_876120_894780.mp3"
   },
   {
     "episode": 62,
@@ -438,7 +475,7 @@ const CLIPS = [
     "start": "01:08:32,040",
     "end": "01:08:35,880",
     "note": "Federico's vision for HomeKit: Siri as a formal butler managing the household",
-    "audio_file": "ep062_25.mp3"
+    "audio_file": "ep062_4112040_4115880.mp3"
   },
   {
     "episode": 63,
@@ -448,7 +485,7 @@ const CLIPS = [
     "start": "00:38:01,620",
     "end": "00:38:03,220",
     "note": "Stephen's app for managing his vintage Mac collection. Its name is App. The episode title.",
-    "audio_file": "ep063_26.mp3"
+    "audio_file": "ep063_2281620_2283220.mp3"
   },
   {
     "episode": 66,
@@ -468,7 +505,7 @@ const CLIPS = [
     "start": "00:46:45,140",
     "end": "00:46:47,779",
     "note": "Federico's description of managing his Workflow automation setup \u2014 gave the episode its title",
-    "audio_file": "ep067_28.mp3"
+    "audio_file": "ep067_2805140_2807779.mp3"
   },
   {
     "episode": 69,
@@ -478,7 +515,7 @@ const CLIPS = [
     "start": "01:11:02,780",
     "end": "01:11:15,700",
     "note": "Stephen's apocalyptic farewell to the snooze button",
-    "audio_file": "ep069_29.mp3"
+    "audio_file": "ep069_4262780_4275700.mp3"
   },
   {
     "episode": 72,
@@ -488,7 +525,7 @@ const CLIPS = [
     "start": "00:14:29,100",
     "end": "00:14:34,060",
     "note": "Federico's existential exasperation at Stephen's choices",
-    "audio_file": "ep072_30.mp3"
+    "audio_file": "ep072_869100_874060.mp3"
   },
   {
     "episode": 73,
@@ -498,7 +535,7 @@ const CLIPS = [
     "start": "00:11:40,060",
     "end": "00:11:45,660",
     "note": "Federico's complete emoji philosophy: smiles, hearts, and for reasons he cannot explain, monkeys",
-    "audio_file": "ep073_31.mp3"
+    "audio_file": "ep073_700060_705660.mp3"
   },
   {
     "episode": 75,
@@ -508,7 +545,7 @@ const CLIPS = [
     "start": "00:13:55,959",
     "end": "00:13:59,720",
     "note": "Stephen's description of the iPhone 5C's color options \u2014 the episode title",
-    "audio_file": "ep075_32.mp3"
+    "audio_file": "ep075_835959_839720.mp3"
   },
   {
     "episode": 80,
@@ -518,7 +555,7 @@ const CLIPS = [
     "start": "00:52:19,039",
     "end": "00:52:20,720",
     "note": "Zero context. No explanation. Just Myke, declaring himself a butterfly. Became the episode title.",
-    "audio_file": "ep080_33.mp3"
+    "audio_file": "ep080_3139039_3140720.mp3"
   },
   {
     "episode": 82,
@@ -528,7 +565,7 @@ const CLIPS = [
     "start": "00:12:07,440",
     "end": "00:12:16,720",
     "note": "Myke fully leaning into the pizza tangent having taken over the episode",
-    "audio_file": "ep082_34.mp3"
+    "audio_file": "ep082_727440_736720.mp3"
   },
   {
     "episode": 85,
@@ -538,7 +575,7 @@ const CLIPS = [
     "start": "00:51:22,779",
     "end": "00:51:31,339",
     "note": "Federico preemptively dismisses all criticism of his iPad-only workflow with maximum confidence",
-    "audio_file": "ep085_35.mp3"
+    "audio_file": "ep085_3082779_3091339.mp3"
   },
   {
     "episode": 98,
@@ -548,7 +585,7 @@ const CLIPS = [
     "start": "00:02:12,140",
     "end": "00:02:30,020",
     "note": "Stephen reveals his subconscious is just eBay, browsing vintage Macs while he sleeps",
-    "audio_file": "ep098_36.mp3"
+    "audio_file": "ep098_132140_150020.mp3"
   },
   {
     "episode": 103,
@@ -558,7 +595,7 @@ const CLIPS = [
     "start": "00:04:40,440",
     "end": "00:04:42,680",
     "note": "Federico delivers the episode title as a calm, authoritative fact \u2014 immediately contradicted by everything around it",
-    "audio_file": "ep103_37.mp3"
+    "audio_file": "ep103_280440_282680.mp3"
   },
   {
     "episode": 107,
@@ -568,7 +605,7 @@ const CLIPS = [
     "start": "00:00:22,920",
     "end": "00:00:34,720",
     "note": "Federico's opening check-in, said with complete sincerity \u2014 the episode title",
-    "audio_file": "ep107_38.mp3"
+    "audio_file": "ep107_22920_34720.mp3"
   },
   {
     "episode": 168,
@@ -578,7 +615,7 @@ const CLIPS = [
     "start": "00:44:03,760",
     "end": "00:44:15,000",
     "note": "Stephen has turned his nightstand into a museum exhibit with guided tours \u2014 the episode title",
-    "audio_file": "ep168_39.mp3"
+    "audio_file": "ep168_2643760_2655000.mp3"
   },
   {
     "episode": 190,
@@ -588,7 +625,7 @@ const CLIPS = [
     "start": "00:46:31,760",
     "end": "00:46:45,740",
     "note": "Myke's passionate argument that home security robots should be silent and not commit murder",
-    "audio_file": "ep190_40.mp3"
+    "audio_file": "ep190_2791760_2805740.mp3"
   },
   {
     "episode": 212,
@@ -598,7 +635,7 @@ const CLIPS = [
     "start": "00:02:38,160",
     "end": "00:02:44,000",
     "note": "Federico formally recusing himself from an ongoing bit with slightly broken English that makes it perfect",
-    "audio_file": "ep212_41.mp3"
+    "audio_file": "ep212_158160_164000.mp3"
   },
   {
     "episode": 225,
@@ -608,7 +645,7 @@ const CLIPS = [
     "start": "00:08:20,920",
     "end": "00:08:40,000",
     "note": "Myke invents 'otterish' as a new stock market position \u2014 the hosts don't understand bull vs bear but they're trying",
-    "audio_file": "ep225_42.mp3"
+    "audio_file": "ep225_500920_520000.mp3"
   },
   {
     "episode": 253,
@@ -618,7 +655,7 @@ const CLIPS = [
     "start": "01:09:07,980",
     "end": "01:09:20,120",
     "note": "Myke's confident and completely unprompted assessment of his own physical inferiority to Jeff",
-    "audio_file": "ep253_43.mp3"
+    "audio_file": "ep253_4147979_4160120.mp3"
   },
   {
     "episode": 284,
@@ -628,7 +665,7 @@ const CLIPS = [
     "start": "00:19:30,519",
     "end": "00:20:09,659",
     "note": "Federico's HomePod spontaneously starts calling random numbers; Sylvia issues a nuclear ultimatum",
-    "audio_file": "ep284_44.mp3"
+    "audio_file": "ep284_1170519_1209659.mp3"
   },
   {
     "episode": 287,
@@ -638,7 +675,7 @@ const CLIPS = [
     "start": "00:16:55,180",
     "end": "00:17:00,699",
     "note": "Stephen justifying an irrational vintage Mac purchase using the language of romantic desire",
-    "audio_file": "ep287_45.mp3"
+    "audio_file": "ep287_1015180_1020699.mp3"
   },
   {
     "episode": 290,
@@ -648,7 +685,7 @@ const CLIPS = [
     "start": "01:01:55,660",
     "end": "01:02:16,720",
     "note": "Myke on Apple's $700 Mac Pro wheels that cannot stop rolling \u2014 the value proposition",
-    "audio_file": "ep290_46.mp3"
+    "audio_file": "ep290_3715660_3736720.mp3"
   },
   {
     "episode": 291,
@@ -658,7 +695,7 @@ const CLIPS = [
     "start": "00:28:17,860",
     "end": "00:29:08,280",
     "note": "Myke methodically calculating that Stephen has ~101 computers allocated to himself personally",
-    "audio_file": "ep291_47.mp3"
+    "audio_file": "ep291_1697860_1748280.mp3"
   },
   {
     "episode": 298,
@@ -668,7 +705,7 @@ const CLIPS = [
     "start": "00:01:23,220",
     "end": "00:01:30,000",
     "note": "Myke's self-portrait using Italian cheese \u2014 a description of his winter pallor that Federico started",
-    "audio_file": "ep298_48.mp3"
+    "audio_file": "ep298_83220_90000.mp3"
   },
   {
     "episode": 298,
@@ -678,7 +715,7 @@ const CLIPS = [
     "start": "01:05:34,620",
     "end": "01:05:52,559",
     "note": "Myke's one-line verdict on Stephen's Mac Pro with stand purchase \u2014 perfect and devastating",
-    "audio_file": "ep298_49.mp3"
+    "audio_file": "ep298_3934620_3952559.mp3"
   },
   {
     "episode": 300,
@@ -688,7 +725,7 @@ const CLIPS = [
     "start": "00:54:34,020",
     "end": "00:54:40,180",
     "note": "Myke's solemn defense of the Connected awards on their 300th episode",
-    "audio_file": "ep300_50.mp3"
+    "audio_file": "ep300_3274020_3280180.mp3"
   },
   {
     "episode": 317,
@@ -698,7 +735,7 @@ const CLIPS = [
     "start": "00:13:58,860",
     "end": "00:14:30,000",
     "note": "Myke officially titles Stephen 'Captain Flip Flop' and calls for documentary evidence",
-    "audio_file": "ep317_51.mp3"
+    "audio_file": "ep317_838860_870000.mp3"
   },
   {
     "episode": 370,
@@ -708,7 +745,7 @@ const CLIPS = [
     "start": "00:52:59,160",
     "end": "00:53:08,440",
     "note": "Myke applies Starbucks sizing to the MacBook lineup \u2014 the episode title",
-    "audio_file": "ep370_52.mp3"
+    "audio_file": "ep370_3179160_3188440.mp3"
   },
   {
     "episode": 385,
@@ -718,7 +755,7 @@ const CLIPS = [
     "start": "00:00:39,880",
     "end": "00:00:55,000",
     "note": "Myke plots a coup against the traditional intro format, live, in real time",
-    "audio_file": "ep385_53.mp3"
+    "audio_file": "ep385_39880_55000.mp3"
   },
   {
     "episode": 388,
@@ -728,7 +765,7 @@ const CLIPS = [
     "start": "00:40:02,320",
     "end": "00:40:10,000",
     "note": "Federico's self-assessment, delivered with absolute sincerity \u2014 became the episode title",
-    "audio_file": "ep388_54.mp3"
+    "audio_file": "ep388_2402320_2410000.mp3"
   },
   {
     "episode": 391,
@@ -738,7 +775,7 @@ const CLIPS = [
     "start": "00:00:38,100",
     "end": "00:00:47,000",
     "note": "The pleasure chain goes around the room until it reaches Federico, whose desk sign brings things to an abrupt halt",
-    "audio_file": "ep391_55.mp3"
+    "audio_file": "ep391_38100_47000.mp3"
   },
   {
     "episode": 394,
@@ -748,7 +785,7 @@ const CLIPS = [
     "start": "00:09:48,220",
     "end": "00:11:01,080",
     "note": "Myke's rant about overuse of the 'intersection of X and Y' phrase immediately becomes the thing he just complained about",
-    "audio_file": "ep394_56.mp3"
+    "audio_file": "ep394_588220_661080.mp3"
   },
   {
     "episode": 395,
@@ -788,7 +825,7 @@ const CLIPS = [
     "start": "00:34:43,040",
     "end": "00:34:46,000",
     "note": "Stephen's casual revelation of his bizarre childhood furniture \u2014 a bunk bed with a computer where the mattress should be",
-    "audio_file": "ep407_60.mp3"
+    "audio_file": "ep407_2083040_2086000.mp3"
   },
   {
     "episode": 414,
@@ -798,7 +835,7 @@ const CLIPS = [
     "start": "00:05:34,540",
     "end": "00:05:45,000",
     "note": "Federico casually accepts being called Michael Jordan as one of several valid reasons",
-    "audio_file": "ep414_61.mp3"
+    "audio_file": "ep414_334540_345000.mp3"
   },
   {
     "episode": 419,
@@ -808,7 +845,7 @@ const CLIPS = [
     "start": "00:20:06,200",
     "end": "00:20:13,159",
     "note": "Federico's wife is too scared to update her email app after witnessing how visibly upset he was about it",
-    "audio_file": "ep419_62.mp3"
+    "audio_file": "ep419_1206200_1213159.mp3"
   },
   {
     "episode": 421,
@@ -818,7 +855,7 @@ const CLIPS = [
     "start": "00:48:36,660",
     "end": "00:48:40,980",
     "note": "Myke makes a deeply considered case for why long shins are entirely worthless",
-    "audio_file": "ep421_63.mp3"
+    "audio_file": "ep421_2916660_2920980.mp3"
   },
   {
     "episode": 421,
@@ -828,7 +865,7 @@ const CLIPS = [
     "start": "00:48:17,660",
     "end": "00:48:58,900",
     "note": "Federico makes an airtight case for long thighs: extra lap surface for pets, kickstands, books, and a highly efficient Santa Claus operation",
-    "audio_file": "ep421_64.mp3"
+    "audio_file": "ep421_2897660_2938900.mp3"
   },
   {
     "episode": 423,
@@ -838,7 +875,7 @@ const CLIPS = [
     "start": "00:03:53,560",
     "end": "00:04:00,920",
     "note": "Federico stumbles explaining what a parrot is; Myke cuts him off with a perfect deadpan \u2014 the episode title",
-    "audio_file": "ep423_65.mp3"
+    "audio_file": "ep423_233560_240920.mp3"
   },
   {
     "episode": 424,
@@ -848,7 +885,7 @@ const CLIPS = [
     "start": "00:25:23,600",
     "end": "00:25:38,140",
     "note": "Federico's weirdly specific association between an old Apple accessory's click and the drudgery of bureaucratic employment",
-    "audio_file": "ep424_66.mp3"
+    "audio_file": "ep424_1523600_1538140.mp3"
   },
   {
     "episode": 427,
@@ -858,7 +895,7 @@ const CLIPS = [
     "start": "00:55:09,760",
     "end": "00:55:26,400",
     "note": "Myke self-diagnoses the show as group therapy for people with unhealthy Apple relationships",
-    "audio_file": "ep427_67.mp3"
+    "audio_file": "ep427_3309760_3326400.mp3"
   },
   {
     "episode": 434,
@@ -868,7 +905,7 @@ const CLIPS = [
     "start": "00:07:29,520",
     "end": "00:07:56,300",
     "note": "Federico's family member sends him an Italian clickbait TikTok about Apple \u2014 the episode title",
-    "audio_file": "ep434_68.mp3"
+    "audio_file": "ep434_449520_476300.mp3"
   },
   {
     "episode": 435,
@@ -878,7 +915,7 @@ const CLIPS = [
     "start": "00:06:34,580",
     "end": "00:06:53,860",
     "note": "Myke proposes using 'Fedi' as a universal prefix for things that have nothing to do with the Fediverse",
-    "audio_file": "ep435_69.mp3"
+    "audio_file": "ep435_394580_413860.mp3"
   },
   {
     "episode": 437,
@@ -888,7 +925,7 @@ const CLIPS = [
     "start": "00:37:14,000",
     "end": "00:37:43,000",
     "note": "Myke and Federico inform Stephen that his leisurely treadmill desk pace is a personal betrayal of Tim Cook",
-    "audio_file": "ep437_70.mp3"
+    "audio_file": "ep437_2234000_2263000.mp3"
   },
   {
     "episode": 442,
@@ -898,7 +935,7 @@ const CLIPS = [
     "start": "00:09:11,339",
     "end": "00:09:23,420",
     "note": "Stephen invents the word 'Zanith' as the opposite of 'Azimuth' and presents it as established celestial science",
-    "audio_file": "ep442_71.mp3"
+    "audio_file": "ep442_551339_563420.mp3"
   },
   {
     "episode": 444,
@@ -908,7 +945,7 @@ const CLIPS = [
     "start": "00:52:23,660",
     "end": "00:52:57,760",
     "note": "Stephen explains neural networks using an onion metaphor he is clearly making up in real time",
-    "audio_file": "ep444_72.mp3"
+    "audio_file": "ep444_3143660_3177760.mp3"
   },
   {
     "episode": 445,
@@ -918,7 +955,7 @@ const CLIPS = [
     "start": "00:44:38,620",
     "end": "00:44:42,940",
     "note": "Myke's definitive solution to Stephen's messy office \u2014 adding a floor trumpet \u2014 became the episode title",
-    "audio_file": "ep445_73.mp3"
+    "audio_file": "ep445_2678620_2682940.mp3"
   },
   {
     "episode": 448,
@@ -928,7 +965,7 @@ const CLIPS = [
     "start": "00:16:04,540",
     "end": "00:16:21,320",
     "note": "Stephen name-drops every design tool he's just learned about as if he's been in the scene for years",
-    "audio_file": "ep448_74.mp3"
+    "audio_file": "ep448_964540_981320.mp3"
   },
   {
     "episode": 451,
@@ -938,7 +975,7 @@ const CLIPS = [
     "start": "00:02:38,540",
     "end": "00:02:50,000",
     "note": "Stephen fixed his tech issue by getting in a hot tub; Myke coins 'genius tub' and immediately extends the bit",
-    "audio_file": "ep451_75.mp3"
+    "audio_file": "ep451_158540_170000.mp3"
   },
   {
     "episode": 453,
@@ -948,7 +985,7 @@ const CLIPS = [
     "start": "00:46:35,000",
     "end": "00:46:42,000",
     "note": "Federico deliberately mangling the idiom \u2014 the episode title",
-    "audio_file": "ep453_76.mp3"
+    "audio_file": "ep453_2795000_2802000.mp3"
   },
   {
     "episode": 455,
@@ -958,7 +995,7 @@ const CLIPS = [
     "start": "00:19:12,240",
     "end": "00:19:18,140",
     "note": "Stephen casually reveals he is permanently banned from a luxury home scent website \u2014 the episode title",
-    "audio_file": "ep455_77.mp3"
+    "audio_file": "ep455_1152240_1158140.mp3"
   },
   {
     "episode": 458,
@@ -968,7 +1005,7 @@ const CLIPS = [
     "start": "00:18:34,900",
     "end": "00:18:45,860",
     "note": "Myke's heartfelt encouragement to a small widget \u2014 became the episode title",
-    "audio_file": "ep458_78.mp3"
+    "audio_file": "ep458_1114900_1125860.mp3"
   },
   {
     "episode": 459,
@@ -978,7 +1015,7 @@ const CLIPS = [
     "start": "00:01:32,620",
     "end": "00:01:40,119",
     "note": "Stephen breaks the fourth wall to acknowledge that long-time listeners are truly trapped",
-    "audio_file": "ep459_79.mp3"
+    "audio_file": "ep459_92620_100119.mp3"
   },
   {
     "episode": 460,
@@ -988,7 +1025,7 @@ const CLIPS = [
     "start": "01:03:57,440",
     "end": "01:04:04,480",
     "note": "Stephen advocates for neck strength as a key iPhone case selection criterion",
-    "audio_file": "ep460_80.mp3"
+    "audio_file": "ep460_3837440_3844480.mp3"
   },
   {
     "episode": 461,
@@ -998,7 +1035,7 @@ const CLIPS = [
     "start": "00:57:34,180",
     "end": "00:57:40,560",
     "note": "Federico declares the year of the strong neck \u2014 an era that became the episode title",
-    "audio_file": "ep461_81.mp3"
+    "audio_file": "ep461_3454180_3460560.mp3"
   },
   {
     "episode": 462,
@@ -1008,7 +1045,7 @@ const CLIPS = [
     "start": "00:21:12,520",
     "end": "00:21:38,580",
     "note": "Myke is fully self-aware that the only reason he dislikes the App Store button case change is because it's different",
-    "audio_file": "ep462_82.mp3"
+    "audio_file": "ep462_1272520_1298580.mp3"
   },
   {
     "episode": 464,
@@ -1018,7 +1055,7 @@ const CLIPS = [
     "start": "00:43:45,660",
     "end": "00:44:07,000",
     "note": "Federico casually mentions he got thermal paste and opened his Surface \u2014 presented as routine maintenance",
-    "audio_file": "ep464_83.mp3"
+    "audio_file": "ep464_2625660_2647000.mp3"
   },
   {
     "episode": 468,
@@ -1028,7 +1065,7 @@ const CLIPS = [
     "start": "00:55:10,400",
     "end": "00:55:20,000",
     "note": "Federico illustrates the scope of Apple's app ecosystem with one perfectly chosen example: Clock",
-    "audio_file": "ep468_84.mp3"
+    "audio_file": "ep468_3310400_3320000.mp3"
   },
   {
     "episode": 470,
@@ -1038,7 +1075,7 @@ const CLIPS = [
     "start": "00:07:47,860",
     "end": "00:07:51,140",
     "note": "Federico self-appoints himself a title that became the episode name",
-    "audio_file": "ep470_85.mp3"
+    "audio_file": "ep470_467860_471140.mp3"
   },
   {
     "episode": 471,
@@ -1048,7 +1085,7 @@ const CLIPS = [
     "start": "00:32:53,899",
     "end": "00:32:58,200",
     "note": "Federico sends the group a sped-up anime remix of Sia's Titanium to celebrate the iPhone's titanium frame",
-    "audio_file": "ep471_86.mp3"
+    "audio_file": "ep471_1973899_1978200.mp3"
   },
   {
     "episode": 474,
@@ -1058,7 +1095,7 @@ const CLIPS = [
     "start": "00:23:14,740",
     "end": "00:23:18,260",
     "note": "Federico's biological metaphor for removing the Touch Bar \u2014 the episode title",
-    "audio_file": "ep474_87.mp3"
+    "audio_file": "ep474_1394740_1398260.mp3"
   },
   {
     "episode": 475,
@@ -1068,7 +1105,7 @@ const CLIPS = [
     "start": "00:46:07,040",
     "end": "00:46:42,000",
     "note": "Federico applied glow-in-the-dark stickers to his keyboard; Myke addresses Apple directly about it",
-    "audio_file": "ep475_88.mp3"
+    "audio_file": "ep475_2767040_2802000.mp3"
   },
   {
     "episode": 478,
@@ -1078,7 +1115,7 @@ const CLIPS = [
     "start": "00:12:03,740",
     "end": "00:12:27,360",
     "note": "Federico missed a keyboard delivery because he was at IKEA \u2014 the episode title was apparently already chosen",
-    "audio_file": "ep478_89.mp3"
+    "audio_file": "ep478_723740_747360.mp3"
   },
   {
     "episode": 482,
@@ -1108,7 +1145,7 @@ const CLIPS = [
     "start": "00:32:39,799",
     "end": "00:32:57,560",
     "note": "Federico's solution for accessing EU sideloading: create a fake European Apple ID as 'The One False John'",
-    "audio_file": "ep487_92.mp3"
+    "audio_file": "ep487_1959799_1977560.mp3"
   },
   {
     "episode": 488,
@@ -1128,7 +1165,7 @@ const CLIPS = [
     "start": "00:29:21,580",
     "end": "00:29:31,800",
     "note": "Stephen's confident universal assumption met with immediate silence",
-    "audio_file": "ep489_94.mp3"
+    "audio_file": "ep489_1761580_1771800.mp3"
   },
   {
     "episode": 490,
@@ -1148,7 +1185,7 @@ const CLIPS = [
     "start": "00:44:42,020",
     "end": "00:44:55,000",
     "note": "The Vision Pro testing process, described exactly as it sounds \u2014 Myke's head vanishes the moment Stephen tries",
-    "audio_file": "ep496_96.mp3"
+    "audio_file": "ep496_2682020_2695000.mp3"
   },
   {
     "episode": 497,
@@ -1158,7 +1195,7 @@ const CLIPS = [
     "start": "00:40:41,140",
     "end": "00:40:52,000",
     "note": "Myke's solar eclipse report: a man sacrificed his vision to give a fish the full eclipse experience",
-    "audio_file": "ep497_97.mp3"
+    "audio_file": "ep497_2441140_2452000.mp3"
   },
   {
     "episode": 501,
@@ -1168,7 +1205,7 @@ const CLIPS = [
     "start": "00:07:43,000",
     "end": "00:07:55,000",
     "note": "Myke's heart skips an actual beat when John Ternus appears at an Apple event \u2014 the title of this episode",
-    "audio_file": "ep501_98.mp3"
+    "audio_file": "ep501_463000_475000.mp3"
   },
   {
     "episode": 504,
@@ -1178,7 +1215,7 @@ const CLIPS = [
     "start": "00:48:14,420",
     "end": "00:48:29,119",
     "note": "Myke commits to the bit: Apple keeps adding SF Symbols faster than they can discuss them",
-    "audio_file": "ep504_99.mp3"
+    "audio_file": "ep504_2894420_2909119.mp3"
   },
   {
     "episode": 506,
@@ -1188,7 +1225,7 @@ const CLIPS = [
     "start": "00:13:32,940",
     "end": "00:13:44,000",
     "note": "Stephen's dramatic account of not receiving an Apple event press invite \u2014 his Shakespearean response to a sun that would not cooperate",
-    "audio_file": "ep506_100.mp3"
+    "audio_file": "ep506_812940_824000.mp3"
   },
   {
     "episode": 512,
@@ -1198,7 +1235,7 @@ const CLIPS = [
     "start": "00:10:34,400",
     "end": "00:10:39,200",
     "note": "Stephen defends his viral gate video by noting that his real viral content would be far superior",
-    "audio_file": "ep512_101.mp3"
+    "audio_file": "ep512_634400_639200.mp3"
   },
   {
     "episode": 521,
@@ -1208,7 +1245,7 @@ const CLIPS = [
     "start": "00:03:35,520",
     "end": "00:03:40,880",
     "note": "Stephen cannot remember the macOS version he is running \u2014 and his guess has one S, not two",
-    "audio_file": "ep521_102.mp3"
+    "audio_file": "ep521_215520_220880.mp3"
   },
   {
     "episode": 524,
@@ -1218,7 +1255,7 @@ const CLIPS = [
     "start": "00:50:17,620",
     "end": "00:50:28,599",
     "note": "Federico bestows Tim Cook the highest honour: absolute madlad power user",
-    "audio_file": "ep524_103.mp3"
+    "audio_file": "ep524_3017620_3028599.mp3"
   },
   {
     "episode": 525,
@@ -1228,7 +1265,7 @@ const CLIPS = [
     "start": "01:19:40,320",
     "end": "01:20:02,320",
     "note": "Stephen and Myke dramatically mourning someone's departure with increasing theatrical desperation",
-    "audio_file": "ep525_104.mp3"
+    "audio_file": "ep525_4780320_4802320.mp3"
   },
   {
     "episode": 526,
@@ -1238,7 +1275,7 @@ const CLIPS = [
     "start": "00:52:48,020",
     "end": "00:53:07,700",
     "note": "Myke wins a product comparison by pointing out his dog has more legs than the alternative \u2014 the episode title",
-    "audio_file": "ep526_105.mp3"
+    "audio_file": "ep526_3168020_3187700.mp3"
   },
   {
     "episode": 527,
@@ -1248,7 +1285,7 @@ const CLIPS = [
     "start": "01:17:20,860",
     "end": "01:17:32,480",
     "note": "Myke narrates the exact moment that became the episode title in real time",
-    "audio_file": "ep527_106.mp3"
+    "audio_file": "ep527_4640860_4652480.mp3"
   },
   {
     "episode": 528,
@@ -1268,7 +1305,7 @@ const CLIPS = [
     "start": "00:01:05,580",
     "end": "00:01:12,140",
     "note": "Myke absolutely had to be reminded about the segment they do every year \u2014 delivers the denial perfectly straight",
-    "audio_file": "ep531_108.mp3"
+    "audio_file": "ep531_65580_72140.mp3"
   },
   {
     "episode": 533,
@@ -1278,7 +1315,7 @@ const CLIPS = [
     "start": "00:39:33,660",
     "end": "00:39:43,680",
     "note": "James Thompson delivers his Rickies pick with appropriate Palpatine energy \u2014 and was right",
-    "audio_file": "ep533_109.mp3"
+    "audio_file": "ep533_2373660_2383680.mp3"
   },
   {
     "episode": 536,
@@ -1288,7 +1325,7 @@ const CLIPS = [
     "start": "00:05:03,320",
     "end": "00:05:09,060",
     "note": "Stephen floats (then immediately retracts) his ideal Switch 2 use case",
-    "audio_file": "ep536_110.mp3"
+    "audio_file": "ep536_303320_309060.mp3"
   },
   {
     "episode": 541,
@@ -1298,7 +1335,7 @@ const CLIPS = [
     "start": "00:44:15,559",
     "end": "00:45:37,180",
     "note": "Federico critiques Apple's official Newsroom pasta recipe \u2014 wrong pasta shape, suboptimal brand",
-    "audio_file": "ep541_111.mp3"
+    "audio_file": "ep541_2655559_2737180.mp3"
   },
   {
     "episode": 542,
@@ -1308,7 +1345,7 @@ const CLIPS = [
     "start": "00:47:02,720",
     "end": "00:47:07,300",
     "note": "Stephen riffs on Apple's emoji naming convention and accidentally makes a perfect episode title",
-    "audio_file": "ep542_112.mp3"
+    "audio_file": "ep542_2822720_2827300.mp3"
   },
   {
     "episode": 544,
@@ -1328,7 +1365,7 @@ const CLIPS = [
     "start": "00:05:24,180",
     "end": "00:05:31,700",
     "note": "Stephen casually claims the physics law of refraction as a personal honor",
-    "audio_file": "ep546_114.mp3"
+    "audio_file": "ep546_324180_331700.mp3"
   },
   {
     "episode": 549,
@@ -1338,7 +1375,7 @@ const CLIPS = [
     "start": "00:02:39,900",
     "end": "00:02:43,340",
     "note": "Myke formally notifies Stephen that his exclusive 'Daddy' title is no longer his alone",
-    "audio_file": "ep549_115.mp3"
+    "audio_file": "ep549_159900_163340.mp3"
   },
   {
     "episode": 550,
@@ -1348,7 +1385,7 @@ const CLIPS = [
     "start": "00:31:57,440",
     "end": "00:32:08,799",
     "note": "Stephen references a photo of Jason Snell from a Macworld issue that would predate Macworld by about 100 years",
-    "audio_file": "ep550_116.mp3"
+    "audio_file": "ep550_1917440_1928799.mp3"
   },
   {
     "episode": 552,
@@ -1358,7 +1395,7 @@ const CLIPS = [
     "start": "00:50:45,920",
     "end": "00:50:52,099",
     "note": "Federico delivers his final verdict on Stage Manager in three words \u2014 then goes silent",
-    "audio_file": "ep552_117.mp3"
+    "audio_file": "ep552_3045920_3052099.mp3"
   },
   {
     "episode": 553,
@@ -1368,7 +1405,7 @@ const CLIPS = [
     "start": "00:29:33,780",
     "end": "00:29:36,179",
     "note": "Myke's perfect one-liner roasting the Humane AI Pin by comparing it to a knockoff Jony Ive product \u2014 the episode title",
-    "audio_file": "ep553_118.mp3"
+    "audio_file": "ep553_1773780_1776179.mp3"
   },
   {
     "episode": 554,
@@ -1378,7 +1415,7 @@ const CLIPS = [
     "start": "00:59:05,780",
     "end": "00:59:23,000",
     "note": "Myke and Stephen trace Game Center's aesthetic journey: from felt casino tables, to iOS 7 bubbles, to wherever it landed",
-    "audio_file": "ep554_119.mp3"
+    "audio_file": "ep554_3545780_3563000.mp3"
   },
   {
     "episode": 556,
@@ -1388,7 +1425,7 @@ const CLIPS = [
     "start": "00:22:04,360",
     "end": "00:22:12,280",
     "note": "Myke takes Apple's 'Liquid Glass' design language to its literal, fatal conclusion",
-    "audio_file": "ep556_120.mp3"
+    "audio_file": "ep556_1324360_1332280.mp3"
   },
   {
     "episode": 560,
@@ -1398,7 +1435,7 @@ const CLIPS = [
     "start": "00:27:04,740",
     "end": "00:27:08,000",
     "note": "Federico on the Vision Pro \u2014 the product is literally called The Beast \u2014 became the episode title",
-    "audio_file": "ep560_121.mp3"
+    "audio_file": "ep560_1624740_1628000.mp3"
   },
   {
     "episode": 561,
@@ -1428,7 +1465,7 @@ const CLIPS = [
     "start": "00:02:04,380",
     "end": "00:02:22,000",
     "note": "Myke and Federico speculate what a 'bug fix year' would look like if Apple ran the world's operating system",
-    "audio_file": "ep573_124.mp3"
+    "audio_file": "ep573_124380_142000.mp3"
   },
   {
     "episode": 574,
@@ -1438,7 +1475,7 @@ const CLIPS = [
     "start": "00:44:28,859",
     "end": "00:44:37,339",
     "note": "Federico explains M-series GPU architecture using kangaroo pouches as the primary metaphor",
-    "audio_file": "ep574_125.mp3"
+    "audio_file": "ep574_2668859_2677339.mp3"
   },
   {
     "episode": 577,
@@ -1448,7 +1485,7 @@ const CLIPS = [
     "start": "00:08:52,940",
     "end": "00:09:10,000",
     "note": "Stephen's earnest self-description as a stereotypical American \u2014 with full commitment to the bit",
-    "audio_file": "ep577_126.mp3"
+    "audio_file": "ep577_532940_550000.mp3"
   },
   {
     "episode": 579,
@@ -1458,7 +1495,7 @@ const CLIPS = [
     "start": "00:01:04,120",
     "end": "00:01:06,280",
     "note": "Myke marks episode 579 as the moment the podcast finally nailed its intro format",
-    "audio_file": "ep579_127.mp3"
+    "audio_file": "ep579_64120_66280.mp3"
   },
   {
     "episode": 580,
@@ -1468,7 +1505,7 @@ const CLIPS = [
     "start": "00:04:54,760",
     "end": "00:05:27,040",
     "note": "A tech exec explains edible-sounding design language; the hosts have no idea why either",
-    "audio_file": "ep580_128.mp3"
+    "audio_file": "ep580_294760_327040.mp3"
   },
   {
     "episode": 582,
@@ -1478,7 +1515,7 @@ const CLIPS = [
     "start": "00:18:34,460",
     "end": "00:18:39,900",
     "note": "Federico's accidentally brilliant phrase for an unfair revenue split",
-    "audio_file": "ep582_129.mp3"
+    "audio_file": "ep582_1114460_1119900.mp3"
   },
   {
     "episode": 584,
@@ -1488,7 +1525,7 @@ const CLIPS = [
     "start": "00:10:03,680",
     "end": "00:10:11,920",
     "note": "Jason Snell's unflinching assessment of Apple's executive shuffle \u2014 a Titanic metaphor in six words",
-    "audio_file": "ep584_130.mp3"
+    "audio_file": "ep584_603680_611920.mp3"
   },
   {
     "episode": 586,
@@ -1498,7 +1535,7 @@ const CLIPS = [
     "start": "00:00:57,160",
     "end": "00:01:01,000",
     "note": "Myke extends a sandwich metaphor into deeply specific impossible-meat territory",
-    "audio_file": "ep586_131.mp3"
+    "audio_file": "ep586_57160_61000.mp3"
   },
   {
     "episode": 588,
@@ -1508,7 +1545,7 @@ const CLIPS = [
     "start": "00:22:30,740",
     "end": "00:23:00,000",
     "note": "Federico's urgent public service announcement about lobster AirTag incompatibility",
-    "audio_file": "ep588_132.mp3"
+    "audio_file": "ep588_1350740_1380000.mp3"
   },
   {
     "episode": 589,
@@ -1518,7 +1555,7 @@ const CLIPS = [
     "start": "00:47:05,640",
     "end": "00:47:15,000",
     "note": "Federico's phrase for the hosts' deep bond \u2014 grammatically unusual, emotionally correct",
-    "audio_file": "ep589_133.mp3"
+    "audio_file": "ep589_2825640_2835000.mp3"
   },
   {
     "episode": 590,
@@ -1528,7 +1565,7 @@ const CLIPS = [
     "start": "00:02:36,260",
     "end": "00:02:42,900",
     "note": "Myke accuses Stephen of manufacturing iPhone issues just to recapture his brief viral fame",
-    "audio_file": "ep590_134.mp3"
+    "audio_file": "ep590_156260_162900.mp3"
   }
 ];
 
@@ -1617,14 +1654,17 @@ function toggleShuffle() {
 }
 
 // ── Flash montage ────────────────────────────────────────────────────────────
-const FLASH_MS = 5500;
-let mIdx = 0, mOrder = [], mTimer = null, mPaused = false, mActive = false;
+let mIdx = 0, mOrder = [], mActive = false;
 
 function launchMontage() {
   mOrder = [...CLIPS].sort(() => Math.random() - .5);
-  mIdx = 0; mPaused = false; mActive = true;
+  mIdx = 0; mActive = true;
   if (activeAudio) { activeAudio.pause(); activeAudio = null; }
   document.getElementById("montage").classList.add("on");
+  // Show nav hint briefly then fade
+  const hint = document.getElementById("mnavhint");
+  hint.classList.add("show");
+  setTimeout(() => hint.classList.remove("show"), 2800);
   showSlide();
 }
 
@@ -1640,9 +1680,13 @@ function showSlide() {
     document.getElementById("ms").textContent = c.speaker;
     document.getElementById("ms").style.color = color;
     document.getElementById("mm").textContent = "EP." + String(c.episode).padStart(3,"0") + " · " + c.title;
-    document.getElementById("montage").style.background =
-      `radial-gradient(ellipse at 50% 55%, ${color}12 0%, #0a0a0f 65%)`;
     document.getElementById("mcounter").textContent = (mIdx + 1) + " / " + mOrder.length;
+
+    // Richer background glow: two ellipses for depth
+    document.getElementById("montage").style.background =
+      `radial-gradient(ellipse at 50% 45%, ${color}30 0%, ${color}08 40%, transparent 68%),
+       radial-gradient(ellipse at 50% 80%, ${color}18 0%, transparent 55%),
+       #0a0a0f`;
 
     const ma = document.getElementById("ma");
     if (c.audio_file) {
@@ -1653,41 +1697,43 @@ function showSlide() {
     }
     ["mq","ms","mm"].forEach(id => document.getElementById(id).classList.add("show"));
   }, 130);
-
-  const bar = document.getElementById("mb");
-  bar.style.transition = "none"; bar.style.width = "0%"; bar.style.background = color;
-  setTimeout(() => { bar.style.transition = `width ${FLASH_MS}ms linear`; bar.style.width = "100%"; }, 40);
-
-  if (!mPaused) {
-    clearTimeout(mTimer);
-    mTimer = setTimeout(() => { mIdx++; showSlide(); }, FLASH_MS);
-  }
 }
 
 function closeMontage() {
-  mActive = false; clearTimeout(mTimer);
+  mActive = false;
   document.getElementById("montage").classList.remove("on");
   document.getElementById("ma").innerHTML = "";
+  document.getElementById("montage").style.background = "";
 }
 
+// Keyboard navigation
 document.addEventListener("keydown", e => {
   if (!mActive) return;
   if (e.code === "Escape")     closeMontage();
-  if (e.code === "Space")      { e.preventDefault(); togglePause(); }
-  if (e.code === "ArrowRight") { clearTimeout(mTimer); mIdx++;               showSlide(); }
-  if (e.code === "ArrowLeft")  { clearTimeout(mTimer); mIdx = Math.max(0, mIdx - 1); showSlide(); }
-});
-document.getElementById("montage").addEventListener("click", e => {
-  if (e.target.tagName === "BUTTON" || e.target.tagName === "AUDIO") return;
-  clearTimeout(mTimer); mIdx++; showSlide();
+  if (e.code === "ArrowRight" || e.code === "Space") { e.preventDefault(); mIdx++; showSlide(); }
+  if (e.code === "ArrowLeft")  { mIdx = Math.max(0, mIdx - 1); showSlide(); }
 });
 
-function togglePause() {
-  mPaused = !mPaused;
-  document.getElementById("mpause").textContent = mPaused ? "PAUSED" : "";
-  if (!mPaused) { clearTimeout(mTimer); mTimer = setTimeout(() => { mIdx++; showSlide(); }, 2000); }
-  else          { clearTimeout(mTimer); document.getElementById("mb").style.transition = "none"; }
-}
+// Click to advance (but not on buttons or audio controls)
+document.getElementById("montage").addEventListener("click", e => {
+  if (e.target.tagName === "BUTTON" || e.target.tagName === "AUDIO" ||
+      e.target.closest("audio") || e.target.closest(".m-audio")) return;
+  mIdx++; showSlide();
+});
+
+// Touch swipe for mobile
+(function() {
+  let tx = 0;
+  const el = document.getElementById("montage");
+  el.addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, {passive:true});
+  el.addEventListener("touchend", e => {
+    if (!mActive) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) < 40) return; // not a real swipe
+    if (dx < 0) { mIdx++; showSlide(); }          // swipe left → next
+    else        { mIdx = Math.max(0, mIdx - 1); showSlide(); } // swipe right → prev
+  }, {passive:true});
+})();
 </script>
 </body>
 </html>

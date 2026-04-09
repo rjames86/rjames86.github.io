@@ -1,5 +1,15 @@
 [
   {
+    "episode": 37,
+    "title": "Artisanal Emoji",
+    "speaker": "Stephen",
+    "text": "If anybody is ever gonna make a Connected clip show, 'Everyone Needs a Hobby' is potentially my favorite clip of all time. That was the sickest of burns.",
+    "start": "00:35:31,140",
+    "end": "00:35:42,420",
+    "note": "Stephen predicts a clip show and names his favorite moment — almost too perfect as an opener",
+    "pinned": true
+  },
+  {
     "episode": 4,
     "title": "Stabbed by a Glass Corner",
     "speaker": "Federico",
@@ -137,21 +147,20 @@
   {
     "episode": 37,
     "title": "Artisanal Emoji",
-    "speaker": "Stephen",
-    "text": "If anybody is ever gonna make a Connected clip show, 'Everyone Needs a Hobby' is potentially my favorite clip of all time. That was the sickest of burns.",
-    "start": "00:35:31,140",
-    "end": "00:35:42,420",
-    "note": "Stephen predicts a clip show and names his favorite moment — almost too perfect as an opener",
-    "pinned": true
-  },
-  {
-    "episode": 37,
-    "title": "Artisanal Emoji",
     "speaker": "Federico",
     "text": "I don't want these little shaking guys. I just want my traditional, classical, artisanal emoji.",
     "start": "01:05:47,359",
     "end": "01:05:52,640",
     "note": "Federico coining 'artisanal emoji' — the phrase that named the episode"
+  },
+  {
+    "episode": 37,
+    "title": "Artisanal Emoji",
+    "speaker": "Federico",
+    "text": "But maybe other people feel like they wanna be analysts and they want to kinda tell Apple what to do. And that's also fine because everybody has a hobby.",
+    "start": "00:34:38,080",
+    "end": "00:34:50,000",
+    "note": "Federico's devastating dismissal of iPad critics — the burn that Stephen immediately declares his favorite clip of all time"
   },
   {
     "episode": 41,

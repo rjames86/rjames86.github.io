@@ -120,9 +120,12 @@ def process():
                 failed_bad_ts += 1
                 continue
 
-            fname     = f"ep{ep_num:03d}_{i}.mp3"
+            # Filename based on start+end ms — stable across clip reorderings
+            start_ms  = int(ts_to_seconds(clip["start"]) * 1000)
+            end_ms    = int(ts_to_seconds(clip["end"])   * 1000)
+            fname     = f"ep{ep_num:03d}_{start_ms}_{end_ms}.mp3"
             out_path  = AUDIO_DIR / fname
-            clip_key  = f"ep{ep_num:03d}_{i}"
+            clip_key  = fname  # use filename as cache key
 
             if out_path.exists() and cache["audio"].get(clip_key) == "ok":
                 clip["audio_file"] = fname
@@ -130,7 +133,7 @@ def process():
             elif extract_audio(cache, clip_key, mp3_path, clip["start"], clip["end"], out_path):
                 clip["audio_file"] = fname
                 extracted += 1
-                print(f"  Ep{ep_num:03d} clip {i} extracted → {fname}")
+                print(f"  Ep{ep_num:03d} extracted → {fname}")
             else:
                 clip["audio_file"] = None
 
@@ -205,25 +208,48 @@ def build_html(clips):
   #montage {{
     position:fixed; inset:0; z-index:90; background:var(--bg);
     display:none; align-items:center; justify-content:center;
-    flex-direction:column; gap:20px;
+    flex-direction:column; gap:20px; cursor:pointer;
+    transition:background .4s ease;
   }}
   #montage.on {{ display:flex; }}
-  .m-meta {{ font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#6b7280; opacity:0; transition:opacity .2s; }}
-  .m-quote {{
-    font-size:clamp(20px,3.8vw,46px); font-weight:700; text-align:center;
-    max-width:72vw; line-height:1.3;
-    opacity:0; transform:translateY(6px); transition:opacity .2s ease, transform .2s ease;
+  .m-card {{
+    display:flex; flex-direction:column; gap:16px; align-items:center;
+    max-width:72vw; padding:40px 48px; border-radius:12px;
+    background:rgba(255,255,255,.035);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    border:1px solid rgba(255,255,255,.06);
+    pointer-events:none;
   }}
-  .m-speaker {{ font-size:11px; font-weight:700; letter-spacing:5px; text-transform:uppercase; opacity:0; transition:opacity .2s; }}
-  .m-audio {{ opacity:0; transition:opacity .3s; margin-top:4px; }}
+  .m-meta {{ font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#6b7280; opacity:0; transition:opacity .25s; }}
+  .m-quote {{
+    font-size:clamp(18px,3.5vw,44px); font-weight:700; text-align:center;
+    line-height:1.4;
+    opacity:0; transform:translateY(8px); transition:opacity .25s ease, transform .25s ease;
+  }}
+  .m-speaker {{ font-size:11px; font-weight:700; letter-spacing:5px; text-transform:uppercase; opacity:0; transition:opacity .25s; }}
+  .m-audio {{ opacity:0; transition:opacity .3s; margin-top:4px; pointer-events:auto; }}
   .m-audio audio {{ height:28px; opacity:.55; filter:invert(1) hue-rotate(180deg); }}
   .m-quote.show,.m-speaker.show,.m-meta.show,.m-audio.show {{ opacity:1; transform:translateY(0); }}
-  .m-bar {{ position:fixed; bottom:0; left:0; height:2px; background:#a78bfa; width:0%; transition:width linear; }}
-  .m-close {{ position:fixed; top:22px; right:28px; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#374151; cursor:pointer; font-weight:600; background:none; border:none; font-family:'Inter',sans-serif; transition:color .2s; }}
+  .m-close {{
+    position:fixed; top:0; right:0; padding:24px 28px;
+    font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#374151;
+    cursor:pointer; font-weight:600; background:none; border:none;
+    font-family:'Inter',sans-serif; transition:color .2s;
+  }}
   .m-close:hover {{ color:#9ca3af; }}
   .m-hint {{ position:fixed; bottom:16px; left:50%; transform:translateX(-50%); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#2d3748; pointer-events:none; white-space:nowrap; }}
-  .m-pause-label {{ position:fixed; top:22px; left:28px; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#374151; font-weight:600; }}
-  .m-counter {{ position:fixed; top:22px; left:50%; transform:translateX(-50%); font-family:'JetBrains Mono',monospace; font-size:10px; color:#374151; letter-spacing:2px; }}
+  .m-counter {{ position:fixed; top:22px; left:28px; font-family:'JetBrains Mono',monospace; font-size:10px; color:#374151; letter-spacing:2px; }}
+  .m-nav-hint {{
+    position:fixed; bottom:40px; left:50%; transform:translateX(-50%);
+    display:flex; gap:8px; align-items:center; opacity:0;
+    transition:opacity .4s; pointer-events:none;
+  }}
+  .m-nav-hint.show {{ opacity:1; }}
+  .m-nav-arrow {{
+    width:36px; height:36px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center;
+    font-size:14px; color:#4b5563;
+  }}
 
   /* MAIN */
   #main {{ opacity:0; transition:opacity .8s; padding-bottom:100px; }}
@@ -311,15 +337,19 @@ def build_html(clips):
 </div>
 
 <div id="montage">
-  <div class="m-meta"    id="mm"></div>
-  <div class="m-quote"   id="mq"></div>
-  <div class="m-speaker" id="ms"></div>
-  <div class="m-audio"   id="ma"></div>
-  <div class="m-bar"     id="mb"></div>
+  <div class="m-card">
+    <div class="m-meta"    id="mm"></div>
+    <div class="m-quote"   id="mq"></div>
+    <div class="m-speaker" id="ms"></div>
+    <div class="m-audio"   id="ma"></div>
+  </div>
   <button class="m-close" onclick="closeMontage()">ESC &middot; Close</button>
-  <div class="m-hint">Click &middot; Space to pause &middot; &larr;&rarr; navigate</div>
-  <div class="m-pause-label" id="mpause"></div>
-  <div class="m-counter"     id="mcounter"></div>
+  <div class="m-counter" id="mcounter"></div>
+  <div class="m-nav-hint" id="mnavhint">
+    <div class="m-nav-arrow">&larr;</div>
+    <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#374151;font-family:'Inter',sans-serif">tap or swipe</span>
+    <div class="m-nav-arrow">&rarr;</div>
+  </div>
 </div>
 
 <div id="main">
@@ -422,14 +452,17 @@ function toggleShuffle() {{
 }}
 
 // ── Flash montage ────────────────────────────────────────────────────────────
-const FLASH_MS = 5500;
-let mIdx = 0, mOrder = [], mTimer = null, mPaused = false, mActive = false;
+let mIdx = 0, mOrder = [], mActive = false;
 
 function launchMontage() {{
   mOrder = [...CLIPS].sort(() => Math.random() - .5);
-  mIdx = 0; mPaused = false; mActive = true;
+  mIdx = 0; mActive = true;
   if (activeAudio) {{ activeAudio.pause(); activeAudio = null; }}
   document.getElementById("montage").classList.add("on");
+  // Show nav hint briefly then fade
+  const hint = document.getElementById("mnavhint");
+  hint.classList.add("show");
+  setTimeout(() => hint.classList.remove("show"), 2800);
   showSlide();
 }}
 
@@ -445,9 +478,13 @@ function showSlide() {{
     document.getElementById("ms").textContent = c.speaker;
     document.getElementById("ms").style.color = color;
     document.getElementById("mm").textContent = "EP." + String(c.episode).padStart(3,"0") + " \u00b7 " + c.title;
-    document.getElementById("montage").style.background =
-      `radial-gradient(ellipse at 50% 55%, ${{color}}12 0%, #0a0a0f 65%)`;
     document.getElementById("mcounter").textContent = (mIdx + 1) + " / " + mOrder.length;
+
+    // Richer background glow: two ellipses for depth
+    document.getElementById("montage").style.background =
+      `radial-gradient(ellipse at 50% 45%, ${{color}}30 0%, ${{color}}08 40%, transparent 68%),
+       radial-gradient(ellipse at 50% 80%, ${{color}}18 0%, transparent 55%),
+       #0a0a0f`;
 
     const ma = document.getElementById("ma");
     if (c.audio_file) {{
@@ -458,41 +495,43 @@ function showSlide() {{
     }}
     ["mq","ms","mm"].forEach(id => document.getElementById(id).classList.add("show"));
   }}, 130);
-
-  const bar = document.getElementById("mb");
-  bar.style.transition = "none"; bar.style.width = "0%"; bar.style.background = color;
-  setTimeout(() => {{ bar.style.transition = `width ${{FLASH_MS}}ms linear`; bar.style.width = "100%"; }}, 40);
-
-  if (!mPaused) {{
-    clearTimeout(mTimer);
-    mTimer = setTimeout(() => {{ mIdx++; showSlide(); }}, FLASH_MS);
-  }}
 }}
 
 function closeMontage() {{
-  mActive = false; clearTimeout(mTimer);
+  mActive = false;
   document.getElementById("montage").classList.remove("on");
   document.getElementById("ma").innerHTML = "";
+  document.getElementById("montage").style.background = "";
 }}
 
+// Keyboard navigation
 document.addEventListener("keydown", e => {{
   if (!mActive) return;
   if (e.code === "Escape")     closeMontage();
-  if (e.code === "Space")      {{ e.preventDefault(); togglePause(); }}
-  if (e.code === "ArrowRight") {{ clearTimeout(mTimer); mIdx++;               showSlide(); }}
-  if (e.code === "ArrowLeft")  {{ clearTimeout(mTimer); mIdx = Math.max(0, mIdx - 1); showSlide(); }}
-}});
-document.getElementById("montage").addEventListener("click", e => {{
-  if (e.target.tagName === "BUTTON" || e.target.tagName === "AUDIO") return;
-  clearTimeout(mTimer); mIdx++; showSlide();
+  if (e.code === "ArrowRight" || e.code === "Space") {{ e.preventDefault(); mIdx++; showSlide(); }}
+  if (e.code === "ArrowLeft")  {{ mIdx = Math.max(0, mIdx - 1); showSlide(); }}
 }});
 
-function togglePause() {{
-  mPaused = !mPaused;
-  document.getElementById("mpause").textContent = mPaused ? "PAUSED" : "";
-  if (!mPaused) {{ clearTimeout(mTimer); mTimer = setTimeout(() => {{ mIdx++; showSlide(); }}, 2000); }}
-  else          {{ clearTimeout(mTimer); document.getElementById("mb").style.transition = "none"; }}
-}}
+// Click to advance (but not on buttons or audio controls)
+document.getElementById("montage").addEventListener("click", e => {{
+  if (e.target.tagName === "BUTTON" || e.target.tagName === "AUDIO" ||
+      e.target.closest("audio") || e.target.closest(".m-audio")) return;
+  mIdx++; showSlide();
+}});
+
+// Touch swipe for mobile
+(function() {{
+  let tx = 0;
+  const el = document.getElementById("montage");
+  el.addEventListener("touchstart", e => {{ tx = e.touches[0].clientX; }}, {{passive:true}});
+  el.addEventListener("touchend", e => {{
+    if (!mActive) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) < 40) return; // not a real swipe
+    if (dx < 0) {{ mIdx++; showSlide(); }}          // swipe left → next
+    else        {{ mIdx = Math.max(0, mIdx - 1); showSlide(); }} // swipe right → prev
+  }}, {{passive:true}});
+}})();
 </script>
 </body>
 </html>"""
