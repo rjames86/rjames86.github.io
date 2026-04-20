@@ -324,7 +324,7 @@ def build_html(clips):
 <body>
 
 <div id="intro">
-  <div class="relay-label">Relay FM &middot; Connected &middot; Est. 2014</div>
+  <div class="relay-label">Relay &middot; Connected &middot; Est. 2014</div>
   <div class="big-600">600</div>
   <div class="show-name">Connected</div>
   <div class="clip-show-tag">Everyone Needs a Hobby</div>
@@ -361,7 +361,7 @@ def build_html(clips):
     </div>
   </div>
   <div id="body"></div>
-  <div class="site-footer">Connected &middot; Relay FM &middot; {total} clips &middot; {with_audio} with audio</div>
+  <div class="site-footer">Connected &middot; Relay &middot; {total} clips &middot; {with_audio} with audio</div>
 </div>
 
 <script>
