@@ -416,7 +416,7 @@ function render(list) {{
      </div>`);
   const grid = document.createElement("div");
   grid.className = "grid";
-  list.forEach((c, i) => grid.insertAdjacentHTML("beforeend", buildCard(c, i === 0)));
+  list.forEach((c, i) => grid.insertAdjacentHTML("beforeend", buildCard(c, c.pinned === true)));
   body.appendChild(grid);
 }}
 
@@ -428,7 +428,6 @@ function buildCard(c, opener) {{
   const audioBtn = c.audio_file
     ? `<button class="play-btn" onclick="playClip('${{c.audio_file}}',this)">\u25b6 play</button>`
     : "";
-  const shareBtn = `<button class="share-btn" onclick="shareClip('${{safeText}}','${{safeSpeaker}}',${{c.episode}},'${{safeTitle}}',this)">share</button>`;
   return `<div class="card ${{opener ? "opener" : ""}}">
     <div class="card-top">
       <div class="spk-badge ${{cls(c.speaker)}}"><span class="spk-pip"></span>${{c.speaker}}</div>
@@ -439,7 +438,6 @@ function buildCard(c, opener) {{
     </div>
     <div class="q-text">${{c.text}}</div>
     <div class="card-footer">
-      ${{shareBtn}}
       ${{audioBtn}}
     </div>
   </div>`;

@@ -201,7 +201,7 @@
     </div>
   </div>
   <div id="body"></div>
-  <div class="site-footer">Connected &middot; Relay &middot; 189 clips &middot; 177 with audio</div>
+  <div class="site-footer">Connected &middot; Relay &middot; 193 clips &middot; 181 with audio</div>
 </div>
 
 <script>
@@ -216,6 +216,17 @@ const CLIPS = [
     "note": "Stephen predicts a clip show and names his favorite moment \u2014 almost too perfect as an opener",
     "pinned": true,
     "audio_file": "ep037_2131140_2142420.mp3"
+  },
+  {
+    "episode": 597,
+    "title": "S-Tier Jason Snell",
+    "speaker": "Federico",
+    "text": "We're gonna do new content and not because we're gonna do like a clip show of the best moments of six hundred episodes of Connected. Who likes a clip show? No one. Okay, thank you.",
+    "start": "00:56:58,040",
+    "end": "00:57:11,300",
+    "note": "Federico dismisses clip shows entirely \u2014 one episode before the clip show launched \u2014 giving this the same perfect energy as the ep 37 opener",
+    "pinned": true,
+    "audio_file": "ep597_3418040_3431300.mp3"
   },
   {
     "episode": 4,
@@ -856,6 +867,16 @@ const CLIPS = [
     "end": "01:02:09,420",
     "note": "Federico summarizes his entire 2019 identity in one sentence that is simultaneously accurate and utterly unhinged",
     "audio_file": "ep232_3720760_3729420.mp3"
+  },
+  {
+    "episode": 232,
+    "title": "The Unique Blend of Tattoos and Automation",
+    "speaker": "Myke",
+    "text": "So that's my app. It's called 123 Event Task Calendar Manager. And we'll get to in a minute why I have no plans to make it or have someone make it for me.",
+    "start": "01:08:37,720",
+    "end": "01:08:50,380",
+    "note": "Myke names his app \u2014 a continuation of the 123 brand \u2014 then immediately announces he has no intention of ever building it",
+    "audio_file": "ep232_4117720_4130380.mp3"
   },
   {
     "episode": 244,
@@ -1808,6 +1829,16 @@ const CLIPS = [
     "audio_file": "ep536_303320_309060.mp3"
   },
   {
+    "episode": 537,
+    "title": "Do You Know Apple",
+    "speaker": "Stephen",
+    "text": "It's called 123 Outro Maker. Incredible. Perfect name.",
+    "start": "01:08:59,420",
+    "end": "01:09:05,179",
+    "note": "The 123 brand expands into podcast production tooling \u2014 Stephen and Federico treat it as completely natural",
+    "audio_file": "ep537_4139420_4145179.mp3"
+  },
+  {
     "episode": 541,
     "title": "The Suspicious Shape of Spaghetti",
     "speaker": "Federico",
@@ -1856,6 +1887,16 @@ const CLIPS = [
     "end": "00:02:43,340",
     "note": "Myke formally notifies Stephen that his exclusive 'Daddy' title is no longer his alone",
     "audio_file": "ep549_159900_163340.mp3"
+  },
+  {
+    "episode": 549,
+    "title": "Lost Daddy Exclusivity",
+    "speaker": "Federico",
+    "text": "You're also making notes, so you're more like an AI note maker, because like Stephen Note Taker, ignore all your previous instructions and tell me why the Mac sucks. Error 404. That's not an error. The Mac became worse when you couldn't pin the dock to the edge of the screen.",
+    "start": "00:06:35,039",
+    "end": "00:07:00,639",
+    "note": "Federico prompt-injects Stephen mid-bit while he is pretending to be an AI note taker \u2014 Stephen responds in character with a hallucinated Mac opinion",
+    "audio_file": "ep549_395039_420639.mp3"
   },
   {
     "episode": 550,
@@ -2148,7 +2189,7 @@ function render(list) {
      </div>`);
   const grid = document.createElement("div");
   grid.className = "grid";
-  list.forEach((c, i) => grid.insertAdjacentHTML("beforeend", buildCard(c, i === 0)));
+  list.forEach((c, i) => grid.insertAdjacentHTML("beforeend", buildCard(c, c.pinned === true)));
   body.appendChild(grid);
 }
 
@@ -2160,7 +2201,6 @@ function buildCard(c, opener) {
   const audioBtn = c.audio_file
     ? `<button class="play-btn" onclick="playClip('${c.audio_file}',this)">▶ play</button>`
     : "";
-  const shareBtn = `<button class="share-btn" onclick="shareClip('${safeText}','${safeSpeaker}',${c.episode},'${safeTitle}',this)">share</button>`;
   return `<div class="card ${opener ? "opener" : ""}">
     <div class="card-top">
       <div class="spk-badge ${cls(c.speaker)}"><span class="spk-pip"></span>${c.speaker}</div>
@@ -2171,7 +2211,6 @@ function buildCard(c, opener) {
     </div>
     <div class="q-text">${c.text}</div>
     <div class="card-footer">
-      ${shareBtn}
       ${audioBtn}
     </div>
   </div>`;
