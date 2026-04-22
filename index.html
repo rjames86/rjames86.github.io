@@ -2219,7 +2219,9 @@ function buildCard(c, opener) {
 function toggleShuffle() {
   isShuffled = !isShuffled;
   document.getElementById("shuf-btn").classList.toggle("on", isShuffled);
-  render(isShuffled ? [...CLIPS].sort(() => Math.random() - .5) : CLIPS);
+  const pinned   = CLIPS.filter(c => c.pinned);
+  const unpinned = CLIPS.filter(c => !c.pinned);
+  render(isShuffled ? [...pinned, ...[...unpinned].sort(() => Math.random() - .5)] : CLIPS);
 }
 
 // ── Flash montage ────────────────────────────────────────────────────────────
