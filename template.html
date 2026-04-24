@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Everyone Needs a Hobby — Connected Clip Show</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+  :root {
+    --myke:    #a78bfa; --fed:     #fbbf24; --stephen: #60a5fa; --unk: #9ca3af;
+    --bg:      #0a0a0f; --surface: #13131a; --border:  #1e1e2e;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:#e2e8f0; font-family:'Inter',sans-serif; min-height:100vh; overflow-x:hidden; }
+
+  /* ── INTRO ── */
+  #intro {
+    position:fixed; inset:0; z-index:100; background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    transition:opacity .8s;
+  }
+  #intro.gone { opacity:0; pointer-events:none; }
+  .relay-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:6px; text-transform:uppercase; color:#2d2d40; margin-bottom:6px; }
+  .big-600 {
+    font-size:clamp(90px,19vw,190px); font-weight:900; line-height:1; letter-spacing:-5px;
+    background:linear-gradient(130deg,#a78bfa 0%,#60a5fa 45%,#fbbf24 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    animation:glow 3s ease-in-out infinite;
+  }
+  @keyframes glow {
+    0%,100% { filter:drop-shadow(0 0 30px rgba(167,139,250,.2)); }
+    50%      { filter:drop-shadow(0 0 60px rgba(167,139,250,.5)); }
+  }
+  .show-name    { font-size:clamp(14px,2.5vw,24px); font-weight:300; letter-spacing:10px; text-transform:uppercase; color:#6b7280; }
+  .clip-show-tag { font-size:clamp(13px,2vw,20px); font-weight:700; letter-spacing:4px; text-transform:uppercase; color:#fbbf24; margin-top:4px; }
+  .hosts-row    { display:flex; gap:28px; margin-top:14px; }
+  .host-chip    { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#374151; }
+  .host-pip     { width:7px; height:7px; border-radius:50%; }
+  .start-btn {
+    margin-top:36px; padding:13px 42px; background:transparent;
+    border:1px solid #252535; border-radius:3px; color:#9ca3af;
+    font-family:'Inter',sans-serif; font-size:12px; font-weight:600;
+    letter-spacing:4px; text-transform:uppercase; cursor:pointer; transition:all .2s;
+  }
+  .start-btn:hover { border-color:#a78bfa; color:#a78bfa; box-shadow:0 0 24px rgba(167,139,250,.15); }
+
+  /* ── FLASH MONTAGE ── */
+  #montage {
+    position:fixed; inset:0; z-index:90; background:var(--bg);
+    display:none; align-items:center; justify-content:center;
+    flex-direction:column; gap:20px; cursor:pointer;
+    transition:background .4s ease;
+  }
+  #montage.on { display:flex; }
+  .m-card {
+    display:flex; flex-direction:column; gap:16px; align-items:center;
+    max-width:72vw; padding:40px 48px; border-radius:12px;
+    background:rgba(255,255,255,.035);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    border:1px solid rgba(255,255,255,.06);
+    pointer-events:none;
+  }
+  .m-meta   { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#6b7280; opacity:0; transition:opacity .25s; }
+  .m-quote  { font-size:clamp(18px,3.5vw,44px); font-weight:700; text-align:center; line-height:1.4; opacity:0; transform:translateY(8px); transition:opacity .25s ease, transform .25s ease; }
+  .m-speaker { font-size:11px; font-weight:700; letter-spacing:5px; text-transform:uppercase; opacity:0; transition:opacity .25s; }
+  .m-audio  { opacity:0; transition:opacity .3s; margin-top:4px; pointer-events:auto; }
+  .m-audio audio { height:28px; opacity:.55; filter:invert(1) hue-rotate(180deg); }
+  .m-quote.show,.m-speaker.show,.m-meta.show,.m-audio.show { opacity:1; transform:translateY(0); }
+  .m-close {
+    position:fixed; top:0; right:0; padding:24px 28px;
+    font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#374151;
+    cursor:pointer; font-weight:600; background:none; border:none;
+    font-family:'Inter',sans-serif; transition:color .2s;
+  }
+  .m-close:hover { color:#9ca3af; }
+  .m-counter  { position:fixed; top:22px; left:28px; font-family:'JetBrains Mono',monospace; font-size:10px; color:#374151; letter-spacing:2px; }
+  .m-nav-hint {
+    position:fixed; bottom:40px; left:50%; transform:translateX(-50%);
+    display:flex; gap:8px; align-items:center; opacity:0;
+    transition:opacity .4s; pointer-events:none;
+  }
+  .m-nav-hint.show { opacity:1; }
+  .m-nav-arrow { width:36px; height:36px; border-radius:50%; border:1px solid rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center; font-size:14px; color:#4b5563; }
+
+  /* ── MAIN ── */
+  #main { opacity:0; transition:opacity .8s; padding-bottom:100px; }
+  #main.show { opacity:1; }
+
+  /* sticky header wraps topbar + filter bar together */
+  .sticky-header {
+    position:sticky; top:0; z-index:50;
+    background:rgba(10,10,15,.96); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 32px; border-bottom:1px solid var(--border);
+  }
+  .topbar-title { font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#6b7280; }
+  .topbar-title em { color:#a78bfa; font-style:normal; }
+  .btn-row { display:flex; gap:10px; }
+  .tbtn {
+    padding:7px 14px; background:transparent; border:1px solid var(--border);
+    border-radius:3px; color:#4b5563; font-family:'Inter',sans-serif;
+    font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+    cursor:pointer; transition:all .2s;
+  }
+  .tbtn:hover,.tbtn.on { border-color:#a78bfa; color:#a78bfa; background:rgba(167,139,250,.07); }
+
+  /* ── FILTER BAR ── */
+  #filter-bar {
+    padding:10px 32px; display:flex; gap:24px; align-items:center; flex-wrap:wrap;
+  }
+  .filter-group { display:flex; align-items:center; gap:8px; }
+  .filter-label-sm {
+    font-size:9px; font-weight:700; letter-spacing:3px; text-transform:uppercase;
+    color:#2d2d40; white-space:nowrap; padding-right:4px;
+    border-right:1px solid var(--border);
+  }
+  .filter-chips { display:flex; gap:5px; flex-wrap:wrap; }
+  .fchip {
+    padding:4px 9px; background:transparent; border:1px solid var(--border);
+    border-radius:3px; color:#4b5563; font-family:'Inter',sans-serif;
+    font-size:10px; font-weight:600; letter-spacing:1px; cursor:pointer;
+    transition:all .2s; white-space:nowrap;
+  }
+  .fchip:hover { border-color:#6b7280; color:#9ca3af; }
+  .fchip.on { border-color:#a78bfa; color:#a78bfa; background:rgba(167,139,250,.07); }
+  .fcount { color:#374151; font-size:9px; margin-left:3px; }
+  .fchip.on .fcount { color:#7c5fb0; }
+
+  /* ── GRID ── */
+  .section-hdr { display:flex; align-items:center; gap:20px; padding:44px 32px 20px; }
+  .section-label { font-size:10px; font-weight:700; letter-spacing:6px; text-transform:uppercase; color:#374151; white-space:nowrap; }
+  .section-count { font-family:'JetBrains Mono',monospace; font-size:9px; color:#374151; letter-spacing:1px; }
+  .section-hr { flex:1; height:1px; background:var(--border); }
+  .grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+    gap:1px; margin:0 32px; border:1px solid var(--border); border-radius:8px; overflow:hidden;
+  }
+  .card { background:var(--surface); padding:22px 26px; display:flex; flex-direction:column; gap:12px; transition:background .2s; }
+  .card:hover { background:#15151f; }
+  .card.opener { grid-column:1/-1; padding:34px; }
+  .card.opener .q-text { font-size:18px; font-weight:300; line-height:1.75; color:#e2e8f0; }
+  .card-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .spk-badge { display:flex; align-items:center; gap:7px; font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; }
+  .spk-pip { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .ep-label { font-family:'JetBrains Mono',monospace; font-size:10px; color:#8b95a6; letter-spacing:1px; text-align:right; flex-shrink:0; }
+  .ep-label .ep-num  { display:block; font-weight:700; color:#9ca3af; }
+  .ep-label .ep-name { display:block; font-size:9px; color:#6b7280; font-style:italic; margin-top:2px; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .q-text { font-size:14px; line-height:1.65; color:#c4cad6; }
+  .q-text::before { content:"\201C"; color:#4b5563; font-size:20px; line-height:0; vertical-align:-4px; margin-right:1px; }
+  .q-text::after  { content:"\201D"; color:#4b5563; font-size:20px; line-height:0; vertical-align:-4px; margin-left:1px; }
+  .card-footer { display:flex; align-items:center; justify-content:flex-end; border-top:1px solid var(--border); padding-top:10px; }
+  .play-btn {
+    flex-shrink:0; padding:4px 10px; background:transparent; border:1px solid #252535;
+    border-radius:2px; font-family:'Inter',sans-serif;
+    font-size:9px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+    cursor:pointer; transition:all .2s; color:#374151;
+  }
+  .play-btn:hover   { border-color:#a78bfa; color:#a78bfa; background:rgba(167,139,250,.07); }
+  .play-btn.playing { border-color:#4ade80; color:#4ade80; background:rgba(74,222,128,.07); }
+
+  .myke     { color:var(--myke);    } .myke .spk-pip     { background:var(--myke);    }
+  .federico { color:var(--fed);     } .federico .spk-pip { background:var(--fed);     }
+  .stephen  { color:var(--stephen); } .stephen .spk-pip  { background:var(--stephen); }
+  .unknown  { color:var(--unk);     } .unknown .spk-pip  { background:var(--unk);     }
+
+  .site-footer { text-align:center; padding:60px 32px; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#2d2d40; }
+</style>
+</head>
+<body>
+
+<!-- INTRO SPLASH -->
+<div id="intro">
+  <div class="relay-label">Relay &middot; Connected &middot; Est. 2014</div>
+  <div class="big-600">600</div>
+  <div class="show-name">Connected</div>
+  <div class="clip-show-tag">Everyone Needs a Hobby</div>
+  <div class="hosts-row">
+    <div class="host-chip"><span class="host-pip" style="background:var(--myke)"></span>Myke</div>
+    <div class="host-chip"><span class="host-pip" style="background:var(--fed)"></span>Federico</div>
+    <div class="host-chip"><span class="host-pip" style="background:var(--stephen)"></span>Stephen</div>
+  </div>
+  <button class="start-btn" onclick="boot()">&#9654;&ensp;Play Clip Show</button>
+</div>
+
+<!-- FLASH MONTAGE -->
+<div id="montage">
+  <div class="m-card">
+    <div class="m-meta"    id="mm"></div>
+    <div class="m-quote"   id="mq"></div>
+    <div class="m-speaker" id="ms"></div>
+    <div class="m-audio"   id="ma"></div>
+  </div>
+  <button class="m-close" onclick="closeMontage()">ESC &middot; Close</button>
+  <div class="m-counter" id="mcounter"></div>
+  <div class="m-nav-hint" id="mnavhint">
+    <div class="m-nav-arrow">&larr;</div>
+    <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#374151;font-family:'Inter',sans-serif">tap or swipe</span>
+    <div class="m-nav-arrow">&rarr;</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div class="sticky-header">
+    <div class="topbar">
+      <div class="topbar-title"><em>Everyone Needs a Hobby</em> &middot; Connected {{ total }} clips</div>
+      <div class="btn-row">
+        <button class="tbtn" onclick="launchMontage()">&#9889; Flash Mode</button>
+        <button class="tbtn" id="shuf-btn" onclick="toggleShuffle()">Shuffle</button>
+      </div>
+    </div>
+    <div id="filter-bar">
+      <div class="filter-group">
+        <div class="filter-label-sm">Year</div>
+        <div class="filter-chips">
+          <button class="fchip" data-filter="all" onclick="applyFilter('all')">
+            All<span class="fcount">{{ total }}</span>
+          </button>
+          {% for year, count in year_counts.items() %}
+          <button class="fchip" data-filter="year-{{ year }}" onclick="applyFilter('year-{{ year }}')">
+            {{ year }}<span class="fcount">{{ count }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label-sm">Era</div>
+        <div class="filter-chips">
+          {% for (lo, hi), count in era_counts.items() %}
+          <button class="fchip" data-filter="era-{{ lo }}-{{ hi }}" onclick="applyFilter('era-{{ lo }}-{{ hi }}')">
+            {{ lo }}–{{ hi }}<span class="fcount">{{ count }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="body"></div>
+  <div class="site-footer">Connected &middot; Relay &middot; {{ total }} clips &middot; {{ with_audio }} with audio</div>
+</div>
+
+<script>
+const CLIPS = {{ clips_json }};
+const YEAR_RANGES = {
+  {% for year, (lo, hi) in year_ranges.items() %}{{ year }}:[{{ lo }},{{ hi }}],
+  {% endfor %}
+};
+const ERA_RANGES = [[1,100],[101,200],[201,300],[301,400],[401,500],[501,600]];
+
+const COLORS = { Myke:"#a78bfa", Federico:"#fbbf24", Stephen:"#60a5fa", Unknown:"#9ca3af" };
+function cls(s) { return (s||"unknown").toLowerCase(); }
+function col(s) { return COLORS[s] || COLORS.Unknown; }
+
+let activeAudio = null, activeBtn = null;
+let activeFilter = 'year-2026';
+let isShuffled = false;
+
+// ── Audio ────────────────────────────────────────────────────────────────────
+function playClip(file, btn) {
+  if (activeAudio) {
+    activeAudio.pause();
+    if (activeBtn) { activeBtn.classList.remove("playing"); activeBtn.textContent = "▶ play"; }
+    if (activeBtn === btn) { activeAudio = null; activeBtn = null; return; }
+  }
+  const a = new Audio("audio/" + file);
+  a.play();
+  btn.classList.add("playing"); btn.textContent = "◼ stop";
+  activeAudio = a; activeBtn = btn;
+  a.onended = () => { btn.classList.remove("playing"); btn.textContent = "▶ play"; activeAudio = null; activeBtn = null; };
+}
+
+// ── Filtering ────────────────────────────────────────────────────────────────
+function getPool() {
+  if (activeFilter === 'all') return CLIPS;
+
+  // For era/year filters: exclude pinned clips (they're "all" context)
+  let pool = CLIPS.filter(c => !c.pinned);
+
+  if (activeFilter.startsWith('year-')) {
+    const year = parseInt(activeFilter.slice(5));
+    const [lo, hi] = YEAR_RANGES[year];
+    pool = pool.filter(c => c.episode >= lo && c.episode <= hi);
+  } else if (activeFilter.startsWith('era-')) {
+    const parts = activeFilter.slice(4).split('-');
+    const lo = parseInt(parts[0]), hi = parseInt(parts[1]);
+    pool = pool.filter(c => c.episode >= lo && c.episode <= hi);
+  }
+
+  return pool;
+}
+
+function filterLabel() {
+  if (activeFilter === 'all') return 'From the Archives';
+  if (activeFilter.startsWith('year-')) return 'Best of ' + activeFilter.slice(5);
+  if (activeFilter.startsWith('era-')) {
+    const parts = activeFilter.slice(4).split('-');
+    return 'Episodes ' + parts[0] + '–' + parts[1];
+  }
+  return 'Clips';
+}
+
+function applyFilter(filter) {
+  activeFilter = filter;
+  document.querySelectorAll('.fchip').forEach(b =>
+    b.classList.toggle('on', b.dataset.filter === filter));
+  renderCurrent();
+}
+
+function renderCurrent() {
+  let pool = getPool();
+  if (isShuffled) {
+    const pinned   = pool.filter(c => c.pinned);
+    const unpinned = [...pool.filter(c => !c.pinned)].sort(() => Math.random() - .5);
+    pool = [...pinned, ...unpinned];
+  }
+  render(pool, filterLabel());
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+function boot() {
+  document.getElementById("intro").classList.add("gone");
+  setTimeout(() => {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("main").classList.add("show");
+    applyFilter('year-2026');
+  }, 800);
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+function render(list, label) {
+  const body = document.getElementById("body");
+  body.innerHTML = "";
+  body.insertAdjacentHTML("beforeend",
+    `<div class="section-hdr">
+       <div class="section-label">${label}</div>
+       <div class="section-count">${list.length} clips</div>
+       <div class="section-hr"></div>
+     </div>`);
+  const grid = document.createElement("div");
+  grid.className = "grid";
+  list.forEach(c => grid.insertAdjacentHTML("beforeend", buildCard(c, c.pinned === true)));
+  body.appendChild(grid);
+}
+
+function buildCard(c, opener) {
+  const epNum = "EP." + String(c.episode).padStart(3, "0");
+  const audioBtn = c.audio_file
+    ? `<button class="play-btn" onclick="playClip('${c.audio_file}',this)">▶ play</button>`
+    : "";
+  return `<div class="card ${opener ? "opener" : ""}">
+    <div class="card-top">
+      <div class="spk-badge ${cls(c.speaker)}"><span class="spk-pip"></span>${c.speaker}</div>
+      <div class="ep-label">
+        <span class="ep-num">${epNum}</span>
+        <span class="ep-name">${c.title}</span>
+      </div>
+    </div>
+    <div class="q-text">${c.text}</div>
+    <div class="card-footer">${audioBtn}</div>
+  </div>`;
+}
+
+// ── Shuffle ───────────────────────────────────────────────────────────────────
+function toggleShuffle() {
+  isShuffled = !isShuffled;
+  document.getElementById("shuf-btn").classList.toggle("on", isShuffled);
+  renderCurrent();
+}
+
+// ── Flash montage ─────────────────────────────────────────────────────────────
+let mIdx = 0, mOrder = [], mActive = false;
+
+function launchMontage() {
+  const pool = getPool().filter(c => !c.pinned);
+  mOrder = [...pool].sort(() => Math.random() - .5);
+  mIdx = 0; mActive = true;
+  if (activeAudio) { activeAudio.pause(); activeAudio = null; }
+  document.getElementById("montage").classList.add("on");
+  const hint = document.getElementById("mnavhint");
+  hint.classList.add("show");
+  setTimeout(() => hint.classList.remove("show"), 2800);
+  showSlide();
+}
+
+function showSlide() {
+  if (mIdx >= mOrder.length) { closeMontage(); return; }
+  const c = mOrder[mIdx];
+  const color = col(c.speaker);
+  ["mq","ms","mm","ma"].forEach(id => document.getElementById(id).classList.remove("show"));
+
+  setTimeout(() => {
+    document.getElementById("mq").textContent = "“" + c.text + "”";
+    document.getElementById("mq").style.color = color;
+    document.getElementById("ms").textContent = c.speaker;
+    document.getElementById("ms").style.color = color;
+    document.getElementById("mm").textContent = "EP." + String(c.episode).padStart(3,"0") + " · " + c.title;
+    document.getElementById("mcounter").textContent = (mIdx + 1) + " / " + mOrder.length;
+    document.getElementById("montage").style.background =
+      `radial-gradient(ellipse at 50% 45%, ${color}30 0%, ${color}08 40%, transparent 68%),
+       radial-gradient(ellipse at 50% 80%, ${color}18 0%, transparent 55%),
+       #0a0a0f`;
+    const ma = document.getElementById("ma");
+    if (c.audio_file) {
+      ma.innerHTML = `<audio controls src="audio/${c.audio_file}" preload="none"></audio>`;
+      ma.classList.add("show");
+    } else {
+      ma.innerHTML = "";
+    }
+    ["mq","ms","mm"].forEach(id => document.getElementById(id).classList.add("show"));
+  }, 130);
+}
+
+function closeMontage() {
+  mActive = false;
+  document.getElementById("montage").classList.remove("on");
+  document.getElementById("ma").innerHTML = "";
+  document.getElementById("montage").style.background = "";
+}
+
+// ── Keyboard & touch ──────────────────────────────────────────────────────────
+document.addEventListener("keydown", e => {
+  if (!mActive) return;
+  if (e.code === "Escape")                         closeMontage();
+  if (e.code === "ArrowRight" || e.code === "Space") { e.preventDefault(); mIdx++; showSlide(); }
+  if (e.code === "ArrowLeft")                      { mIdx = Math.max(0, mIdx-1); showSlide(); }
+});
+document.getElementById("montage").addEventListener("click", e => {
+  if (e.target.tagName === "BUTTON" || e.target.tagName === "AUDIO" ||
+      e.target.closest("audio") || e.target.closest(".m-audio")) return;
+  mIdx++; showSlide();
+});
+(function() {
+  let tx = 0;
+  const el = document.getElementById("montage");
+  el.addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, {passive:true});
+  el.addEventListener("touchend",   e => {
+    if (!mActive) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) < 40) return;
+    if (dx < 0) { mIdx++; showSlide(); }
+    else        { mIdx = Math.max(0, mIdx-1); showSlide(); }
+  }, {passive:true});
+})();
+</script>
+</body>
+</html>
